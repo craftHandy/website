@@ -78,8 +78,6 @@ export interface CartType {
 export interface Order {
   id: string;
   userId?: string | null;
-  razorpayOrderId?: string | null;
-  razorpayPaymentId?: string | null;
   status: string;
   total: number;
   subtotal: number;

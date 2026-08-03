@@ -1,8 +1,7 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma, safeQuery } from "@/lib/prisma";
+import { getProductBySlug, getRelatedProducts } from "@/lib/api";
 import { formatPrice, calculateDiscount } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -19,10 +18,7 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await safeQuery(() =>
-    prisma.product.findUnique({ where: { slug } }),
-    null
-  );
+  const product = getProductBySlug(slug);
 
   if (!product) {
     return { title: "Product Not Found" };
@@ -44,13 +40,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await safeQuery(() =>
-    prisma.product.findUnique({
-      where: { slug },
-      include: { category: true },
-    }),
-    null
-  );
+  const product = getProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -61,17 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const discountPercent = hasDiscount ? calculateDiscount(product.price, product.discountPrice!) : 0;
   const currentPrice = hasDiscount ? product.discountPrice! : product.price;
 
-  const relatedProducts = await safeQuery(() =>
-    prisma.product.findMany({
-      where: {
-        categoryId: product.categoryId,
-        id: { not: product.id },
-      },
-      include: { category: true },
-      take: 4,
-    }),
-    []
-  );
+  const relatedProducts = getRelatedProducts(product, 4);
 
   const jsonLd = {
     "@context": "https://schema.org",

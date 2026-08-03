@@ -3,39 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useUserStore } from "@/store/user";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const setUser = useUserStore((s) => s.setUser);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, password }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Registration failed");
-        return;
-      }
-
-      router.push("/");
-    } catch {
-      setError("Registration failed");
-    } finally {
-      setLoading(false);
+    if (!email.trim() || !password.trim()) {
+      setError("Please fill in all required fields.");
+      return;
     }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setUser({
+      id: `usr-${Date.now().toString(36)}`,
+      name: name.trim() || email.split("@")[0],
+      email: email.trim(),
+      role: "customer",
+    });
+
+    router.push("/");
   }
 
   return (
@@ -62,10 +60,14 @@ export default function RegisterPage() {
 
           {error && <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-sm">{error}</p>}
 
-          <button type="submit" disabled={loading} className="w-full h-11 bg-[#C9A84C] hover:bg-[#B8973A] text-white text-sm font-medium rounded-sm transition-colors disabled:opacity-50">
-            {loading ? "Creating account..." : "Create Account"}
+          <button type="submit" className="w-full h-11 bg-[#C9A84C] hover:bg-[#B8973A] text-white text-sm font-medium rounded-sm transition-colors">
+            Create Account
           </button>
         </form>
+
+        <p className="text-center text-xs text-neutral-400 mt-4">
+          Demo mode: your account is stored locally in this browser only.
+        </p>
 
         <p className="text-center text-xs text-neutral-500 mt-6">
           Already have an account?{" "}

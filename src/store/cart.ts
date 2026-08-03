@@ -4,22 +4,18 @@ import type { CartItemType } from "@/types";
 
 interface CartState {
   items: CartItemType[];
-  sessionId: string | null;
   addItem: (item: CartItemType) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
-  setSessionId: (id: string) => void;
   getTotal: () => number;
   getItemCount: () => number;
-  syncWithServer: (sessionId: string) => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      sessionId: null,
 
       addItem: (item) =>
         set((state) => {
@@ -50,8 +46,6 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
 
-      setSessionId: (id) => set({ sessionId: id }),
-
       getTotal: () => {
         const state = get();
         return state.items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -60,20 +54,6 @@ export const useCartStore = create<CartState>()(
       getItemCount: () => {
         const state = get();
         return state.items.reduce((count, item) => count + item.quantity, 0);
-      },
-
-      syncWithServer: async (sessionId) => {
-        try {
-          const res = await fetch(`/api/cart?sessionId=${sessionId}`);
-          if (res.ok) {
-            const cart = await res.json();
-            if (cart?.items) {
-              set({ items: cart.items });
-            }
-          }
-        } catch {
-          // keep local state on error
-        }
       },
     }),
     {

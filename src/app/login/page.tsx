@@ -3,40 +3,37 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useUserStore } from "@/store/user";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const setUser = useUserStore((s) => s.setUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
     setLoading(true);
 
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
+    setUser({
+      id: `usr-${Date.now().toString(36)}`,
+      name: email.split("@")[0],
+      email: email.trim(),
+      role: "customer",
+    });
 
-      if (!res.ok) {
-        setError(data.error || "Login failed");
-        return;
-      }
-
-      router.push(redirect);
-    } catch {
-      setError("Login failed");
-    } finally {
-      setLoading(false);
-    }
+    router.push(redirect);
   }
 
   return (
@@ -60,9 +57,13 @@ export default function LoginPage() {
           {error && <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-sm">{error}</p>}
 
           <button type="submit" disabled={loading} className="w-full h-11 bg-[#C9A84C] hover:bg-[#B8973A] text-white text-sm font-medium rounded-sm transition-colors disabled:opacity-50">
-            {loading ? "Signing in..." : "Sign In"}
+            Sign In
           </button>
         </form>
+
+        <p className="text-center text-xs text-neutral-400 mt-4">
+          Demo mode: any email and password will sign you in.
+        </p>
 
         <p className="text-center text-xs text-neutral-500 mt-6">
           Don&apos;t have an account?{" "}

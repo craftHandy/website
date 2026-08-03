@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Search, Menu, X, User, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCartStore } from "@/store/cart";
+import { useUserStore } from "@/store/user";
+import { getCategories } from "@/lib/api";
 import type { Category } from "@/types";
 
 const TOP_LINKS = [
   { href: "/collections", label: "Collections" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact" },
-  { href: "/stories", label: "Stories" },
+  { href: "/blogs", label: "Blogs" },
 ];
 
 const staggerVariants = {
@@ -42,48 +44,26 @@ const dropdownVariants = {
   },
 };
 
-let cachedCategories: Category[] | null = null;
-let cachedUser: { name: string; email: string; role: string } | null = null;
-let userFetched = false;
-
 export function Header() {
-  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string; role: string } | null>(cachedUser);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>(cachedCategories ?? []);
+  const [mounted, setMounted] = useState(false);
   const catRef = useRef<HTMLDivElement>(null);
+  const user = useUserStore((s) => s.user);
+  const clearUser = useUserStore((s) => s.clearUser);
   const itemCount = useCartStore((s) => s.items.reduce((a, b) => a + b.quantity, 0));
 
   useEffect(() => {
-    if (!userFetched) {
-      userFetched = true;
-      fetch("/api/auth/me")
-        .then((r) => r.json())
-        .then((d) => {
-          if (d.user) {
-            cachedUser = d.user;
-            setUser(d.user);
-          }
-        })
-        .catch(() => { });
-    }
+    setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (cachedCategories) return;
-    fetch("/api/categories")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          cachedCategories = data;
-          setCategories(data);
-        }
-      })
-      .catch(() => { });
-  }, []);
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => Promise.resolve(getCategories()),
+  });
+  const categories = categoriesQuery.data ?? [];
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -95,11 +75,9 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
+  function handleLogout() {
+    clearUser();
     setShowUserMenu(false);
-    router.refresh();
   }
 
   return (
@@ -243,7 +221,7 @@ export function Header() {
 
             <Link href="/cart" className="relative p-2 hover:text-gold transition-colors">
               <ShoppingBag className="h-5 w-5" />
-              {itemCount > 0 && (
+              {mounted && itemCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}

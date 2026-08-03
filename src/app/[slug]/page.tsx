@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { prisma, safeQuery } from "@/lib/prisma";
+import { getPageContent } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +10,7 @@ interface DynamicPageProps {
 
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const page = await safeQuery(() =>
-    prisma.pageContent.findUnique({ where: { slug, published: true } }),
-    null
-  );
+  const page = getPageContent(slug);
   if (!page) return { title: "Page Not Found" };
   return {
     title: `${page.title} | Ratnagiri`,
@@ -25,17 +22,12 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
   const { slug } = await params;
 
   // Skip reserved routes
-  const reserved = ["admin", "login", "register", "orders", "jewelry", "collections", "stories", "cart", "checkout", "order", "care", "contact", "privacy", "shipping", "size-guide", "terms", "about"];
+  const reserved = ["admin", "login", "register", "orders", "jewelry", "collections", "stories", "blogs", "cart", "checkout", "order", "care", "contact", "privacy", "shipping", "size-guide", "terms", "about"];
   if (reserved.includes(slug)) {
     notFound();
   }
 
-  const page = await safeQuery(() =>
-    prisma.pageContent.findUnique({
-      where: { slug, published: true },
-    }),
-    null
-  );
+  const page = getPageContent(slug);
 
   if (!page) {
     notFound();

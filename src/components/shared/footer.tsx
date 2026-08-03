@@ -12,7 +12,7 @@ const FOOTER_LINKS = {
   ],
   about: [
     { label: "About Us", href: "/about" },
-    { label: "Our Story", href: "/stories" },
+    { label: "Our Blog", href: "/blogs" },
     { label: "Collections", href: "/collections" },
     { label: "Contact Us", href: "/contact" },
   ],
@@ -34,7 +34,7 @@ export function Footer() {
             <p className="text-sm leading-relaxed mb-6">
               Curating the Himalaya&apos;s finest handcrafted treasures — statues, ritual art, and timeless heritage pieces from Nepal and Tibet.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap items-center gap-3">
               <a href="#" className="text-gold-muted hover:text-gold transition-colors"><Instagram className="h-5 w-5" /></a>
               <a href="#" className="text-gold-muted hover:text-gold transition-colors"><Facebook className="h-5 w-5" /></a>
               <a href="#" className="text-gold-muted hover:text-gold transition-colors"><Twitter className="h-5 w-5" /></a>

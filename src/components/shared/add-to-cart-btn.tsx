@@ -34,10 +34,8 @@ export function AddToCartBtn({
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
-  const setSessionId = useCartStore((state) => state.setSessionId);
-  const sessionId = useCartStore((state) => state.sessionId);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     setIsAdding(true);
 
     const cartItem: CartItemType = {
@@ -51,31 +49,6 @@ export function AddToCartBtn({
     };
 
     addItem(cartItem);
-
-    try {
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: sessionId || crypto.randomUUID(),
-          productId,
-          slug,
-          title,
-          price,
-          image,
-          quantity,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.sessionId) {
-          setSessionId(data.sessionId);
-        }
-      }
-    } catch {
-      // Optimistic update already applied via Zustand
-    }
 
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);

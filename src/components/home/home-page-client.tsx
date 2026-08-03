@@ -130,7 +130,7 @@ export function HomePageClient({ featuredProducts, categories, collections, hero
                   <Link href="/jewelry">Explore Collection</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 text-base tracking-wide">
-                  <Link href="/stories">Our Stories</Link>
+                  <Link href="/blogs">Our Stories</Link>
                 </Button>
               </div>
             </FadeIn>
@@ -284,7 +284,7 @@ export function HomePageClient({ featuredProducts, categories, collections, hero
               </FadeIn>
               <FadeIn direction="right" delay={0.4}>
                 <Button asChild variant="outline" className="border-gold text-gold hover:bg-gold hover:text-[#0a0a0a] tracking-wider">
-                  <Link href="/stories">Read Our Stories</Link>
+                  <Link href="/blogs">Read Our Stories</Link>
                 </Button>
               </FadeIn>
             </div>

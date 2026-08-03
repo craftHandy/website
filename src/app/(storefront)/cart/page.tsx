@@ -206,8 +206,8 @@ export default function CartPage() {
               </Button>
 
                 <p className="text-xs text-gold-muted text-center mt-4">
-                Secure checkout with Razorpay
-              </p>
+                  Demo checkout — no payment is processed
+                </p>
             </div>
           </div>
         </div>

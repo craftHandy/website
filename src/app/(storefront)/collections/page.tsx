@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { prisma, safeQuery } from "@/lib/prisma";
+import { getCollections } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CollectionsPage() {
-  const collections = await safeQuery(() =>
-    prisma.collection.findMany({
-      include: { _count: { select: { products: true } } },
-      orderBy: { title: "asc" },
-    }),
-    []
-  );
+  const collections = await Promise.resolve(getCollections());
 
     return (
     <main className="min-h-screen bg-[#0a0a0a]">
