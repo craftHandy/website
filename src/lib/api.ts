@@ -13,6 +13,10 @@ import {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/hero-slide`;
+const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
+const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/category/all`;
+const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/product/featured`;
+const PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/product`;
 
 /**
  * Central data-access layer for the storefront.
@@ -53,8 +57,44 @@ function buildBlogDetailUrl(slug: string) {
   return `${API_BASE_URL}${BLOG_DETAIL_PATH}/${encodeURIComponent(slug)}`;
 }
 
-export function getCategories(): Category[] {
-  return FALLBACK_CATEGORIES;
+function toCategorySlug(value: string, fallback: string) {
+  const slug = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return slug || fallback;
+}
+
+export async function getCategories(): Promise<Category[]> {
+  try {
+    const response = await fetch(CATEGORIES_ENDPOINT, {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      console.warn(`Categories request failed with status ${response.status}`);
+      return FALLBACK_CATEGORIES;
+    }
+
+    const payload = await response.json();
+    const rawCategories = Array.isArray(payload?.data) ? payload.data : [];
+    const categories = rawCategories
+      .filter((category: any) => category?.id != null && category?.categoryName)
+      .map((category: any) => ({
+        id: String(category.id),
+        title: String(category.categoryName),
+        slug: toCategorySlug(String(category.categoryCode || category.categoryName), `category-${category.id}`),
+        description: category.description || undefined,
+        image: category.file || undefined,
+      }));
+
+    return categories.length > 0 ? categories : FALLBACK_CATEGORIES;
+  } catch (error) {
+    console.warn("Categories request failed.", error);
+    return FALLBACK_CATEGORIES;
+  }
 }
 
 export function getCollections(): Collection[] {
@@ -194,8 +234,79 @@ export function getProducts(query: ProductQuery = {}): {
   };
 }
 
-export function getFeaturedProducts(limit = 8): Product[] {
-  return getProducts({ featured: true, limit }).products;
+function mapApiProducts(rawProducts: any[]): Product[] {
+  return rawProducts
+    .filter((product: any) => product?.id != null && product?.title)
+    .map((product: any, index: number): Product => {
+      const price = Number(product.price) || 0;
+      const discountPercentage = Number(product.discountPercentage) || 0;
+
+      return {
+        id: String(product.id),
+        title: String(product.title),
+        slug: product.slug || `product-${product.id}`,
+        price,
+        discountPrice: discountPercentage > 0 ? price * (1 - discountPercentage / 100) : undefined,
+        materials: [],
+        occasion: [],
+        images: product.imageUrl ? [{ url: product.imageUrl, alt: product.title }] : [],
+        stockStatus: product.stockStatus || "IN_STOCK",
+        featured: product.featured === true,
+        categoryId: product.categoryId != null ? String(product.categoryId) : null,
+        category: product.categoryName
+          ? {
+              id: product.categoryId != null ? String(product.categoryId) : `category-${index}`,
+              title: String(product.categoryName),
+              slug: toCategorySlug(String(product.categoryName), `category-${index}`),
+            }
+          : null,
+        createdAt: product.createdAt || "1970-01-01T00:00:00.000Z",
+      };
+    });
+}
+
+export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
+  try {
+    const response = await fetch(
+      `${FEATURED_PRODUCTS_ENDPOINT}?page=0&size=${limit}&sortBy=id&direction=desc`,
+      { next: { revalidate: 60 } }
+    );
+
+    if (!response.ok) {
+      console.warn(`Featured products request failed with status ${response.status}`);
+      return getProducts({ featured: true, limit }).products;
+    }
+
+    const payload = await response.json();
+    const rawProducts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
+    const products = mapApiProducts(rawProducts);
+
+    return products.length > 0 ? products : getProducts({ featured: true, limit }).products;
+  } catch (error) {
+    console.warn("Featured products request failed.", error);
+    return getProducts({ featured: true, limit }).products;
+  }
+}
+
+export async function getNewArrivals(limit = 8): Promise<Product[]> {
+  try {
+    const response = await fetch(`${PRODUCTS_ENDPOINT}?page=0&size=${limit}`, {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      console.warn(`Products request failed with status ${response.status}`);
+      return getProducts({ limit }).products;
+    }
+
+    const payload = await response.json();
+    const products = mapApiProducts(Array.isArray(payload?.data?.content) ? payload.data.content : []);
+
+    return products.length > 0 ? products.slice(0, limit) : getProducts({ limit }).products;
+  } catch (error) {
+    console.warn("Products request failed.", error);
+    return getProducts({ limit }).products;
+  }
 }
 
 export function getProductBySlug(slug: string): Product | null {
