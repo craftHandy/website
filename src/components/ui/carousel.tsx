@@ -125,7 +125,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.HTMLAttribute
         ref={ref}
         variant="outline"
         size="icon"
-        className={cn("absolute h-12 w-12 rounded-full bg-white/90 hover:bg-white shadow-lg -left-4 top-1/2 -translate-y-1/2 z-10", className)}
+        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -left-4 top-1/2 -translate-y-1/2 z-10", className)}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         {...props}
@@ -145,7 +145,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.HTMLAttributes<HT
         ref={ref}
         variant="outline"
         size="icon"
-        className={cn("absolute h-12 w-12 rounded-full bg-white/90 hover:bg-white shadow-lg -right-4 top-1/2 -translate-y-1/2 z-10", className)}
+        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -right-4 top-1/2 -translate-y-1/2 z-10", className)}
         disabled={!canScrollNext}
         onClick={scrollNext}
         {...props}
@@ -171,7 +171,7 @@ const CarouselDots = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
             onClick={() => scrollTo(index)}
             className={cn(
               "h-2 w-2 rounded-full transition-all duration-300",
-              selectedIndex === index ? "bg-[#C9A84C] w-6" : "bg-white/50 hover:bg-white/80"
+              selectedIndex === index ? "bg-[var(--color-gold)] w-6" : "bg-[var(--color-cream-dark)]/40 hover:bg-[var(--color-cream-dark)]/70"
             )}
           />
         ))}

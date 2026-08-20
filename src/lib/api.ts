@@ -11,11 +11,12 @@ import {
 } from "./fallback-data";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
-const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/hero-slide`;
+const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/public/hero-slide`;
 const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
-const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/category/all`;
-const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/product/featured`;
-const PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/product`;
+const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/category/all`;
+const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product/featured`;
+// Updated public products endpoint per backend API
+const PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product`;
 
 /**
  * Central data-access layer for the storefront.
@@ -41,11 +42,15 @@ export interface ProductListQuery {
   size?: number;
   search?: string;
   categoryId?: string;
+  materialId?: string;
+  occasionId?: string;
   minPrice?: number;
   maxPrice?: number;
   sortBy?: "id" | "price" | "title";
   direction?: "asc" | "desc";
 }
+const MATERIALS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/material`;
+const OCCASIONS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/occasion`;
 
 export interface ProductListResult {
   products: Product[];
@@ -65,8 +70,8 @@ export interface BlogPostsResult {
   last: boolean;
 }
 
-const BLOG_LIST_PATH = "/api/v1/blog";
-const BLOG_DETAIL_PATH = "/api/v1/blog";
+const BLOG_LIST_PATH = "/api/v1/public/blog";
+const BLOG_DETAIL_PATH = "/api/v1/public/blog";
 
 function buildBlogListUrl(page = 0, size = 10) {
   return `${API_BASE_URL}${BLOG_LIST_PATH}?page=${page}&size=${size}&sortBy=id&direction=desc`;
@@ -94,7 +99,7 @@ export async function getCategories(): Promise<Category[]> {
 
     if (!response.ok) {
       console.warn(`Categories request failed with status ${response.status}`);
-      return FALLBACK_CATEGORIES;
+      return [];
     }
 
     const payload = await response.json();
@@ -109,10 +114,48 @@ export async function getCategories(): Promise<Category[]> {
         image: category.file || undefined,
       }));
 
-    return categories.length > 0 ? categories : FALLBACK_CATEGORIES;
+    return categories.length > 0 ? categories : [];
   } catch (error) {
     console.warn("Categories request failed.", error);
-    return FALLBACK_CATEGORIES;
+    return [];
+  }
+}
+
+export async function getMaterials(): Promise<{ id: string; name: string }[]> {
+  try {
+    const response = await fetch(MATERIALS_ENDPOINT, { next: { revalidate: 60 } });
+    if (!response.ok) {
+      console.warn(`Materials request failed with status ${response.status}`);
+      return [];
+    }
+
+    const payload = await response.json().catch(() => null);
+    const raw = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+    return raw
+      .filter((m: any) => m?.id != null && (m?.name || m?.materialName))
+      .map((m: any) => ({ id: String(m.id), name: String(m.name ?? m.materialName) }));
+  } catch (error) {
+    console.warn("Materials request failed.", error);
+    return [];
+  }
+}
+
+export async function getOccasions(): Promise<{ id: string; name: string }[]> {
+  try {
+    const response = await fetch(OCCASIONS_ENDPOINT, { next: { revalidate: 60 } });
+    if (!response.ok) {
+      console.warn(`Occasions request failed with status ${response.status}`);
+      return [];
+    }
+
+    const payload = await response.json().catch(() => null);
+    const raw = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+    return raw
+      .filter((o: any) => o?.id != null && (o?.name || o?.occasionName))
+      .map((o: any) => ({ id: String(o.id), name: String(o.name ?? o.occasionName) }));
+  } catch (error) {
+    console.warn("Occasions request failed.", error);
+    return [];
   }
 }
 
@@ -222,36 +265,10 @@ export function getProducts(query: ProductQuery = {}): {
   page: number;
   pageSize: number;
 } {
-  let products = [...FALLBACK_PRODUCTS];
-
-  if (query.category) {
-    const category = FALLBACK_CATEGORIES.find((c) => c.slug === query.category);
-    if (category) {
-      products = products.filter((p) => p.categoryId === category.id);
-    }
-  }
-
-  if (query.featured) {
-    products = products.filter((p) => p.featured);
-  }
-
-  products = products.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-
-  const total = products.length;
-  const pageSize = query.pageSize ?? total;
-  const page = query.page ?? 1;
-  const take = query.limit ?? pageSize;
-  const skip = page > 1 ? (page - 1) * take : 0;
-  const sliced = take > 0 ? products.slice(skip, skip + take) : products;
-
-  return {
-    products: sliced,
-    total,
-    page,
-    pageSize: take,
-  };
+  // Avoid returning static fallback products. This synchronous helper
+  // intentionally returns an empty result so the UI doesn't render stale
+  // static data when the API is expected to be the source of truth.
+  return { products: [], total: 0, page: query.page ?? 1, pageSize: query.pageSize ?? 0 };
 }
 
 function mapApiProducts(rawProducts: any[]): Product[] {
@@ -307,29 +324,51 @@ export async function getProductList(query: ProductListQuery = {}): Promise<Prod
   const params = new URLSearchParams({
     page: String(Math.max(0, query.page ?? 0)),
     size: String(Math.max(1, query.size ?? 12)),
-    sortBy: query.sortBy ?? "id",
-    direction: query.direction ?? "desc",
   });
+
+  if (query.sortBy) params.set("sortBy", query.sortBy);
+  if (query.direction) params.set("direction", query.direction);
 
   if (query.search) params.set("search", query.search);
   if (query.categoryId) params.set("categoryId", query.categoryId);
+  if (query.materialId) params.set("materialId", query.materialId);
+  if (query.occasionId) params.set("occasionId", query.occasionId);
   if (query.minPrice != null) params.set("minPrice", String(query.minPrice));
   if (query.maxPrice != null) params.set("maxPrice", String(query.maxPrice));
 
   try {
     const response = await fetch(`${PRODUCTS_ENDPOINT}?${params}`, { next: { revalidate: 30 } });
-    if (!response.ok) throw new Error(`Product list request failed: ${response.status}`);
+    if (!response.ok) {
+      console.warn(`Product list request failed with status ${response.status}`);
+      return { products: [], page: query.page ?? 0, size: query.size ?? 12, totalElements: 0, totalPages: 0, last: true };
+    }
 
-    const payload = await response.json();
+    const payload = await response.json().catch(() => null);
+    // Support a couple of payload shapes: { data: { content: [...] } } or { data: [...] } or direct array
+    const rawItems = Array.isArray(payload?.data?.content)
+      ? payload.data.content
+      : Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+      ? payload
+      : [];
+
+    const products = mapApiProducts(rawItems);
     const data = payload?.data ?? {};
-    const products = mapApiProducts(Array.isArray(data.content) ? data.content : []);
+
+    const pageVal = typeof data.page === "number" ? data.page : typeof payload?.page === "number" ? payload.page : query.page ?? 0;
+    const sizeVal = typeof data.size === "number" ? data.size : query.size ?? 12;
+    const totalElements = typeof data.totalElements === "number" ? data.totalElements : products.length;
+    const totalPages = typeof data.totalPages === "number" ? data.totalPages : totalElements > 0 ? Math.ceil(totalElements / sizeVal) : 0;
+    const last = typeof data.last === "boolean" ? data.last : pageVal >= Math.max(0, totalPages - 1);
+
     return {
       products,
-      page: typeof data.page === "number" ? data.page : query.page ?? 0,
-      size: typeof data.size === "number" ? data.size : query.size ?? 12,
-      totalElements: typeof data.totalElements === "number" ? data.totalElements : products.length,
-      totalPages: typeof data.totalPages === "number" ? data.totalPages : products.length ? 1 : 0,
-      last: typeof data.last === "boolean" ? data.last : true,
+      page: pageVal,
+      size: sizeVal,
+      totalElements,
+      totalPages,
+      last,
     };
   } catch (error) {
     console.warn("Product list request failed.", error);
@@ -340,23 +379,24 @@ export async function getProductList(query: ProductListQuery = {}): Promise<Prod
 /** Fetches a single product by its API id. */
 export async function getProductById(id: string): Promise<Product | null> {
   try {
-    const response = await fetch(`${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`, {
-      next: { revalidate: 30 },
-    });
-    if (!response.ok) return null;
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`, { next: { revalidate: 30 } });
+    if (!response.ok) {
+      console.warn(`Product detail request failed with status ${response.status}`);
+      return null;
+    }
 
-    const payload = await response.json();
-    const raw = payload?.data;
-    const product = mapApiProduct(raw);
+    const payload = await response.json().catch(() => null);
+    const raw = payload?.data ?? payload ?? null;
+    const product = mapApiProduct(Array.isArray(raw) ? raw[0] : raw);
     if (!product) return null;
 
-    const occasions = Array.isArray(raw.occasions)
+    const occasions = Array.isArray(raw?.occasions)
       ? raw.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
       : Array.isArray(raw.occasion)
         ? raw.occasion.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
         : [];
 
-    const materials = Array.isArray(raw.materials)
+    const materials = Array.isArray(raw?.materials)
       ? raw.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
       : [];
 
@@ -406,18 +446,18 @@ export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
     );
 
     if (!response.ok) {
-      console.warn(`Featured products request failed with status ${response.status}`);
-      return getProducts({ featured: true, limit }).products;
+        console.warn(`Featured products request failed with status ${response.status}`);
+        return [];
     }
 
     const payload = await response.json();
     const rawProducts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
     const products = mapApiProducts(rawProducts);
 
-    return products.length > 0 ? products : getProducts({ featured: true, limit }).products;
+    return products.length > 0 ? products : [];
   } catch (error) {
     console.warn("Featured products request failed.", error);
-    return getProducts({ featured: true, limit }).products;
+    return [];
   }
 }
 
@@ -429,16 +469,23 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
 
     if (!response.ok) {
       console.warn(`Products request failed with status ${response.status}`);
-      return getProducts({ limit }).products;
+      return [];
     }
 
-    const payload = await response.json();
-    const products = mapApiProducts(Array.isArray(payload?.data?.content) ? payload.data.content : []);
+    const payload = await response.json().catch(() => null);
+    const rawItems = Array.isArray(payload?.data?.content)
+      ? payload.data.content
+      : Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+      ? payload
+      : [];
 
-    return products.length > 0 ? products.slice(0, limit) : getProducts({ limit }).products;
+    const products = mapApiProducts(rawItems);
+    return products.length > 0 ? products.slice(0, limit) : [];
   } catch (error) {
     console.warn("Products request failed.", error);
-    return getProducts({ limit }).products;
+    return [];
   }
 }
 

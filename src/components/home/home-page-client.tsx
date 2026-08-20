@@ -165,14 +165,14 @@ export function HomePageClient({
 
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
-      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[#17120d]">
+      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[var(--color-background)] bg-cover bg-center">
         <EmblaCarousel opts={{ loop: hasHeroCarousel, align: "start" }} plugins={autoplayPlugins} className="h-full">
           <CarouselContent className="h-full">
             {slides.map((slide, index) => (
               <CarouselItem key={slide.id ?? `${slide.title}-${index}`} className="h-full basis-full pl-0">
                 <div className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
                   <motion.div
-                    className="absolute inset-0 bg-[#17120d] bg-cover bg-center"
+                    className="absolute inset-0 bg-cover bg-center"
                     style={{
                       backgroundImage: slide.image ? `url(${slide.image})` : undefined,
                     }}

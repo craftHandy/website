@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/shared/product-card";
-import { getCategories, getProductList, getProducts } from "@/lib/api";
+import { getCategories, getProductList, getProducts, getMaterials, getOccasions } from "@/lib/api";
 
 const PAGE_SIZE = 12;
 
@@ -15,6 +15,8 @@ function ProductListing() {
   const router = useRouter();
   const page = Math.max(0, Number(params.get("page") || 0));
   const categoryId = params.get("categoryId") || "";
+  const materialId = params.get("materialId") || "";
+  const occasionId = params.get("occasionId") || "";
   const search = params.get("search") || "";
   const minPrice = params.get("minPrice") || "";
   const maxPrice = params.get("maxPrice") || "";
@@ -23,20 +25,25 @@ function ProductListing() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const query = useQuery({
-    queryKey: ["product-list", page, categoryId, search, minPrice, maxPrice, sort],
+    queryKey: ["product-list", page, categoryId, materialId, occasionId, search, minPrice, maxPrice, sort],
     queryFn: () => getProductList({
       page,
       size: PAGE_SIZE,
       categoryId: categoryId || undefined,
+      materialId: materialId || undefined,
+      occasionId: occasionId || undefined,
       search: search || undefined,
       minPrice: minPrice ? Number(minPrice) : undefined,
       maxPrice: maxPrice ? Number(maxPrice) : undefined,
-      sortBy: sort === "price-asc" || sort === "price-desc" ? "price" : "id",
-      direction: sort === "price-asc" ? "asc" : "desc",
+      ...(sort === "price-asc" || sort === "price-desc"
+        ? { sortBy: "price", direction: sort === "price-asc" ? "asc" : "desc" }
+        : {}),
     }),
     placeholderData: (previous) => previous,
   });
   const categories = useQuery({ queryKey: ["categories"], queryFn: getCategories }).data ?? [];
+  const materials = useQuery({ queryKey: ["materials"], queryFn: getMaterials }).data ?? [];
+  const occasions = useQuery({ queryKey: ["occasions"], queryFn: getOccasions }).data ?? [];
   const activeCategory = categories.find((category) => category.id === categoryId);
   const products = query.data?.products ?? [];
   const result = query.data;
@@ -53,13 +60,13 @@ function ProductListing() {
 
   const hrefFor = useCallback((updates: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
-    const values = { categoryId, search, minPrice, maxPrice, sort, page: String(page), ...updates };
+    const values = { categoryId, materialId, occasionId, search, minPrice, maxPrice, sort, page: String(page), ...updates };
     Object.entries(values).forEach(([key, value]) => {
       if (value && !(key === "page" && value === "0") && !(key === "sort" && value === "newest")) next.set(key, value);
     });
     const string = next.toString();
     return string ? `/product?${string}` : "/product";
-  }, [categoryId, search, minPrice, maxPrice, sort, page]);
+  }, [categoryId, materialId, occasionId, search, minPrice, maxPrice, sort, page]);
 
   const pageNumbers = useMemo(() => {
     const total = result?.totalPages ?? 0;
@@ -96,7 +103,7 @@ function ProductListing() {
           <aside className={`${filtersOpen ? "block" : "hidden"} lg:block lg:w-64 lg:shrink-0`}>
             <div className="space-y-7 border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-6 rounded-lg lg:sticky lg:top-28">
               <div>
-                <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Material</h2>
+                <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Category</h2>
                 <div className="space-y-2">
                   {categories.length ? categories.map((cat) => {
                     const checked = categoryId === cat.id;
@@ -107,7 +114,6 @@ function ProductListing() {
                           type="checkbox"
                           checked={checked}
                           onChange={() => {
-                            // treat categories as single-select (preserve previous behavior)
                             const nextCategory = checked ? undefined : cat.id;
                             router.push(hrefFor({ categoryId: nextCategory, page: "0" }));
                           }}
@@ -121,6 +127,52 @@ function ProductListing() {
               </div>
 
               <div>
+                <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Material</h2>
+                <div className="space-y-2">
+                  {materials.length ? materials.map((m) => {
+                    const checked = materialId === m.name;
+                    return (
+                      <label key={m.id} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked ? undefined : m.name;
+                            router.push(hrefFor({ materialId: next, page: "0" }));
+                          }}
+                          className="w-4 h-4 rounded border-[var(--color-border-subtle)]"
+                        />
+                        <span className="text-sm text-[var(--color-cream-dark)]">{m.name}</span>
+                      </label>
+                    );
+                  }) : <p className="text-sm text-[var(--color-cream-dark)]">No materials</p>}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Occasion</h2>
+                <div className="space-y-2">
+                  {occasions.length ? occasions.map((o) => {
+                    const checked = occasionId === o.name;
+                    return (
+                      <label key={o.id} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked ? undefined : o.name;
+                            router.push(hrefFor({ occasionId: next, page: "0" }));
+                          }}
+                          className="w-4 h-4 rounded border-[var(--color-border-subtle)]"
+                        />
+                        <span className="text-sm text-[var(--color-cream-dark)]">{o.name}</span>
+                      </label>
+                    );
+                  }) : <p className="text-sm text-[var(--color-cream-dark)]">No occasions</p>}
+                </div>
+              </div>
+
+              <div>
                 <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Price range</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <input aria-label="Minimum price" defaultValue={minPrice} onBlur={(event) => router.push(hrefFor({ minPrice: event.target.value || undefined, page: "0" }))} inputMode="decimal" placeholder="Min" className="h-10 min-w-0 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-2 text-sm" />
@@ -128,7 +180,7 @@ function ProductListing() {
                 </div>
               </div>
 
-              {(categoryId || search || minPrice || maxPrice) && (
+              {(categoryId || materialId || occasionId || search || minPrice || maxPrice) && (
                 <button onClick={() => router.push('/product')} className="inline-flex items-center gap-1 text-xs text-[var(--color-gold-muted)] hover:text-[var(--color-gold)]"><X className="h-3.5 w-3.5" /> Clear filters</button>
               )}
             </div>

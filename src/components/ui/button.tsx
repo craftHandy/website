@@ -4,15 +4,15 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default: "bg-gold text-[#0a0a0a] hover:bg-gold-dark shadow-sm hover:shadow-md hover:shadow-gold/20",
         destructive: "bg-red-500 text-white hover:bg-red-600 shadow-sm hover:shadow-md",
         outline: "border border-gold text-gold hover:bg-gold hover:text-[#0a0a0a]",
-        secondary: "bg-[#141414] text-cream border border-[rgba(201,168,76,0.15)] hover:border-gold/40 hover:bg-[#1a1a1a]",
-        ghost: "text-cream-dark hover:bg-[rgba(201,168,76,0.08)] hover:text-gold",
+        secondary: "bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] border border-[var(--color-border-subtle)] hover:border-gold/40 hover:bg-[var(--color-surface)]",
+        ghost: "text-[var(--color-cream-dark)] hover:bg-[rgba(201,168,76,0.08)] hover:text-gold",
         link: "text-gold underline-offset-4 hover:underline hover:text-gold-light",
         "gold-foil": "gold-foil-btn text-[#261900] hover:bg-[position:100%_0] active:scale-[0.98] transition-all",
       },

@@ -77,10 +77,10 @@ const artisans = [
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* ── Hero Section ── */}
       <section className="relative bg-surface-elevated overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0a0a0a]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[var(--color-background)]" />
         <motion.div
           className="absolute inset-0 opacity-10"
           style={{
@@ -97,12 +97,12 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <h1 className="text-4xl md:text-7xl font-serif text-cream mb-6 leading-tight">
+            <h1 className="text-4xl md:text-7xl font-serif text-[var(--color-foreground)] mb-6 leading-tight">
               Our Story
             </h1>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <p className="text-cream-dark/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[var(--color-cream-dark)]/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
               For over three generations, Ratnagiri has been synonymous with the finest Indian
               jewelry — a legacy of artistry, tradition, and an unwavering commitment to beauty
               that flows from the heart of Jaipur to the world.
@@ -112,7 +112,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Heritage & Craftsmanship ── */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28">
+      <section className="bg-[var(--color-background)] py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-6">
           <StaggerContainer>
             <StaggerItem>
@@ -121,13 +121,13 @@ export default function AboutPage() {
               </p>
             </StaggerItem>
             <StaggerItem>
-              <h2 className="text-3xl md:text-5xl font-serif text-cream mb-12 text-center">
+              <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-12 text-center">
                 A Legacy of Light
               </h2>
             </StaggerItem>
           </StaggerContainer>
 
-          <div className="space-y-8 text-cream-dark/70 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
+          <div className="space-y-8 text-[var(--color-cream-dark)]/70 text-sm md:text-base leading-relaxed max-w-4xl mx-auto">
             <FadeIn>
               <p>
                 Ratnagiri &mdash; meaning &quot;mountain of gems&quot; &mdash; was born in the pink-hued city of Jaipur,
@@ -170,7 +170,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Our Values ── */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28">
+      <section className="bg-[var(--color-background)] py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
@@ -178,7 +178,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-cream mb-14 text-center">
+            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-14 text-center">
               Our Values
             </h2>
           </FadeIn>
@@ -188,12 +188,12 @@ export default function AboutPage() {
               const Icon = value.icon;
               return (
                 <StaggerItem key={value.title}>
-                  <div className="group text-center p-8 border border-[rgba(201,168,76,0.1)] hover:border-gold transition-colors duration-500 bg-[#141414]">
-                    <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-[#141414] flex items-center justify-center group-hover:bg-gold/10 transition-colors duration-500 border border-[rgba(201,168,76,0.1)]">
+                  <div className="group text-center p-8 border border-[var(--color-border-subtle)] hover:border-gold transition-colors duration-500 bg-[var(--color-surface-elevated)]">
+                    <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-[var(--color-surface-elevated)] flex items-center justify-center group-hover:bg-gold/10 transition-colors duration-500 border border-[var(--color-border-subtle)]">
                       <Icon className="w-6 h-6 text-gold" />
                     </div>
-                    <h3 className="text-lg font-serif text-cream mb-3">{value.title}</h3>
-                    <p className="text-cream-dark/70 text-sm leading-relaxed">{value.description}</p>
+                    <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-3">{value.title}</h3>
+                    <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed">{value.description}</p>
                   </div>
                 </StaggerItem>
               );
@@ -203,7 +203,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Our Process ── */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28 overflow-hidden">
+      <section className="bg-[var(--color-background)] py-20 md:py-28 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
@@ -211,7 +211,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-cream mb-16 text-center">
+            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-16 text-center">
               Our Process
             </h2>
           </FadeIn>
@@ -227,8 +227,8 @@ export default function AboutPage() {
                         {step.number}
                       </span>
                     </ScaleIn>
-                    <h3 className="text-xl font-serif text-cream mb-4">{step.title}</h3>
-                    <p className="text-cream-dark/70 text-sm leading-relaxed">{step.description}</p>
+                    <h3 className="text-xl font-serif text-[var(--color-foreground)] mb-4">{step.title}</h3>
+                    <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed">{step.description}</p>
                   </div>
                 </StaggerItem>
               ))}
@@ -238,7 +238,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Meet the Artisans ── */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28">
+      <section className="bg-[var(--color-background)] py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
@@ -246,7 +246,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-cream mb-14 text-center">
+            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-14 text-center">
               Meet the Artisans
             </h2>
           </FadeIn>
@@ -258,11 +258,11 @@ export default function AboutPage() {
                   <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-5">
                     <Sparkles className="w-6 h-6 text-gold" />
                   </div>
-                  <h3 className="text-lg font-serif text-cream mb-1">{artisan.name}</h3>
+                  <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-1">{artisan.name}</h3>
                   <p className="text-gold text-xs tracking-[0.15em]  font-medium mb-4">
                     {artisan.role}
                   </p>
-                  <p className="text-cream-dark/70 text-sm leading-relaxed">{artisan.description}</p>
+                  <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed">{artisan.description}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -271,7 +271,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA Section ── */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28">
+      <section className="bg-[var(--color-background)] py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <FadeIn>
             <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
@@ -279,12 +279,12 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-cream mb-6">
+            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-6">
               Discover the Collection
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-cream-dark/70 text-sm md:text-base leading-relaxed mb-10 max-w-xl mx-auto">
+            <p className="text-[var(--color-cream-dark)]/70 text-sm md:text-base leading-relaxed mb-10 max-w-xl mx-auto">
               From everyday elegance to heirloom masterpieces, each Ratnagiri creation carries the
               soul of India&apos;s finest jewelry traditions. Explore our collections and find a piece
               that speaks to your story.

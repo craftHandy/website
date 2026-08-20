@@ -24,7 +24,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
       <Link href={`/product/${product.id}`} className="group block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-[#141414] rounded-sm mb-4 border border-[rgba(201,168,76,0.08)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
           {product.images?.[0]?.url ? (
             <Image
               src={product.images[0].url}
@@ -56,14 +56,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               {product.category.title}
             </p>
           )}
-          <h3 className="text-sm font-medium text-cream group-hover:text-gold transition-colors line-clamp-2">
+          <h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2">
             {product.title}
           </h3>
           {product.craftType && (
             <p className="text-[11px] text-gold-muted">{product.craftType}</p>
           )}
           <div className="flex items-center gap-2 pt-0.5">
-            <span className="text-base font-semibold text-cream">
+            <span className="text-base font-semibold text-[var(--color-foreground)]">
               {formatPrice(hasDiscount ? product.discountPrice! : product.price)}
             </span>
             {hasDiscount && (

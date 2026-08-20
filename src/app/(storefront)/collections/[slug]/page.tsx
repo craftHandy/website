@@ -43,8 +43,8 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   const products = collection.products || [];
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
-      <section className="relative h-[50vh] min-h-[400px] flex items-end overflow-hidden bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
+      <section className="relative h-[50vh] min-h-[400px] flex items-end overflow-hidden bg-[var(--color-background)]">
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#0a0a0a]/95 via-[#0a0a0a]/50 to-transparent z-[1]" />
         {collection.image ? (
           <Image
@@ -56,7 +56,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
             sizes="100vw"
           />
         ) : (
-          <div className="absolute inset-0 bg-[#141414] flex items-center justify-center">
+          <div className="absolute inset-0 bg-[var(--color-surface-elevated)] flex items-center justify-center">
             <span className="text-gold/20 text-[12rem] font-serif select-none">✦</span>
           </div>
         )}
@@ -64,11 +64,11 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           <p className="text-gold tracking-[0.3em]  text-xs font-medium mb-3">
             Collection
           </p>
-          <h1 className="text-4xl md:text-6xl font-serif text-cream mb-4">
+          <h1 className="text-4xl md:text-6xl font-serif text-[var(--color-foreground)] mb-4">
             {collection.title}
           </h1>
           {collection.description && (
-            <p className="text-cream-dark/80 max-w-2xl text-lg font-light leading-relaxed">
+            <p className="text-[var(--color-cream-dark)]/80 max-w-2xl text-lg font-light leading-relaxed">
               {collection.description}
             </p>
           )}
@@ -91,7 +91,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
             </div>
           ) : (
             <div className="text-center py-20">
-              <p className="text-cream-dark/70 mb-4">This collection is being curated. Check back soon.</p>
+              <p className="text-[var(--color-cream-dark)]/70 mb-4">This collection is being curated. Check back soon.</p>
               <Link href="/jewelry" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
                 Browse All Treasures
               </Link>

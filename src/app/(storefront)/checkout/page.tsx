@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useCartStore } from "@/store/cart";
 import { useUserStore } from "@/store/user";
-import { placeLocalOrder } from "@/lib/local-orders";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRazorpay } from "react-razorpay";
@@ -32,6 +31,7 @@ export default function CheckoutPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [allowCheckout, setAllowCheckout] = useState(false);
   const [razorpayKeyId, setRazorpayKeyId] = useState<string | null>(null);
   const [isKeyLoading, setIsKeyLoading] = useState(true);
   const [keyError, setKeyError] = useState<string | null>(null);
@@ -97,9 +97,11 @@ export default function CheckoutPage() {
   const total = subtotal + shippingCost;
 
   const toggleItem = (id: string) => {
-    setSelectedIds((current) =>
-      current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]
-    );
+    if (selectedIds.includes(id)) {
+      setSelectedIds((current) => current.filter((itemId) => itemId !== id));
+    } else {
+      setSelectedIds((current) => [...current, id]);
+    }
   };
 
   const createCartPayloadItem = (item: (typeof items)[number]) => {
@@ -182,7 +184,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           amount: Math.round(total * 100),
           currency: "INR",
-          receipt: `receipt_${Date.now()}` ,
+          receipt: `receipt_${Date.now()}`,
           notes: {
             customerName: data.fullName,
             customerEmail: user?.email || "",
@@ -232,32 +234,19 @@ export default function CheckoutPage() {
               throw new Error(verifyPayload?.message || verifyPayload?.error || "Payment verification failed.");
             }
 
-            const order = placeLocalOrder({
-              status: "paid",
-              subtotal,
-              shipping: shippingCost,
-              total,
-              customerName: data.fullName,
-              customerEmail: user?.email || "",
-              customerPhone: data.mobileNo,
-              shippingAddress: {
-                fullName: data.fullName,
-                mobileNo: data.mobileNo,
-                addressLine1: data.addressLine1,
-                addressLine2: data.addressLine2 || "",
-                city: data.city,
-                state: data.state,
-                country: data.country,
-                postalCode: data.postalCode,
-              },
-              items: selectedItems.map((item) => ({ ...item })),
-              paymentId: paymentResult.razorpay_payment_id,
-              razorpayOrderId: paymentResult.razorpay_order_id,
-              razorpaySignature: paymentResult.razorpay_signature,
-            });
+            // Prefer server-provided order id from verification response, fall back to checkout payload
+            const serverOrderId =
+              verifyPayload?.orderId ||
+              verifyPayload?.data?.orderId ||
+              verifyPayload?.data?.id ||
+              checkoutPayload?.orderId ||
+              checkoutPayload?.data?.id ||
+              null;
 
+            // If backend didn't return an order id, still clear cart and navigate to success with a generated token
             clearCart();
-            router.push(`/order/success?orderId=${order.id}`);
+            const finalOrderId = serverOrderId ?? `local-${Date.now()}`;
+            router.push(`/order/success?orderId=${finalOrderId}`);
           } catch (verifyError) {
             setError(verifyError instanceof Error ? verifyError.message : "Payment succeeded but verification failed.");
             setIsSubmitting(false);
@@ -284,11 +273,11 @@ export default function CheckoutPage() {
 
   if (items.length === 0 && !isSubmitting) {
     return (
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center max-w-md mx-auto">
-            <h1 className="text-3xl font-serif text-cream mb-4">Nothing to Checkout</h1>
-            <p className="text-cream-dark/70 mb-8">Your cart is empty. Add some beautiful pieces before checking out.</p>
+            <h1 className="text-3xl font-serif text-[var(--color-foreground)] mb-4">Nothing to Checkout</h1>
+            <p className="text-[var(--color-cream-dark)]/70 mb-8">Your cart is empty. Add some beautiful pieces before checking out.</p>
             <Button asChild size="lg" variant="default" className="px-8">
               <Link href="/jewelry">Explore Collection</Link>
             </Button>
@@ -299,11 +288,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-10">
           <p className="text-gold tracking-[0.2em] text-xs font-medium mb-3">Checkout</p>
-          <h1 className="text-3xl font-serif text-cream">Complete Your Order</h1>
+          <h1 className="text-3xl font-serif text-[var(--color-foreground)]">Complete Your Order</h1>
           <p className="max-w-2xl text-sm text-gold-muted mt-2">
             Enter your delivery address and complete your order with secure Razorpay checkout.
           </p>
@@ -311,67 +300,84 @@ export default function CheckoutPage() {
 
         <div className="grid lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-6">
-            <section className="bg-surface rounded-sm p-6 md:p-8 border border-[rgba(201,168,76,0.1)]">
-              <h2 className="text-lg font-serif text-cream mb-6">Delivery Details</h2>
+            <section className="bg-[var(--color-surface-elevated)] rounded-sm p-6 md:p-8 border border-[var(--color-border-subtle)]">
+              <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">Delivery Details</h2>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <label className="flex items-center gap-3 text-sm text-[var(--color-cream-dark)]/80">
+                  <input
+                    type="checkbox"
+                    checked={allowCheckout}
+                    onChange={(e) => setAllowCheckout(e.target.checked)}
+                    className="h-4 w-4 accent-[var(--color-gold)]"
+                    aria-label="Enable checkout"
+                  />
+                  <span>I want to proceed to checkout and complete the payment</span>
+                </label>
+
                 <div className="grid md:grid-cols-2 gap-4">
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>Full name</span>
                     <input
                       {...register("fullName", { required: "Full name is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="John Doe"
                     />
                     {errors.fullName && <span className="text-xs text-red-400">{errors.fullName.message}</span>}
                   </label>
 
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>Mobile Number</span>
                     <input
                       {...register("mobileNo", { required: "Mobile number is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="9876543210"
                     />
                     {errors.mobileNo && <span className="text-xs text-red-400">{errors.mobileNo.message}</span>}
                   </label>
                 </div>
 
-                <label className="space-y-2 block text-sm text-cream-dark/80">
+                <label className="space-y-2 block text-sm text-[var(--color-cream-dark)]/80">
                   <span>Address Line 1</span>
                   <input
                     {...register("addressLine1", { required: "Address line 1 is required" })}
-                    className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                    disabled={!allowCheckout}
+                    className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                     placeholder="123"
                   />
                   {errors.addressLine1 && <span className="text-xs text-red-400">{errors.addressLine1.message}</span>}
                 </label>
 
-                <label className="space-y-2 block text-sm text-cream-dark/80">
+                <label className="space-y-2 block text-sm text-[var(--color-cream-dark)]/80">
                   <span>Address Line 2</span>
                   <input
                     {...register("addressLine2")}
-                    className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                    disabled={!allowCheckout}
+                    className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                     placeholder="Apt 4B"
                   />
                 </label>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>City</span>
                     <input
                       {...register("city", { required: "City is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="Mumbai"
                     />
                     {errors.city && <span className="text-xs text-red-400">{errors.city.message}</span>}
                   </label>
 
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>State</span>
                     <input
                       {...register("state", { required: "State is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="Maharashtra"
                     />
                     {errors.state && <span className="text-xs text-red-400">{errors.state.message}</span>}
@@ -379,21 +385,23 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>Country</span>
                     <input
                       {...register("country", { required: "Country is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="India"
                     />
                     {errors.country && <span className="text-xs text-red-400">{errors.country.message}</span>}
                   </label>
 
-                  <label className="space-y-2 text-sm text-cream-dark/80">
+                  <label className="space-y-2 text-sm text-[var(--color-cream-dark)]/80">
                     <span>Postal Code</span>
                     <input
                       {...register("postalCode", { required: "Postal code is required" })}
-                      className="w-full rounded-md border border-[rgba(201,168,76,0.2)] bg-background px-3 py-2.5 text-cream placeholder:text-cream-dark/40 focus:border-gold focus:outline-none"
+                      disabled={!allowCheckout}
+                      className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
                       placeholder="400001"
                     />
                     {errors.postalCode && <span className="text-xs text-red-400">{errors.postalCode.message}</span>}
@@ -416,15 +424,18 @@ export default function CheckoutPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-surface rounded-sm p-6 lg:sticky lg:top-24 border border-[rgba(201,168,76,0.1)]">
-              <h2 className="text-lg font-serif text-cream mb-6">Items to Pay</h2>
+            <div className="bg-[var(--color-surface-elevated)] rounded-sm p-6 lg:sticky lg:top-24 border border-[var(--color-border-subtle)]">
+              <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">Items to Pay</h2>
 
               <div className="space-y-4 mb-6">
                 {items.map((item) => {
                   const checked = selectedIds.includes(item.id);
 
                   return (
-                    <div key={item.id} className="flex items-start gap-3 rounded-md border border-[rgba(201,168,76,0.1)] bg-background p-3">
+                    <div
+                      key={item.id}
+                      className="flex items-start gap-3 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-3"
+                    >
                       <input
                         type="checkbox"
                         checked={checked}
@@ -433,45 +444,78 @@ export default function CheckoutPage() {
                         aria-label={`Select ${item.title}`}
                       />
 
-                      <div className="w-14 h-16 rounded-sm overflow-hidden bg-background shrink-0 relative border border-[rgba(201,168,76,0.1)]">
+                      <div className="w-14 h-16 rounded-sm overflow-hidden bg-[var(--color-surface)] shrink-0 relative border border-[var(--color-border-subtle)]">
                         {item.image ? (
                           <Image src={item.image} alt={item.title} fill className="object-cover" sizes="56px" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-cream-dark/40 text-[10px]">No Image</div>
+                          <div className="w-full h-full flex items-center justify-center text-[var(--color-cream-dark)]/40 text-[10px]">
+                            No Image
+                          </div>
                         )}
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-cream line-clamp-2">{item.title}</p>
+                        <p className="text-xs font-medium text-[var(--color-foreground)] line-clamp-2">{item.title}</p>
                         <p className="text-xs text-gold-muted">Qty: {item.quantity}</p>
-                        {checked && <p className="mt-1 text-xs text-gold">{formatPrice(item.price * item.quantity)}</p>}
+                        {checked && (
+                          <p className="mt-1 text-xs text-gold">{formatPrice(item.price * item.quantity)}</p>
+                        )}
                       </div>
+
+                      <button
+                        onClick={() => setSelectedIds((prev) => prev.filter((id) => id !== item.id))}
+                        className="text-gold-muted hover:text-red-400 p-1"
+                        aria-label={`Remove ${item.title}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="border-t border-[rgba(201,168,76,0.1)] pt-4 space-y-2 text-sm">
+              <div className="border-t border-[var(--color-border-subtle)] pt-4 space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-cream-dark/70">Selected subtotal</span>
-                  <span className="text-cream">{formatPrice(subtotal)}</span>
+                  <span className="text-[var(--color-cream-dark)]/70">Selected subtotal</span>
+                  <span className="text-[var(--color-foreground)]">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-cream-dark/70">Shipping</span>
-                  <span className={freeShipping ? "text-emerald-400" : "text-cream"}>{freeShipping ? "Free" : formatPrice(shippingCost)}</span>
+                  <span className="text-[var(--color-cream-dark)]/70">Shipping</span>
+                  <span className={freeShipping ? "text-emerald-400" : "text-[var(--color-foreground)]"}>
+                    {freeShipping ? "Free" : formatPrice(shippingCost)}
+                  </span>
                 </div>
-                {!freeShipping && selectedItems.length > 0 && <p className="text-xs text-gold-muted">Add {formatPrice(25000 - subtotal)} more for free shipping</p>}
+                {!freeShipping && selectedItems.length > 0 && (
+                  <p className="text-xs text-[var(--color-gold-muted)]">Add {formatPrice(25000 - subtotal)} more for free shipping</p>
+                )}
               </div>
 
               <div className="flex justify-between text-base font-semibold mt-6 mb-4">
-                <span className="text-cream">Total</span>
-                <span className="text-cream">{formatPrice(total)}</span>
+                <span className="text-[var(--color-foreground)]">Total</span>
+                <span className="text-[var(--color-foreground)]">{formatPrice(total)}</span>
               </div>
 
               {error && <p className="text-red-400 text-xs mb-4 bg-red-400/10 px-3 py-2 rounded-sm">{error}</p>}
 
               <p className="text-xs text-gold-muted text-center mt-4">
-                {razorpayError ? `Razorpay failed to load: ${razorpayError}` : razorpayIsLoading ? "Loading Razorpay checkout..." : "Payments are processed securely through Razorpay."}
+                {razorpayError
+                  ? `Razorpay failed to load: ${razorpayError}`
+                  : razorpayIsLoading
+                  ? "Loading Razorpay checkout..."
+                  : "Payments are processed securely through Razorpay."}
               </p>
             </div>
           </div>
