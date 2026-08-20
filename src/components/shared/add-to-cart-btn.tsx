@@ -13,10 +13,11 @@ interface AddToCartBtnProps {
   price: number;
   image?: string;
   quantity?: number;
-  variant?: "default" | "outline";
+  variant?: "default" | "outline" | "gold-foil";
   size?: "default" | "sm" | "lg";
   className?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export function AddToCartBtn({
@@ -30,6 +31,7 @@ export function AddToCartBtn({
   size = "default",
   className,
   children,
+  disabled = false,
 }: AddToCartBtnProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
@@ -62,7 +64,7 @@ export function AddToCartBtn({
         size={size}
         className={className}
         onClick={handleAddToCart}
-        disabled={isAdding}
+        disabled={isAdding || disabled}
       >
         <motion.span
           key={isAdded ? "added" : "default"}

@@ -46,15 +46,15 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-neutral-500 uppercase tracking-wider mb-1.5">Name</label>
+            <label className="block text-xs text-neutral-500  tracking-wider mb-1.5">Name</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-11 px-3 border border-neutral-300 rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C] focus:ring-offset-2" />
           </div>
           <div>
-            <label className="block text-xs text-neutral-500 uppercase tracking-wider mb-1.5">Email</label>
+            <label className="block text-xs text-neutral-500  tracking-wider mb-1.5">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-11 px-3 border border-neutral-300 rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C] focus:ring-offset-2" required />
           </div>
           <div>
-            <label className="block text-xs text-neutral-500 uppercase tracking-wider mb-1.5">Password</label>
+            <label className="block text-xs text-neutral-500  tracking-wider mb-1.5">Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full h-11 px-3 border border-neutral-300 rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C] focus:ring-offset-2" required minLength={6} />
           </div>
 

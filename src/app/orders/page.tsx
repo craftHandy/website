@@ -22,7 +22,7 @@ export default function OrdersPage() {
     <main className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="mb-10">
-          <p className="text-[#C9A84C] tracking-[0.2em] uppercase text-xs font-medium mb-3">
+          <p className="text-[#C9A84C] tracking-[0.2em]  text-xs font-medium mb-3">
             Your Account
           </p>
           <h1 className="text-3xl font-serif text-neutral-900">My Orders</h1>

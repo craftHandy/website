@@ -14,6 +14,7 @@ const buttonVariants = cva(
         secondary: "bg-[#141414] text-cream border border-[rgba(201,168,76,0.15)] hover:border-gold/40 hover:bg-[#1a1a1a]",
         ghost: "text-cream-dark hover:bg-[rgba(201,168,76,0.08)] hover:text-gold",
         link: "text-gold underline-offset-4 hover:underline hover:text-gold-light",
+        "gold-foil": "gold-foil-btn text-[#261900] hover:bg-[position:100%_0] active:scale-[0.98] transition-all",
       },
       size: {
         default: "h-10 px-4 py-2",

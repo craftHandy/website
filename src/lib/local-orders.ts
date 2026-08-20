@@ -47,10 +47,10 @@ export function getLocalOrders(): LocalOrder[] {
 }
 
 export function placeLocalOrder(order: Omit<LocalOrder, "id" | "createdAt">): LocalOrder {
-  const id = `ORD-${Date.now().toString(36).toUpperCase()}${Math.random()
+  const id = `ORD-${Date.now().toString(36).to()}${Math.random()
     .toString(36)
     .slice(2, 6)
-    .toUpperCase()}`;
+    .to()}`;
   const full: LocalOrder = {
     ...order,
     id,

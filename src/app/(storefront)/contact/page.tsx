@@ -47,7 +47,7 @@ export default function ContactPage() {
       <section className="relative bg-[#0a0a0a] py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]/30 pointer-events-none" />
         <FadeIn className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-4">
+          <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-4">
             Get in Touch
           </p>
           <h1 className="text-4xl md:text-6xl font-serif text-cream mb-5 leading-tight">
@@ -70,7 +70,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Name
                 </label>
@@ -87,7 +87,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Email
                 </label>
@@ -104,7 +104,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="subject"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Subject
                 </label>
@@ -121,7 +121,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Message
                 </label>
@@ -149,7 +149,7 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <MapPin size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-cream mb-1.5">
                   Visit Our Studio
                 </h3>
                 <p className="text-cream-dark/70 text-sm leading-relaxed">
@@ -165,7 +165,7 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Mail size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-cream mb-1.5">
                   Email
                 </h3>
                 <a
@@ -180,7 +180,7 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Phone size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-cream mb-1.5">
                   Phone
                 </h3>
                 <a
@@ -195,7 +195,7 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Clock size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-cream mb-1.5">
                   Business Hours
                 </h3>
                 <p className="text-cream-dark/70 text-sm leading-relaxed">
@@ -208,7 +208,7 @@ export default function ContactPage() {
 
             {/* Social */}
             <div className="pt-4 border-t border-[rgba(201,168,76,0.1)]">
-              <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-4">
+              <h3 className="text-sm font-medium tracking-wider  text-cream mb-4">
                 Follow Us
               </h3>
               <div className="flex gap-4">
@@ -258,7 +258,7 @@ export default function ContactPage() {
       {/* FAQ */}
       <section className="bg-[#0a0a0a] py-20 md:py-28">
         <FadeIn className="max-w-3xl mx-auto px-6">
-          <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+          <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
             Have Questions?
           </p>
           <h2 className="text-3xl md:text-4xl font-serif text-cream mb-12 text-center">

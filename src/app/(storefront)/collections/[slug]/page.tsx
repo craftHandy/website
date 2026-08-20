@@ -61,7 +61,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           </div>
         )}
         <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-12">
-          <p className="text-gold tracking-[0.3em] uppercase text-xs font-medium mb-3">
+          <p className="text-gold tracking-[0.3em]  text-xs font-medium mb-3">
             Collection
           </p>
           <h1 className="text-4xl md:text-6xl font-serif text-cream mb-4">

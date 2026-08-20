@@ -4,20 +4,27 @@ export interface Product {
   slug: string;
   price: number;
   discountPrice?: number;
+  discountPercentage?: number;
   description?: string;
   materials: string[];
   craftType?: string;
   origin?: string;
   occasion: string[];
+  occasions?: string[];
   images: { url: string; alt?: string }[];
   stockStatus: string;
+  stockQuantity?: number;
   featured: boolean;
+  height?: number | string;
+  width?: number | string;
+  weight?: number | string;
   seo?: {
     title?: string;
     description?: string;
     ogImage?: string;
   } | null;
   categoryId?: string | null;
+  categoryName?: string | null;
   category?: Category | null;
   collectionId?: string | null;
   collection?: Collection | null;

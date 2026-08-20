@@ -68,14 +68,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="mb-8">
               <Link
                 href="/blogs"
-                className="text-gold text-xs tracking-[0.2em] uppercase font-medium hover:text-gold-light transition-colors"
+                className="text-gold text-xs tracking-[0.2em]  font-medium hover:text-gold-light transition-colors"
               >
                 ← Back to Blogs
               </Link>
             </div>
 
             <header className="mb-10">
-              <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-4">
+              <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-4">
                 Featured Article
               </p>
               <h1 className="text-3xl md:text-5xl font-serif text-cream mb-6 leading-tight">
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.tags.map((tag: string) => (
                     <span
                       key={tag}
-                      className="text-xs uppercase tracking-[0.2em] bg-[#0a0a0a] border border-[rgba(201,168,76,0.15)] text-gold px-3 py-1 rounded-full"
+                      className="text-xs  tracking-[0.2em] bg-[#0a0a0a] border border-[rgba(201,168,76,0.15)] text-gold px-3 py-1 rounded-full"
                     >
                       {tag}
                     </span>
@@ -148,7 +148,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-gold-muted text-sm mb-4">Continue exploring</p>
             <Link
               href="/blogs"
-              className="text-gold tracking-wider uppercase text-sm font-medium hover:text-gold-light transition-colors"
+              className="text-gold tracking-wider  text-sm font-medium hover:text-gold-light transition-colors"
             >
               More Blogs →
             </Link>

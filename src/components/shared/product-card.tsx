@@ -23,7 +23,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
-      <Link href={`/jewelry/${product.slug}`} className="group block">
+      <Link href={`/product/${product.id}`} className="group block">
         <div className="relative aspect-[3/4] overflow-hidden bg-[#141414] rounded-sm mb-4 border border-[rgba(201,168,76,0.08)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
           {product.images?.[0]?.url ? (
             <Image
@@ -52,7 +52,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
         <div className="space-y-1.5">
           {product.category && (
-            <p className="text-[10px] tracking-widest uppercase text-gold font-medium">
+            <p className="text-[10px] tracking-widest  text-gold font-medium">
               {product.category.title}
             </p>
           )}

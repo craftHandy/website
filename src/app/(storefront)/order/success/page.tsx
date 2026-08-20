@@ -22,7 +22,7 @@ export default function OrderSuccessPage() {
           </svg>
         </div>
 
-        <p className="text-gold tracking-[0.3em] uppercase text-xs font-medium mb-4">
+        <p className="text-gold tracking-[0.3em]  text-xs font-medium mb-4">
           Order Confirmed
         </p>
         <h1 className="text-3xl md:text-4xl font-serif text-cream mb-4">

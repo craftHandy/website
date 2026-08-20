@@ -9,7 +9,7 @@ export default function SizeGuidePage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a]">
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+        <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Size Guide
         </p>
         <h1 className="text-3xl md:text-4xl font-serif text-cream mb-8">
@@ -26,10 +26,10 @@ export default function SizeGuidePage() {
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-[rgba(201,168,76,0.2)] bg-[#141414]">
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Size</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Circumference (mm)</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Diameter (mm)</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">US Size</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Size</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Circumference (mm)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Diameter (mm)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">US Size</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(201,168,76,0.1)]">
@@ -58,10 +58,10 @@ export default function SizeGuidePage() {
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-[rgba(201,168,76,0.2)] bg-[#141414]">
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Style</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Length (inches)</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Length (cm)</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Sits At</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Style</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Length (inches)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Length (cm)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Sits At</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(201,168,76,0.1)]">
@@ -93,9 +93,9 @@ export default function SizeGuidePage() {
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-[rgba(201,168,76,0.2)] bg-[#141414]">
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Size</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Inner Diameter (mm)</th>
-                    <th className="px-4 py-3 text-left text-xs tracking-wider uppercase text-gold-muted">Hand Circumference (mm)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Size</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Inner Diameter (mm)</th>
+                    <th className="px-4 py-3 text-left text-xs tracking-wider  text-gold-muted">Hand Circumference (mm)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[rgba(201,168,76,0.1)]">

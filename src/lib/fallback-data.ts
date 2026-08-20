@@ -2,6 +2,7 @@ import type { Product, Category, Collection, BlogPost } from "@/types";
 
 export interface HeroSlide {
   id: string;
+  eyebrow?: string;
   title: string;
   subtitle?: string;
   ctaText?: string;

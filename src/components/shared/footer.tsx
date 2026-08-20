@@ -1,15 +1,8 @@
 import Link from "next/link";
 import { Instagram, Facebook, Twitter, Mail } from "lucide-react";
+import { getCategories } from "@/lib/api";
 
 const FOOTER_LINKS = {
-  jewelry: [
-    { label: "Temple Jewelry", href: "/jewelry?category=temple-jewelry" },
-    { label: "Kundan Jewelry", href: "/jewelry?category=kundan-jewelry" },
-    { label: "Jadau Jewelry", href: "/jewelry?category=jadau-jewelry" },
-    { label: "Silver Jewelry", href: "/jewelry?category=silver-jewelry" },
-    { label: "Brass Jewelry", href: "/jewelry?category=brass-jewelry" },
-    { label: "Gemstone Jewelry", href: "/jewelry?category=gemstone-jewelry" },
-  ],
   about: [
     { label: "About Us", href: "/about" },
     { label: "Our Blog", href: "/blogs" },
@@ -24,7 +17,9 @@ const FOOTER_LINKS = {
   ],
 };
 
-export function Footer() {
+export default async function Footer() {
+  const categories = await getCategories();
+
   return (
     <footer className="bg-[var(--color-background)] text-[var(--color-foreground)] border-t border-[var(--color-border-subtle)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -43,12 +38,12 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs tracking-widest uppercase text-[var(--color-gold)] mb-4 font-medium">Jewelry</h4>
+            <h4 className="text-xs tracking-widest  text-[var(--color-gold)] mb-4 font-medium">Categories</h4>
             <ul className="space-y-2">
-              {FOOTER_LINKS.jewelry.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-[var(--color-cream-dark)] hover:text-[var(--color-gold)] transition-colors">
-                    {link.label}
+              {categories.map((cat) => (
+                <li key={cat.id}>
+                  <Link href={`/jewelry?category=${cat.slug}`} className="text-sm text-[var(--color-cream-dark)] hover:text-[var(--color-gold)] transition-colors">
+                    {cat.title}
                   </Link>
                 </li>
               ))}
@@ -56,7 +51,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs tracking-widest uppercase text-[var(--color-gold)] mb-4 font-medium">About</h4>
+            <h4 className="text-xs tracking-widest  text-[var(--color-gold)] mb-4 font-medium">About</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.about.map((link) => (
                 <li key={link.href}>
@@ -69,23 +64,8 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs tracking-widest uppercase text-[var(--color-gold)] mb-4 font-medium">Newsletter</h4>
-            <p className="text-sm mb-4 text-[var(--color-cream-dark)]">Subscribe for exclusive collections and craft stories.</p>
-            <form className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm px-3 py-2 text-sm text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none focus:border-[var(--color-gold)]"
-              />
-              <button
-                type="submit"
-                className="bg-[var(--color-gold)] text-[#0a0a0a] px-4 py-2 rounded-sm text-sm font-medium hover:bg-[var(--color-gold-dark)] transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
 
-            <h4 className="text-xs tracking-widest uppercase text-[var(--color-gold)] mt-8 mb-4 font-medium">Support</h4>
+            <h4 className="text-xs tracking-widest  text-[var(--color-gold)] mb-4 font-medium">Support</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.support.map((link) => (
                 <li key={link.href}>

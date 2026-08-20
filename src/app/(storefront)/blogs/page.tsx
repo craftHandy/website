@@ -30,7 +30,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
         <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-end">
             <div>
-              <p className="text-gold tracking-[0.28em] uppercase text-xs font-medium mb-4">
+              <p className="text-gold tracking-[0.28em]  text-xs font-medium mb-4">
                 Ratnagiri Journal
               </p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-cream mb-5 leading-tight">
@@ -41,7 +41,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
               </p>
             </div>
             <div className="rounded-sm border border-[rgba(201,168,76,0.16)] bg-[#141414]/90 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
-              <p className="text-xs uppercase tracking-[0.25em] text-gold mb-3">Fresh from the studio</p>
+              <p className="text-xs  tracking-[0.25em] text-gold mb-3">Fresh from the studio</p>
               <p className="text-xl font-serif text-cream">Thoughtful narratives, timeless craftsmanship, and cultural depth.</p>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                 )}
               </div>
               <div>
-                <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-3">
+                <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
                   Featured Story
                 </p>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-cream mb-4 group-hover:text-gold transition-colors leading-tight">
@@ -98,7 +98,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                 {featuredPost.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-5">
                     {featuredPost.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="text-xs uppercase tracking-[0.2em] border border-[rgba(201,168,76,0.16)] text-gold px-3 py-1 rounded-full">
+                      <span key={tag} className="text-xs  tracking-[0.2em] border border-[rgba(201,168,76,0.16)] text-gold px-3 py-1 rounded-full">
                         {tag}
                       </span>
                     ))}

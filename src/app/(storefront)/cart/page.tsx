@@ -41,7 +41,7 @@ export default function CartPage() {
       <main className="min-h-screen bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center max-w-md mx-auto">
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
               Your Cart
             </p>
             <h1 className="text-3xl font-serif text-cream mb-4">
@@ -63,7 +63,7 @@ export default function CartPage() {
     <main className="min-h-screen bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-10">
-          <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+          <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
             Your Cart
           </p>
           <h1 className="text-3xl font-serif text-cream">
@@ -73,7 +73,7 @@ export default function CartPage() {
 
         <div className="grid lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-1">
-            <div className="hidden md:grid grid-cols-[1fr_1fr_auto_auto] gap-6 px-4 pb-3 text-xs tracking-[0.15em] uppercase text-gold-muted border-b border-[rgba(201,168,76,0.1)]">
+            <div className="hidden md:grid grid-cols-[1fr_1fr_auto_auto] gap-6 px-4 pb-3 text-xs tracking-[0.15em]  text-gold-muted border-b border-[rgba(201,168,76,0.1)]">
               <span>Item</span>
               <span>Price</span>
               <span className="text-center w-28">Quantity</span>
@@ -158,11 +158,11 @@ export default function CartPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearCart}
-                className="text-gold-muted hover:text-red-400 text-xs tracking-wider uppercase"
+                className="text-gold-muted hover:text-red-400 text-xs tracking-wider "
               >
                 Clear Cart
               </Button>
-              <Link href="/jewelry" className="text-xs text-gold tracking-wider uppercase hover:underline">
+              <Link href="/jewelry" className="text-xs text-gold tracking-wider  hover:underline">
                 Continue Shopping
               </Link>
             </div>

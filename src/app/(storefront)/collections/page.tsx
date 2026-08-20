@@ -17,7 +17,7 @@ export default async function CollectionsPage() {
     <main className="min-h-screen bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-16">
-          <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-3">
+          <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
             Curated Worlds
           </p>
           <h1 className="text-3xl md:text-5xl font-serif text-cream mb-4">
@@ -56,7 +56,7 @@ export default async function CollectionsPage() {
                         {collection.description}
                       </p>
                     )}
-                    <span className="inline-block mt-4 text-gold text-sm tracking-wider uppercase group-hover:tracking-[0.25em] transition-all duration-300">
+                    <span className="inline-block mt-4 text-gold text-sm tracking-wider  group-hover:tracking-[0.25em] transition-all duration-300">
                       View Collection →
                     </span>
                   </div>

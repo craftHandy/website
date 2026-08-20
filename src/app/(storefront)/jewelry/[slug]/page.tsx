@@ -109,7 +109,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="flex flex-col">
               <div className="mb-6">
                 {product.category && (
-                  <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-2">
+                  <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-2">
                     {product.category.title}
                   </p>
                 )}
@@ -157,7 +157,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               {product.occasion && product.occasion.length > 0 && (
                 <div className="mb-6">
-                  <p className="text-xs tracking-[0.2em] uppercase font-medium text-cream mb-2">
+                  <p className="text-xs tracking-[0.2em]  font-medium text-cream mb-2">
                     Perfect For
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -261,7 +261,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {relatedProducts.length > 0 && (
             <section className="mt-20 pt-16 border-t border-[rgba(201,168,76,0.1)]">
-              <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-3">
+              <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
                 You May Also Love
               </p>
               <h2 className="text-2xl md:text-3xl font-serif text-cream mb-8">

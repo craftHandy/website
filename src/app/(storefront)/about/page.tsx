@@ -92,7 +92,7 @@ export default function AboutPage() {
         />
         <div className="relative max-w-5xl mx-auto px-6 py-28 md:py-40 text-center">
           <FadeIn delay={0.1}>
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-4">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-4">
               Since 1987
             </p>
           </FadeIn>
@@ -116,7 +116,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6">
           <StaggerContainer>
             <StaggerItem>
-              <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+              <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
                 Our Heritage
               </p>
             </StaggerItem>
@@ -173,7 +173,7 @@ export default function AboutPage() {
       <section className="bg-[#0a0a0a] py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
               What We Stand For
             </p>
           </FadeIn>
@@ -206,7 +206,7 @@ export default function AboutPage() {
       <section className="bg-[#0a0a0a] py-20 md:py-28 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
               From Vision to Creation
             </p>
           </FadeIn>
@@ -241,7 +241,7 @@ export default function AboutPage() {
       <section className="bg-[#0a0a0a] py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
               The Hands Behind the Art
             </p>
           </FadeIn>
@@ -259,7 +259,7 @@ export default function AboutPage() {
                     <Sparkles className="w-6 h-6 text-gold" />
                   </div>
                   <h3 className="text-lg font-serif text-cream mb-1">{artisan.name}</h3>
-                  <p className="text-gold text-xs tracking-[0.15em] uppercase font-medium mb-4">
+                  <p className="text-gold text-xs tracking-[0.15em]  font-medium mb-4">
                     {artisan.role}
                   </p>
                   <p className="text-cream-dark/70 text-sm leading-relaxed">{artisan.description}</p>
@@ -274,7 +274,7 @@ export default function AboutPage() {
       <section className="bg-[#0a0a0a] py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <FadeIn>
-            <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+            <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
               Begin Your Journey
             </p>
           </FadeIn>
@@ -292,7 +292,7 @@ export default function AboutPage() {
           </FadeIn>
           <FadeIn delay={0.3}>
             <Button asChild size="lg" variant="default">
-              <Link href="/jewelry" className="px-10 py-3.5 text-sm tracking-[0.15em] uppercase">Explore Jewelry</Link>
+              <Link href="/jewelry" className="px-10 py-3.5 text-sm tracking-[0.15em] ">Explore Jewelry</Link>
             </Button>
           </FadeIn>
         </div>

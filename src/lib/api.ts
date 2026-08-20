@@ -3,7 +3,6 @@ import {
   FALLBACK_PRODUCTS,
   FALLBACK_CATEGORIES,
   FALLBACK_COLLECTIONS,
-  FALLBACK_HERO_SLIDES,
   FALLBACK_SETTINGS,
   FALLBACK_PAGES,
   fallbackSettingsRecord,
@@ -35,6 +34,26 @@ export interface ProductQuery {
   limit?: number;
   page?: number;
   pageSize?: number;
+}
+
+export interface ProductListQuery {
+  page?: number;
+  size?: number;
+  search?: string;
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: "id" | "price" | "title";
+  direction?: "asc" | "desc";
+}
+
+export interface ProductListResult {
+  products: Product[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
 }
 
 export interface BlogPostsResult {
@@ -119,12 +138,13 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       .filter((slide: any) => slide?.active !== false)
       .map((slide: any, index: number) => ({
         id: slide?.id?.toString() ?? `hero-${index + 1}`,
-        title: slide?.title || FALLBACK_HERO_SLIDES[index]?.title || "Featured Collection",
+        eyebrow: slide?.eyebrow || slide?.overline || slide?.kicker || undefined,
+        title: slide?.title || "Featured Collection",
         subtitle: slide?.subtitle || slide?.description || undefined,
         ctaText: slide?.ctaText || slide?.buttonText || undefined,
         ctaLink: slide?.ctaLink || slide?.buttonLink || "/jewelry",
         image: slide?.backgroundImageUrl || slide?.image || slide?.backgroundImage || undefined,
-        order: index + 1,
+        order: typeof slide?.order === "number" ? slide.order : index + 1,
         active: slide?.active !== false,
       }));
 
@@ -247,12 +267,25 @@ function mapApiProducts(rawProducts: any[]): Product[] {
         slug: product.slug || `product-${product.id}`,
         price,
         discountPrice: discountPercentage > 0 ? price * (1 - discountPercentage / 100) : undefined,
-        materials: [],
-        occasion: [],
+        discountPercentage,
+        materials: Array.isArray(product.materials)
+          ? product.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
+          : [],
+        occasion: Array.isArray(product.occasions)
+          ? product.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+          : [],
+        occasions: Array.isArray(product.occasions)
+          ? product.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+          : [],
         images: product.imageUrl ? [{ url: product.imageUrl, alt: product.title }] : [],
         stockStatus: product.stockStatus || "IN_STOCK",
+        stockQuantity: product.stockQuantity != null ? Number(product.stockQuantity) : undefined,
         featured: product.featured === true,
+        height: product.height != null ? product.height : undefined,
+        width: product.width != null ? product.width : undefined,
+        weight: product.weight != null ? product.weight : undefined,
         categoryId: product.categoryId != null ? String(product.categoryId) : null,
+        categoryName: product.categoryName ? String(product.categoryName) : null,
         category: product.categoryName
           ? {
               id: product.categoryId != null ? String(product.categoryId) : `category-${index}`,
@@ -263,6 +296,106 @@ function mapApiProducts(rawProducts: any[]): Product[] {
         createdAt: product.createdAt || "1970-01-01T00:00:00.000Z",
       };
     });
+}
+
+function mapApiProduct(product: any): Product | null {
+  return mapApiProducts(product ? [product] : [])[0] ?? null;
+}
+
+/** Fetches the paginated product catalogue from the storefront API. */
+export async function getProductList(query: ProductListQuery = {}): Promise<ProductListResult> {
+  const params = new URLSearchParams({
+    page: String(Math.max(0, query.page ?? 0)),
+    size: String(Math.max(1, query.size ?? 12)),
+    sortBy: query.sortBy ?? "id",
+    direction: query.direction ?? "desc",
+  });
+
+  if (query.search) params.set("search", query.search);
+  if (query.categoryId) params.set("categoryId", query.categoryId);
+  if (query.minPrice != null) params.set("minPrice", String(query.minPrice));
+  if (query.maxPrice != null) params.set("maxPrice", String(query.maxPrice));
+
+  try {
+    const response = await fetch(`${PRODUCTS_ENDPOINT}?${params}`, { next: { revalidate: 30 } });
+    if (!response.ok) throw new Error(`Product list request failed: ${response.status}`);
+
+    const payload = await response.json();
+    const data = payload?.data ?? {};
+    const products = mapApiProducts(Array.isArray(data.content) ? data.content : []);
+    return {
+      products,
+      page: typeof data.page === "number" ? data.page : query.page ?? 0,
+      size: typeof data.size === "number" ? data.size : query.size ?? 12,
+      totalElements: typeof data.totalElements === "number" ? data.totalElements : products.length,
+      totalPages: typeof data.totalPages === "number" ? data.totalPages : products.length ? 1 : 0,
+      last: typeof data.last === "boolean" ? data.last : true,
+    };
+  } catch (error) {
+    console.warn("Product list request failed.", error);
+    return { products: [], page: query.page ?? 0, size: query.size ?? 12, totalElements: 0, totalPages: 0, last: true };
+  }
+}
+
+/** Fetches a single product by its API id. */
+export async function getProductById(id: string): Promise<Product | null> {
+  try {
+    const response = await fetch(`${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`, {
+      next: { revalidate: 30 },
+    });
+    if (!response.ok) return null;
+
+    const payload = await response.json();
+    const raw = payload?.data;
+    const product = mapApiProduct(raw);
+    if (!product) return null;
+
+    const occasions = Array.isArray(raw.occasions)
+      ? raw.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+      : Array.isArray(raw.occasion)
+        ? raw.occasion.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+        : [];
+
+    const materials = Array.isArray(raw.materials)
+      ? raw.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
+      : [];
+
+    return {
+      ...product,
+      title: raw.title || product.title,
+      slug: raw.slug || product.slug,
+      price: Number(raw.price) || product.price,
+      discountPercentage: Number(raw.discountPercentage) || product.discountPercentage || 0,
+      discountPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountPrice,
+      description: raw.description || product.description || undefined,
+      materials,
+      occasion: occasions,
+      occasions,
+      craftType: raw.craftType || product.craftType || undefined,
+      origin: raw.origin || product.origin || undefined,
+      stockStatus: raw.stockStatus || product.stockStatus || "IN_STOCK",
+      stockQuantity: raw.stockQuantity != null ? Number(raw.stockQuantity) : product.stockQuantity,
+      featured: raw.featured === true || product.featured,
+      height: raw.height != null ? raw.height : product.height,
+      width: raw.width != null ? raw.width : product.width,
+      weight: raw.weight != null ? raw.weight : product.weight,
+      categoryId: raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? null,
+      categoryName: raw.categoryName ? String(raw.categoryName) : product.categoryName ?? null,
+      category: raw.categoryName
+        ? {
+            id: raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? "category-unknown",
+            title: String(raw.categoryName),
+            slug: toCategorySlug(String(raw.categoryName), raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? "category-unknown"),
+          }
+        : product.category ?? null,
+      images: Array.isArray(raw.images)
+        ? raw.images.map((image: any) => ({ url: image?.url || image?.imageUrl || image?.file, alt: image?.alt || raw.title || product.title })).filter((image: any) => image.url)
+        : product.images,
+    };
+  } catch (error) {
+    console.warn("Product detail request failed.", error);
+    return null;
+  }
 }
 
 export async function getFeaturedProducts(limit = 6): Promise<Product[]> {

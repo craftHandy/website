@@ -9,7 +9,7 @@ export default function TermsPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0a]">
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+        <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Legal
         </p>
         <h1 className="text-3xl md:text-4xl font-serif text-cream mb-8">
