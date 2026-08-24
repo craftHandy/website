@@ -43,10 +43,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const hasHtmlContent = post.content ? /<[^>]+>/.test(post.content) : false;
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-cream">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       <article>
-        <div className="relative h-[50vh] min-h-[420px] overflow-hidden bg-[#0a0a0a]">
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/30 to-transparent z-[1]" />
+        <div className="relative h-[50vh] min-h-[420px] overflow-hidden bg-[var(--color-background)]">
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/30 to-transparent z-[1]" />
           {post.coverImage ? (
             <Image
               src={post.coverImage}
@@ -57,33 +57,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               sizes="100vw"
             />
           ) : (
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(201,168,76,0.2),_transparent_45%),#141414] flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(201,168,76,0.2),_transparent_45%),var(--color-surface-elevated)] flex items-center justify-center">
               <span className="text-gold/20 text-[12rem] font-serif select-none">✦</span>
             </div>
           )}
         </div>
 
         <div className="max-w-4xl mx-auto px-6 -mt-24 relative z-10 pb-16">
-          <div className="bg-[#141414] border border-[rgba(201,168,76,0.1)] rounded-sm p-8 md:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+          <div className="bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm p-8 md:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
             <div className="mb-8">
               <Link
-                href="/blogs"
-                className="text-gold text-xs tracking-[0.2em] uppercase font-medium hover:text-gold-light transition-colors"
+                href="/stories"
+                className="text-gold text-xs tracking-[0.2em]  font-medium hover:text-gold-light transition-colors"
               >
                 ← Back to Blogs
               </Link>
             </div>
 
             <header className="mb-10">
-              <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-4">
+              <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-4">
                 Featured Article
               </p>
-              <h1 className="text-3xl md:text-5xl font-serif text-cream mb-6 leading-tight">
+              <h1 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-6 leading-tight">
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gold-muted">
                 {post.author && (
-                  <span className="font-medium text-cream-dark">{post.author}</span>
+                  <span className="font-medium text-[var(--color-cream-dark)]">{post.author}</span>
                 )}
                 {post.publishedAt && (
                   <>
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {post.tags.map((tag: string) => (
                     <span
                       key={tag}
-                      className="text-xs uppercase tracking-[0.2em] bg-[#0a0a0a] border border-[rgba(201,168,76,0.15)] text-gold px-3 py-1 rounded-full"
+                      className="text-xs  tracking-[0.2em] bg-[var(--color-background)] border border-[var(--color-border-subtle)] text-gold px-3 py-1 rounded-full"
                     >
                       {tag}
                     </span>
@@ -113,12 +113,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </header>
 
             {post.excerpt && (
-              <p className="text-lg text-cream-dark/90 font-light leading-relaxed mb-10 border-l-2 border-gold pl-6 italic">
+              <p className="text-lg text-[var(--color-cream-dark)]/90 font-light leading-relaxed mb-10 border-l-2 border-gold pl-6 italic">
                 {post.excerpt}
               </p>
             )}
 
-            <div className="text-cream-dark/80 leading-relaxed space-y-6">
+            <div className="text-[var(--color-cream-dark)]/80 leading-relaxed space-y-6">
               {post.content ? (
                 hasHtmlContent ? (
                   <div dangerouslySetInnerHTML={{ __html: post.content }} className="space-y-6" />
@@ -127,10 +127,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     const trimmed = paragraph.trim();
                     if (!trimmed) return null;
                     if (trimmed.startsWith("## ")) {
-                      return <h2 key={index} className="text-2xl font-serif text-cream mt-10 mb-4">{trimmed.replace("## ", "")}</h2>;
+                      return <h2 key={index} className="text-2xl font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("## ", "")}</h2>;
                     }
                     if (trimmed.startsWith("### ")) {
-                      return <h3 key={index} className="text-xl font-serif text-cream mt-8 mb-3">{trimmed.replace("### ", "")}</h3>;
+                      return <h3 key={index} className="text-xl font-serif text-[var(--color-foreground)] mt-8 mb-3">{trimmed.replace("### ", "")}</h3>;
                     }
                     if (trimmed.startsWith("> ")) {
                       return <blockquote key={index} className="border-l-2 border-gold pl-6 italic text-gold-muted my-6">{trimmed.replace("> ", "")}</blockquote>;
@@ -148,7 +148,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-gold-muted text-sm mb-4">Continue exploring</p>
             <Link
               href="/blogs"
-              className="text-gold tracking-wider uppercase text-sm font-medium hover:text-gold-light transition-colors"
+              className="text-gold tracking-wider  text-sm font-medium hover:text-gold-light transition-colors"
             >
               More Blogs →
             </Link>

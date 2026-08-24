@@ -82,7 +82,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="min-h-screen bg-[#0a0a0a]">
+      <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <nav className="text-sm text-gold-muted mb-8 flex items-center gap-2">
             <Link href="/" className="hover:text-gold transition-colors">Home</Link>
@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </>
             )}
             <span className="text-gold/30">/</span>
-            <span className="text-cream">{product.title}</span>
+            <span className="text-[var(--color-foreground)]">{product.title}</span>
           </nav>
 
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
@@ -109,18 +109,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="flex flex-col">
               <div className="mb-6">
                 {product.category && (
-                  <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-2">
+                  <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-2">
                     {product.category.title}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-cream mb-4">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[var(--color-foreground)] mb-4">
                   {product.title}
                 </h1>
                 {product.craftType && (
                   <p className="text-sm text-gold-muted mb-4">{product.craftType}</p>
                 )}
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl md:text-3xl font-semibold text-cream">
+                  <span className="text-2xl md:text-3xl font-semibold text-[var(--color-foreground)]">
                     {formatPrice(currentPrice)}
                   </span>
                   {hasDiscount && (
@@ -157,12 +157,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
               {product.occasion && product.occasion.length > 0 && (
                 <div className="mb-6">
-                  <p className="text-xs tracking-[0.2em] uppercase font-medium text-cream mb-2">
+                  <p className="text-xs tracking-[0.2em]  font-medium text-[var(--color-foreground)] mb-2">
                     Perfect For
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {product.occasion.map((occ: string) => (
-                      <span key={occ} className="text-xs bg-[#141414] border border-[rgba(201,168,76,0.15)] text-cream-dark px-3 py-1 rounded-sm">
+                      <span key={occ} className="text-xs bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] text-[var(--color-cream-dark)] px-3 py-1 rounded-sm">
                         {occ}
                       </span>
                     ))}
@@ -171,7 +171,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               )}
 
               <Tabs defaultValue="description" className="mt-2">
-                <TabsList className="bg-[#141414] border border-[rgba(201,168,76,0.12)]">
+                <TabsList className="bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)]">
                   <TabsTrigger value="description">Description</TabsTrigger>
                   <TabsTrigger value="craft">Craft Story</TabsTrigger>
                   <TabsTrigger value="materials">Materials & Origin</TabsTrigger>
@@ -261,10 +261,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {relatedProducts.length > 0 && (
             <section className="mt-20 pt-16 border-t border-[rgba(201,168,76,0.1)]">
-              <p className="text-gold tracking-[0.25em] uppercase text-xs font-medium mb-3">
+              <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
                 You May Also Love
               </p>
-              <h2 className="text-2xl md:text-3xl font-serif text-cream mb-8">
+              <h2 className="text-2xl md:text-3xl font-serif text-[var(--color-foreground)] mb-8">
                 Related Pieces
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

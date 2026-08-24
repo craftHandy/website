@@ -28,7 +28,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" suppressHydrationWarning className="h-full antialiased">
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (() => {
+              try {
+                const savedTheme = localStorage.getItem("sacred-sanctuary-theme");
+                const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+                const nextTheme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : prefersLight ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", nextTheme);
+              } catch (error) {
+                document.documentElement.setAttribute("data-theme", "dark");
+              }
+            })();
+          `,
+        }}
+      />
       <body className="min-h-full flex flex-col font-sans">
         <Providers>{children}</Providers>
         <a

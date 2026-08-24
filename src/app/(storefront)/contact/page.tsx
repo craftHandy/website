@@ -42,18 +42,18 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
-      <section className="relative bg-[#0a0a0a] py-20 md:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]/30 pointer-events-none" />
+      <section className="relative bg-[var(--color-background)] py-20 md:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--color-background)]/30 pointer-events-none" />
         <FadeIn className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-4">
+          <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-4">
             Get in Touch
           </p>
-          <h1 className="text-4xl md:text-6xl font-serif text-cream mb-5 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-serif text-[var(--color-foreground)] mb-5 leading-tight">
             Contact Us
           </h1>
-          <p className="text-cream-dark/70 text-lg font-light leading-relaxed max-w-2xl mx-auto">
+          <p className="text-[var(--color-cream-dark)]/70 text-lg font-light leading-relaxed max-w-2xl mx-auto">
             We&apos;d love to hear from you. Whether you have a question about our
             collections, need help with an order, or want to commission a custom
             piece, our team is here to help.
@@ -70,7 +70,7 @@ export default function ContactPage() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Name
                 </label>
@@ -80,14 +80,14 @@ export default function ContactPage() {
                   type="text"
                   value={form.name}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border border-[rgba(201,168,76,0.2)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[#0a0a0a] bg-[#141414] text-cream placeholder:text-cream-dark/40 transition-shadow"
+                  className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow"
                   placeholder="Your name"
                 />
               </div>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Email
                 </label>
@@ -97,14 +97,14 @@ export default function ContactPage() {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border border-[rgba(201,168,76,0.2)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[#0a0a0a] bg-[#141414] text-cream placeholder:text-cream-dark/40 transition-shadow"
+                  className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow"
                   placeholder="your@email.com"
                 />
               </div>
               <div>
                 <label
                   htmlFor="subject"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Subject
                 </label>
@@ -114,14 +114,14 @@ export default function ContactPage() {
                   type="text"
                   value={form.subject}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border border-[rgba(201,168,76,0.2)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[#0a0a0a] bg-[#141414] text-cream placeholder:text-cream-dark/40 transition-shadow"
+                  className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow"
                   placeholder="How can we help?"
                 />
               </div>
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-gold tracking-[0.2em] uppercase text-xs font-medium mb-2"
+                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2"
                 >
                   Message
                 </label>
@@ -131,7 +131,7 @@ export default function ContactPage() {
                   rows={5}
                   value={form.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-[rgba(201,168,76,0.2)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[#0a0a0a] bg-[#141414] text-cream placeholder:text-cream-dark/40 transition-shadow resize-none"
+                  className="w-full px-4 py-3 border border-[var(--color-border-subtle)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow resize-none"
                   placeholder="Tell us more..."
                 />
               </div>
@@ -149,10 +149,10 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <MapPin size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Visit Our Studio
                 </h3>
-                <p className="text-cream-dark/70 text-sm leading-relaxed">
+                <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed">
                   Ratnagiri Jewelry Studio
                   <br />
                   Jaipur, Rajasthan
@@ -165,12 +165,12 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Mail size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Email
                 </h3>
                 <a
                   href="mailto:hello@ratnagiri.com"
-                  className="text-cream-dark/70 text-sm hover:text-gold transition-colors"
+                  className="text-[var(--color-cream-dark)]/70 text-sm hover:text-gold transition-colors"
                 >
                   hello@ratnagiri.com
                 </a>
@@ -180,12 +180,12 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Phone size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Phone
                 </h3>
                 <a
                   href="tel:+911412345678"
-                  className="text-cream-dark/70 text-sm hover:text-gold transition-colors"
+                  className="text-[var(--color-cream-dark)]/70 text-sm hover:text-gold transition-colors"
                 >
                   +91 141 234 5678
                 </a>
@@ -195,10 +195,10 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <Clock size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-1.5">
+                <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Business Hours
                 </h3>
-                <p className="text-cream-dark/70 text-sm leading-relaxed">
+                <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed">
                   Monday – Saturday: 10:00 AM – 7:00 PM IST
                   <br />
                   Sunday: Closed
@@ -208,7 +208,7 @@ export default function ContactPage() {
 
             {/* Social */}
             <div className="pt-4 border-t border-[rgba(201,168,76,0.1)]">
-              <h3 className="text-sm font-medium tracking-wider uppercase text-cream mb-4">
+              <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-4">
                 Follow Us
               </h3>
               <div className="flex gap-4">
@@ -242,11 +242,11 @@ export default function ContactPage() {
       {/* Map Placeholder */}
       <FadeIn direction="up">
         <section className="max-w-7xl mx-auto px-6 pb-20 md:pb-28">
-          <div className="relative w-full h-72 md:h-96 bg-[#141414] rounded-sm overflow-hidden flex items-center justify-center border border-[rgba(201,168,76,0.1)]">
+          <div className="relative w-full h-72 md:h-96 bg-[var(--color-surface-elevated)] rounded-sm overflow-hidden flex items-center justify-center border border-[var(--color-border-subtle)]">
             <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent" />
             <div className="text-center z-10">
               <MapPin size={32} className="text-gold mx-auto mb-3" />
-              <p className="text-cream-dark/70 text-sm font-light">
+              <p className="text-[var(--color-cream-dark)]/70 text-sm font-light">
                 Ratnagiri Jewelry Studio — Jaipur, Rajasthan
               </p>
               <p className="text-gold-muted text-xs mt-1">Map integration coming soon</p>
@@ -256,12 +256,12 @@ export default function ContactPage() {
       </FadeIn>
 
       {/* FAQ */}
-      <section className="bg-[#0a0a0a] py-20 md:py-28">
+      <section className="bg-[var(--color-background)] py-20 md:py-28">
         <FadeIn className="max-w-3xl mx-auto px-6">
-          <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3 text-center">
+          <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
             Have Questions?
           </p>
-          <h2 className="text-3xl md:text-4xl font-serif text-cream mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-12 text-center">
             Frequently Asked Questions
           </h2>
 
@@ -274,7 +274,7 @@ export default function ContactPage() {
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full flex items-center justify-between px-6 py-4 text-left"
                   >
-                    <span className="text-sm font-medium text-cream pr-4">
+                    <span className="text-sm font-medium text-[var(--color-foreground)] pr-4">
                       {faq.q}
                     </span>
                     <span
@@ -291,7 +291,7 @@ export default function ContactPage() {
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="px-6 pb-4 text-sm text-cream-dark/70 leading-relaxed">
+                      <p className="px-6 pb-4 text-sm text-[var(--color-cream-dark)]/70 leading-relaxed">
                         {faq.a}
                       </p>
                     </div>

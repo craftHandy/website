@@ -7,18 +7,18 @@ export const metadata: Metadata = {
 
 export default function ShippingPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       <div className="max-w-3xl mx-auto px-6 py-12">
-        <p className="text-gold tracking-[0.2em] uppercase text-xs font-medium mb-3">
+        <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Shipping & Returns
         </p>
-        <h1 className="text-3xl md:text-4xl font-serif text-cream mb-8">
+        <h1 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-8">
           Delivery & Returns Policy
         </h1>
 
-        <div className="prose prose-neutral max-w-none text-cream-dark/70 space-y-8">
+        <div className="prose prose-neutral max-w-none text-[var(--color-cream-dark)]/70 space-y-8">
           <section>
-            <h2 className="text-xl font-serif text-cream mb-3">Shipping</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">Shipping</h2>
             <div className="space-y-3 text-sm leading-relaxed">
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Standard Delivery</span>
@@ -43,7 +43,7 @@ export default function ShippingPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-cream mb-3">Returns & Exchanges</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">Returns & Exchanges</h2>
             <div className="space-y-3 text-sm leading-relaxed">
               <p>We want you to love every piece you receive. If for any reason you&apos;re not completely satisfied:</p>
               <ul className="list-disc pl-5 space-y-2">
@@ -57,7 +57,7 @@ export default function ShippingPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-cream mb-3">International Shipping</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">International Shipping</h2>
             <p className="text-sm leading-relaxed">
               We ship worldwide. International delivery typically takes 7–14 business days depending on your location. Customs duties and taxes may apply and are the responsibility of the recipient.
             </p>

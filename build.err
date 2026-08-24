@@ -1,0 +1,13 @@
+Failed to compile.
+
+./src/app/orders/page.tsx:64:38
+Type error: Parameter 'item' implicitly has an 'any' type.
+
+[0m [90m 62 |[39m                 [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 63 |[39m                 [33m<[39m[33mdiv[39m className[33m=[39m[32m"border-t border-neutral-200 pt-4 space-y-2"[39m[33m>[39m[0m
+[0m[31m[1m>[22m[39m[90m 64 |[39m                   {order[33m.[39mitems[33m?[39m[33m.[39mmap((item) [33m=>[39m ([0m
+[0m [90m    |[39m                                      [31m[1m^[22m[39m[0m
+[0m [90m 65 |[39m                     [33m<[39m[33mdiv[39m key[33m=[39m{item[33m.[39mid} className[33m=[39m[32m"flex items-center gap-3 text-sm"[39m[33m>[39m[0m
+[0m [90m 66 |[39m                       [33m<[39m[33mspan[39m className[33m=[39m[32m"text-neutral-500"[39m[33m>[39m{item[33m.[39mquantity}x[33m<[39m[33m/[39m[33mspan[39m[33m>[39m[0m
+[0m [90m 67 |[39m                       [33m<[39m[33mLink[39m href[33m=[39m{[32m`/jewelry/${item.slug}`[39m} className[33m=[39m[32m"text-neutral-900 hover:text-[#C9A84C]"[39m[33m>[39m{item[33m.[39mtitle}[33m<[39m[33m/[39m[33mLink[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: null
