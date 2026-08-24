@@ -107,7 +107,6 @@ function ProductListing() {
                 <div className="space-y-2">
                   {categories.length ? categories.map((cat) => {
                     const checked = categoryId === cat.id;
-                    const count = categoryCounts[cat.id] ?? 0;
                     return (
                       <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
                         <input
@@ -119,7 +118,7 @@ function ProductListing() {
                           }}
                           className="w-4 h-4 rounded border-[var(--color-border-subtle)]"
                         />
-                        <span className="text-sm text-[var(--color-cream-dark)]">{cat.title} ({count})</span>
+                        <span className="text-sm text-[var(--color-cream-dark)]">{cat.title} </span>
                       </label>
                     );
                   }) : <p className="text-sm text-[var(--color-cream-dark)]">No categories</p>}
@@ -130,14 +129,14 @@ function ProductListing() {
                 <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Material</h2>
                 <div className="space-y-2">
                   {materials.length ? materials.map((m) => {
-                    const checked = materialId === m.name;
+                    const checked = materialId === m.id;
                     return (
                       <label key={m.id} className="flex items-center gap-3 cursor-pointer group">
                         <input
                           type="checkbox"
                           checked={checked}
                           onChange={() => {
-                            const next = checked ? undefined : m.name;
+                            const next = checked ? undefined : m.id;
                             router.push(hrefFor({ materialId: next, page: "0" }));
                           }}
                           className="w-4 h-4 rounded border-[var(--color-border-subtle)]"
@@ -153,14 +152,14 @@ function ProductListing() {
                 <h2 className="mb-3 text-xs font-bold  tracking-[0.18em]">Occasion</h2>
                 <div className="space-y-2">
                   {occasions.length ? occasions.map((o) => {
-                    const checked = occasionId === o.name;
+                    const checked = occasionId === o.id;
                     return (
                       <label key={o.id} className="flex items-center gap-3 cursor-pointer group">
                         <input
                           type="checkbox"
                           checked={checked}
                           onChange={() => {
-                            const next = checked ? undefined : o.name;
+                            const next = checked ? undefined : o.id;
                             router.push(hrefFor({ occasionId: next, page: "0" }));
                           }}
                           className="w-4 h-4 rounded border-[var(--color-border-subtle)]"

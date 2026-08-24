@@ -67,7 +67,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm p-8 md:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
             <div className="mb-8">
               <Link
-                href="/blogs"
+                href="/stories"
                 className="text-gold text-xs tracking-[0.2em]  font-medium hover:text-gold-light transition-colors"
               >
                 ← Back to Blogs

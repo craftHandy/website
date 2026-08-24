@@ -289,7 +289,7 @@ export const FALLBACK_HERO_SLIDES: HeroSlide[] = [
     title: "The Stories We Keep",
     subtitle: "Read the journal of our artisans, traditions and living heritage.",
     ctaText: "Read Our Stories",
-    ctaLink: "/blogs",
+    ctaLink: "/stories",
     order: 3,
     active: true,
   },

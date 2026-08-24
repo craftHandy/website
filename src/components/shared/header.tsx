@@ -14,10 +14,10 @@ import { useTheme } from "@/app/providers";
 import type { Category } from "@/types";
 
 const TOP_LINKS = [
-  { href: "/collections", label: "Collections" },
+  // { href: "/collections", label: "Collections" },
   { href: "/about", label: "About Us" },
-  { href: "/contact", label: "Contact" },
-  { href: "/blogs", label: "Blogs" },
+  { href: "/contact", label: "Contact Us" },
+  { href: "/stories", label: "Stories" },
 ];
 
 const staggerVariants = {
@@ -115,7 +115,7 @@ export function Header() {
               href="/product"
               className="text-xs tracking-[0.2em]  text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors duration-300"
             >
-              Statues
+              Product
             </Link>
             <div ref={catRef} className="relative">
               <button

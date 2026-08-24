@@ -16,10 +16,21 @@ export default function CartPage() {
   const getTotal = useCartStore((s) => s.getTotal);
   const getItemCount = useCartStore((s) => s.getItemCount);
   const [mounted, setMounted] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setSelectedIds(items.map((item) => item.id));
+  }, [items]);
+
+  const toggleItem = (id: string) => {
+    setSelectedIds((current) =>
+      current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]
+    );
+  };
 
   if (!mounted) {
     return (
@@ -73,7 +84,15 @@ export default function CartPage() {
 
         <div className="grid lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-1">
-            <div className="hidden md:grid grid-cols-[1fr_1fr_auto_auto] gap-6 px-4 pb-3 text-xs tracking-[0.15em]  text-gold-muted border-b border-[rgba(201,168,76,0.1)]">
+            <div className="hidden md:grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-4 pb-3 text-xs tracking-[0.15em]  text-gold-muted border-b border-[rgba(201,168,76,0.1)] items-center">
+              <input
+                type="checkbox"
+                checked={selectedIds.length === items.length && items.length > 0}
+                onChange={() =>
+                  setSelectedIds(selectedIds.length === items.length ? [] : items.map((i) => i.id))
+                }
+                className="h-4 w-4 accent-[var(--color-gold)]"
+              />
               <span>Item</span>
               <span>Price</span>
               <span className="text-center w-28">Quantity</span>
@@ -86,6 +105,27 @@ export default function CartPage() {
                 className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-4 md:gap-6 items-center py-6 border-b border-[rgba(201,168,76,0.1)] px-4"
               >
                 <div className="flex gap-4 items-center">
+                  <div className="w-4 h-4 rounded border border-[var(--color-gold)] flex items-center justify-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(item.id)}
+                      onChange={() => toggleItem(item.id)}
+                      className="hidden"
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </div>
                   <div className="w-20 h-24 rounded-sm overflow-hidden bg-[var(--color-surface-elevated)] shrink-0 relative border border-[var(--color-border-subtle)]">
                     {item.image ? (
                       <Image
@@ -145,7 +185,17 @@ export default function CartPage() {
                   className="text-gold-muted hover:text-red-400 transition-colors p-1"
                   aria-label={`Remove ${item.title}`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
@@ -201,13 +251,19 @@ export default function CartPage() {
                 <span className="text-[var(--color-foreground)]">{formatPrice(total)}</span>
               </div>
 
-              <Button asChild size="lg" variant="default" className="w-full">
+              <Button
+                asChild
+                size="lg"
+                variant="default"
+                className="w-full"
+                disabled={selectedIds.length !== items.length || items.length === 0}
+              >
                 <Link href="/checkout">Proceed to Checkout</Link>
               </Button>
 
-                <p className="text-xs text-gold-muted text-center mt-4">
-                  Demo checkout — no payment is processed
-                </p>
+              <p className="text-xs text-gold-muted text-center mt-4">
+                Demo checkout — no payment is processed
+              </p>
             </div>
           </div>
         </div>

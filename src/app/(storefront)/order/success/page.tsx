@@ -40,7 +40,7 @@ export default function OrderSuccessPage() {
             <Link href="/jewelry">Continue Shopping</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="px-8">
-            <Link href="/blogs">Read Our Stories</Link>
+            <Link href="/stories">Read Our Stories</Link>
           </Button>
         </div>
       </div>
