@@ -78,7 +78,7 @@ const artisans = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
-      {/* ── Hero Section ── */}
+      {/* ── Hero Section ──helllo */}
       <section className="relative bg-surface-elevated overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[var(--color-background)]" />
         <motion.div
