@@ -23,14 +23,30 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    setSelectedIds(items.map((item) => item.id));
+    setSelectedIds((current) => {
+      const validIds = new Set(items.map((item) => item.id));
+
+      if (current.length === 0 && items.length > 0) {
+        return [...validIds];
+      }
+
+      return current.filter((id) => validIds.has(id));
+    });
   }, [items]);
 
   const toggleItem = (id: string) => {
     setSelectedIds((current) =>
-      current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]
+      current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id],
     );
   };
+
+  const toggleAllItems = () => {
+    setSelectedIds((current) =>
+      current.length === items.length && items.length > 0 ? [] : items.map((item) => item.id),
+    );
+  };
+
+  const allSelected = items.length > 0 && selectedIds.length === items.length;
 
   if (!mounted) {
     return (
@@ -43,9 +59,20 @@ export default function CartPage() {
   const subtotal = getTotal();
   const itemCount = getItemCount();
   const shippingThreshold = 25000;
-  const freeShipping = subtotal >= shippingThreshold;
-  const shippingCost = freeShipping ? 0 : 499;
-  const total = subtotal + shippingCost;
+  const selectedItems = items.filter((item) => selectedIds.includes(item.id));
+  const selectedSubtotal = selectedItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+  const selectedItemCount = selectedItems.reduce(
+    (count, item) => count + item.quantity,
+    0,
+  );
+  const freeShipping = selectedItems.length > 0 && selectedSubtotal >= shippingThreshold;
+  const shippingCost = selectedItems.length === 0 ? 0 : freeShipping ? 0 : 499;
+  const total = selectedSubtotal + shippingCost;
+
+  const subtotalText = selectedItems.length === 0 ? "Subtotal (0 items)" : `Subtotal (${selectedItemCount} ${selectedItemCount === 1 ? "item" : "items"})`;
 
   if (items.length === 0) {
     return (
@@ -87,11 +114,10 @@ export default function CartPage() {
             <div className="hidden md:grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-4 pb-3 text-xs tracking-[0.15em]  text-gold-muted border-b border-[rgba(201,168,76,0.1)] items-center">
               <input
                 type="checkbox"
-                checked={selectedIds.length === items.length && items.length > 0}
-                onChange={() =>
-                  setSelectedIds(selectedIds.length === items.length ? [] : items.map((i) => i.id))
-                }
-                className="h-4 w-4 accent-[var(--color-gold)]"
+                checked={allSelected}
+                onChange={toggleAllItems}
+                className="h-4 w-4 accent-[var(--color-gold)] cursor-pointer"
+                aria-label="Select all items"
               />
               <span>Item</span>
               <span>Price</span>
@@ -105,27 +131,15 @@ export default function CartPage() {
                 className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-4 md:gap-6 items-center py-6 border-b border-[rgba(201,168,76,0.1)] px-4"
               >
                 <div className="flex gap-4 items-center">
-                  <div className="w-4 h-4 rounded border border-[var(--color-gold)] flex items-center justify-center cursor-pointer">
+                  <label className="w-4 h-4 flex items-center justify-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(item.id)}
                       onChange={() => toggleItem(item.id)}
-                      className="hidden"
+                      className="h-4 w-4 accent-[var(--color-gold)] cursor-pointer"
+                      aria-label={`Select ${item.title}`}
                     />
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </div>
+                  </label>
                   <div className="w-20 h-24 rounded-sm overflow-hidden bg-[var(--color-surface-elevated)] shrink-0 relative border border-[var(--color-border-subtle)]">
                     {item.image ? (
                       <Image
@@ -219,7 +233,7 @@ export default function CartPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-[var(--color-surface-elevated)] rounded-sm p-6 lg:sticky lg:top-24 border border-[var(--color-border-subtle)]">
+            <div className="cart-order-summary bg-[var(--color-surface-elevated)] rounded-sm p-6 lg:sticky lg:top-24 border border-[var(--color-border-subtle)]">
               <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">
                 Order Summary
               </h2>
@@ -227,19 +241,19 @@ export default function CartPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-cream-dark/70">
-                    Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})
+                    {subtotalText}
                   </span>
-                  <span className="text-[var(--color-foreground)]">{formatPrice(subtotal)}</span>
+                  <span className="text-[var(--color-foreground)]">{formatPrice(selectedSubtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-cream-dark/70">Shipping</span>
-                  <span className={freeShipping ? "text-emerald-400" : "text-[var(--color-foreground)]"}>
-                    {freeShipping ? "Free" : formatPrice(shippingCost)}
+                  <span className={selectedItems.length === 0 ? "text-[var(--color-foreground)]" : freeShipping ? "text-emerald-400" : "text-[var(--color-foreground)]"}>
+                    {selectedItems.length === 0 ? "₹0" : freeShipping ? "Free" : formatPrice(shippingCost)}
                   </span>
                 </div>
-                {!freeShipping && (
+                {selectedItems.length > 0 && !freeShipping && (
                   <p className="text-xs text-gold-muted">
-                    Add {formatPrice(shippingThreshold - subtotal)} more for free shipping
+                    Add {formatPrice(shippingThreshold - selectedSubtotal)} more for free shipping
                   </p>
                 )}
               </div>
@@ -256,9 +270,19 @@ export default function CartPage() {
                 size="lg"
                 variant="default"
                 className="w-full"
-                disabled={selectedIds.length !== items.length || items.length === 0}
+                disabled={selectedItems.length === 0}
               >
-                <Link href="/checkout">Proceed to Checkout</Link>
+                <Link
+                  href={selectedItems.length === 0 ? "#" : "/checkout"}
+                  onClick={(e) => {
+                    if (selectedItems.length === 0) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={selectedItems.length === 0 ? "pointer-events-none opacity-60" : ""}
+                >
+                  Proceed to Checkout
+                </Link>
               </Button>
 
               <p className="text-xs text-gold-muted text-center mt-4">
