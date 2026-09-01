@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 export interface StoreUser {
   id: string;
@@ -14,15 +13,13 @@ interface UserState {
   clearUser: () => void;
 }
 
-export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      user: null,
-      setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
-    }),
-    {
-      name: "jewelry-user",
+export const useUserStore = create<UserState>()((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
+  clearUser: () => {
+    set({ user: null });
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("access_token");
     }
-  )
-);
+  },
+}));
