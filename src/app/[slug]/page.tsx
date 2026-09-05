@@ -33,6 +33,8 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
     notFound();
   }
 
+  const pageContent = typeof page.content === "string" ? page.content : "";
+
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       <div className="max-w-4xl mx-auto px-6 py-12">
@@ -43,9 +45,9 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
           {page.title}
         </h1>
         <div className="prose prose-neutral max-w-none">
-          {page.content ? (
+          {pageContent ? (
             <div className="text-[var(--color-cream-dark)]/70 leading-relaxed space-y-4">
-              {page.content.split("\n").map((paragraph: string, index: number) => {
+              {pageContent.split("\n").map((paragraph: string, index: number) => {
                 const trimmed = paragraph.trim();
                 if (!trimmed) return null;
                 if (trimmed.startsWith("## ")) {

@@ -5,7 +5,7 @@ import { getCategories } from "@/lib/api";
 const FOOTER_LINKS = {
   about: [
     { label: "About Us", href: "/about" },
-    { label: "Our Blog", href: "/blogs" },
+    { label: "Our Blog", href: "/stories" },
     { label: "Collections", href: "/collections" },
     { label: "Contact Us", href: "/contact" },
   ],

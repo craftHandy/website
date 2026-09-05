@@ -50,7 +50,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
 
       <section className="max-w-7xl mx-auto px-6 py-16">
         {featuredPost && (
-          <Link href={`/blogs/${featuredPost.slug}`} className="group block mb-16">
+          <Link href={`/stories/${featuredPost.slug}`} className="group block mb-16">
             <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center rounded-sm border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-4 md:p-6 lg:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
               <div className="aspect-[4/3] overflow-hidden rounded-sm bg-[var(--color-surface-elevated)] relative luxe-card">
                 {featuredPost.coverImage ? (
@@ -110,47 +110,49 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
         )}
 
         {remainingPosts.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 items-stretch">
             {remainingPosts.map((post) => (
-              <Link key={post.id} href={`/blogs/${post.slug}`} className="group block">
-                <div className="aspect-[4/3] overflow-hidden rounded-sm bg-[var(--color-surface-elevated)] mb-4 relative luxe-card">
-                  {post.coverImage ? (
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-[var(--color-surface-elevated)] flex items-center justify-center">
-                      <span className="text-gold/20 text-5xl font-serif select-none">✦</span>
-                    </div>
-                  )}
-                </div>
-                <div className="rounded-sm border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-5 h-full">
-                  <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-2 group-hover:text-gold transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  {post.excerpt && (
-                    <p className="text-sm text-[var(--color-cream-dark)]/70 line-clamp-3 mb-3">
-                      {post.excerpt}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-gold-muted">
-                    {post.author && <span className="text-[var(--color-cream-dark)]">{post.author}</span>}
-                    {post.publishedAt && (
-                      <>
-                        {post.author && <span>·</span>}
-                        <time dateTime={post.publishedAt}>
-                          {new Date(post.publishedAt).toLocaleDateString("en-IN", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </time>
-                      </>
+              <Link key={post.id} href={`/stories/${post.slug}`} className="group block h-full">
+                <div className="h-full rounded-sm border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-0 overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden bg-[var(--color-surface-elevated)] relative luxe-card">
+                    {post.coverImage ? (
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[var(--color-surface-elevated)] flex items-center justify-center">
+                        <span className="text-gold/20 text-5xl font-serif select-none">✦</span>
+                      </div>
                     )}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-2 group-hover:text-gold transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    {post.excerpt && (
+                      <p className="text-sm text-[var(--color-cream-dark)]/70 line-clamp-3 mb-3">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-gold-muted">
+                      {post.author && <span className="text-[var(--color-cream-dark)]">{post.author}</span>}
+                      {post.publishedAt && (
+                        <>
+                          {post.author && <span>·</span>}
+                          <time dateTime={post.publishedAt}>
+                            {new Date(post.publishedAt).toLocaleDateString("en-IN", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </time>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -166,20 +168,20 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
             </Link>
           </div>
         ) : (
-          <div className="mt-12 flex flex-col items-center gap-3">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-[var(--color-cream-dark)]">
               <span className="text-[var(--color-foreground)]">Page {result.currentPage} of {result.totalPages || 1}</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
-                href={`/blogs?page=${Math.max(1, result.currentPage - 1)}`}
+                href={`/stories?page=${Math.max(1, result.currentPage - 1)}`}
                 className={`rounded-sm border border-[rgba(201,168,76,0.15)] px-4 py-2 text-sm transition-colors ${result.currentPage <= 1 ? "cursor-not-allowed opacity-50" : "hover:border-gold hover:text-gold"}`}
                 aria-disabled={result.currentPage <= 1}
               >
                 Previous
               </Link>
               <Link
-                href={`/blogs?page=${Math.min(result.totalPages || 1, result.currentPage + 1)}`}
+                href={`/stories?page=${Math.min(result.totalPages || 1, result.currentPage + 1)}`}
                 className={`rounded-sm border border-[rgba(201,168,76,0.15)] px-4 py-2 text-sm transition-colors ${result.last ? "cursor-not-allowed opacity-50" : "hover:border-gold hover:text-gold"}`}
                 aria-disabled={result.last}
               >

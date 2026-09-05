@@ -11,6 +11,7 @@ import {
 } from "./fallback-data";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
 const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/public/hero-slide`;
 const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
 const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/category/all`;
@@ -74,11 +75,23 @@ const BLOG_LIST_PATH = "/api/v1/public/blog";
 const BLOG_DETAIL_PATH = "/api/v1/public/blog";
 
 function buildBlogListUrl(page = 0, size = 10) {
-  return `${API_BASE_URL}${BLOG_LIST_PATH}?page=${page}&size=${size}&sortBy=id&direction=desc`;
+  const url = new URL(`${API_ORIGIN}${BLOG_LIST_PATH}`);
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("size", String(size));
+  url.searchParams.set("sortBy", "id");
+  url.searchParams.set("direction", "desc");
+  return url.toString();
 }
 
 function buildBlogDetailUrl(slug: string) {
-  return `${API_BASE_URL}${BLOG_DETAIL_PATH}/${encodeURIComponent(slug)}`;
+  const safeSlug = encodeURIComponent(slug);
+  const pathUrl = new URL(`${API_ORIGIN}/api/v1/public/blog/${safeSlug}`);
+
+  // Some backends still support the legacy query form; keep both as a fallback.
+  const legacyUrl = new URL(`${API_ORIGIN}${BLOG_DETAIL_PATH}`);
+  legacyUrl.searchParams.set("slug", slug);
+
+  return pathUrl.toString();
 }
 
 function toCategorySlug(value: string, fallback: string) {
@@ -223,21 +236,25 @@ export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult
   const rawPosts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
   const mappedPosts = rawPosts
     .filter((post: any) => post?.deleted !== true && post?.status !== "DRAFT")
-    .map((post: any, index: number) => ({
-      id: post?.id?.toString() ?? `blog-${index + 1}`,
-      title: post?.title || "Untitled story",
-      slug: post?.slug || `story-${index + 1}`,
-      excerpt: post?.excerpt || post?.summary || undefined,
-      content: post?.content || undefined,
-      coverImage: post?.coverImage || undefined,
-      author: post?.author || undefined,
-      publishedAt: post?.createdDate || post?.modifiedDate || new Date().toISOString(),
-      tags: Array.isArray(post?.tags)
-        ? post.tags
-          .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
-          .filter(Boolean)
-        : [],
-    }));
+    .map((post: any, index: number) => {
+      const normalizedContent = normalizeBlogContent(post?.content);
+
+      return {
+        id: post?.id?.toString() ?? `blog-${index + 1}`,
+        title: post?.title || "Untitled story",
+        slug: post?.slug || `story-${index + 1}`,
+        excerpt: post?.excerpt || post?.summary || undefined,
+        content: normalizedContent || undefined,
+        coverImage: post?.coverImage || undefined,
+        author: post?.author || undefined,
+        publishedAt: post?.createdDate || post?.modifiedDate || new Date().toISOString(),
+        tags: Array.isArray(post?.tags)
+          ? post.tags
+              .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
+              .filter(Boolean)
+          : [],
+      };
+    });
 
   return {
     posts: mappedPosts.sort(
@@ -249,6 +266,37 @@ export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult
     totalPages: typeof payload?.data?.totalPages === "number" ? payload.data.totalPages : mappedPosts.length > 0 ? 1 : 0,
     last: typeof payload?.data?.last === "boolean" ? payload.data.last : true,
   };
+}
+
+function normalizeBlogContent(value: unknown): string {
+  if (typeof value === "string") return value;
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizeBlogContent(item))
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  if (value && typeof value === "object") {
+    const entry = value as Record<string, unknown>;
+
+    if (typeof entry.html === "string") return entry.html;
+    if (typeof entry.text === "string") return entry.text;
+    if (typeof entry.content === "string") return entry.content;
+    if (typeof entry.body === "string") return entry.body;
+    if (typeof entry.value === "string") return entry.value;
+
+    if (Array.isArray(entry.children)) {
+      return normalizeBlogContent(entry.children);
+    }
+
+    if (entry.content && typeof entry.content !== "string") {
+      return normalizeBlogContent(entry.content);
+    }
+  }
+
+  return "";
 }
 
 export function getSiteSettings(): Record<string, any> {
@@ -511,17 +559,50 @@ export function getCollectionBySlug(slug: string): Collection | null {
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  const response = await fetch(buildBlogDetailUrl(slug), {
+  const detailUrl = buildBlogDetailUrl(slug);
+  const response = await fetch(detailUrl, {
     next: { revalidate: 60 },
   });
 
   if (!response.ok) {
-    console.warn(`Blog detail request failed with status ${response.status}`);
-    return null;
+    const fallbackUrl = new URL(`${API_ORIGIN}${BLOG_DETAIL_PATH}`);
+    fallbackUrl.searchParams.set("slug", slug);
+
+    const fallbackResponse = await fetch(fallbackUrl.toString(), {
+      next: { revalidate: 60 },
+    });
+
+    if (!fallbackResponse.ok) {
+      console.warn(`Blog detail request failed with status ${response.status}`);
+      return null;
+    }
+
+    const fallbackPayload = await fallbackResponse.json();
+    const fallbackPost = fallbackPayload?.data ?? fallbackPayload;
+
+    if (!fallbackPost) {
+      return null;
+    }
+
+    return {
+      id: fallbackPost?.id?.toString() ?? slug,
+      title: fallbackPost?.title || "Untitled story",
+      slug: fallbackPost?.slug || slug,
+      excerpt: fallbackPost?.excerpt || fallbackPost?.summary || undefined,
+      content: normalizeBlogContent(fallbackPost?.content) || undefined,
+      coverImage: fallbackPost?.coverImage || undefined,
+      author: fallbackPost?.author || undefined,
+      publishedAt: fallbackPost?.createdDate || fallbackPost?.modifiedDate || new Date().toISOString(),
+      tags: Array.isArray(fallbackPost?.tags)
+        ? fallbackPost.tags
+            .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
+            .filter(Boolean)
+        : [],
+    };
   }
 
   const payload = await response.json();
-  const post = payload?.data;
+  const post = payload?.data ?? payload;
 
   if (!post) {
     return null;
@@ -532,14 +613,14 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     title: post?.title || "Untitled story",
     slug: post?.slug || slug,
     excerpt: post?.excerpt || post?.summary || undefined,
-    content: post?.content || undefined,
+    content: normalizeBlogContent(post?.content) || undefined,
     coverImage: post?.coverImage || undefined,
     author: post?.author || undefined,
     publishedAt: post?.createdDate || post?.modifiedDate || new Date().toISOString(),
     tags: Array.isArray(post?.tags)
       ? post.tags
-        .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
-        .filter(Boolean)
+          .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
+          .filter(Boolean)
       : [],
   };
 }

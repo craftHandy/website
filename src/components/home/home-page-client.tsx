@@ -19,7 +19,6 @@ import {
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
-import { ExpandingHero } from "../animations/ExpandingHero";
 
 type Product = {
   id: string;
@@ -415,7 +414,7 @@ export function HomePageClient({
   className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4"
   staggerDelay={0.1}
 >
-  {categories.slice(0, 6).map((category: Category) => (
+  {categories.slice(0, 8).map((category: Category) => (
     <StaggerItem key={category.id}>
       <Link
         href={`/jewelry?category=${category.slug}`}
