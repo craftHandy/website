@@ -18,8 +18,17 @@ export const useUserStore = create<UserState>()((set) => ({
   setUser: (user) => set({ user }),
   clearUser: () => {
     set({ user: null });
+
     if (typeof window !== "undefined") {
-      localStorage.removeItem("access_token");
+      const preservedKeys = new Set(["jewelry-cart", "sacred-sanctuary-theme"]);
+
+      for (const key of Object.keys(localStorage)) {
+        if (!preservedKeys.has(key)) {
+          localStorage.removeItem(key);
+        }
+      }
+
+      sessionStorage.clear();
     }
   },
 }));
