@@ -5,16 +5,16 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ratnagiri — Handcrafted Indian Jewelry",
-    template: "%s | Ratnagiri",
+    default: "Ratna Treasure Handicraft — Handcrafted Indian Jewelry",
+    template: "%s | Ratna Treasure Handicraft",
   },
   description: "Discover exquisite handcrafted Indian jewelry — Temple, Kundan, Jadau, Silver, Brass & Gemstone pieces. Each tells a story of heritage and artistry.",
   keywords: ["Indian jewelry", "Temple jewelry", "Kundan jewelry", "Jadau jewelry", "handcrafted jewelry", "silver jewelry", "gemstone jewelry", "traditional jewelry"],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Ratnagiri",
-    title: "Ratnagiri — Handcrafted Indian Jewelry",
+    siteName: "Ratna Treasure Handicraft",
+    title: "Ratna Treasure Handicraft — Handcrafted Indian Jewelry",
     description: "Discover exquisite handcrafted Indian jewelry — Temple, Kundan, Jadau, Silver, Brass & Gemstone pieces.",
   },
   twitter: {
@@ -48,7 +48,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans">
         <Providers>{children}</Providers>
         <a
-          href="https://wa.me/9818504933?text=Hello%20Ratnagiri%2C%20I%20would%20like%20to%20chat%20with%20you."
+          href="https://wa.me/9818504933?text=Hello%20Ratna%20Treasure%20Handicraft%2C%20I%20would%20like%20to%20chat%20with%20you."
           target="_blank"
           rel="noreferrer"
           aria-label="Chat with us on WhatsApp"
