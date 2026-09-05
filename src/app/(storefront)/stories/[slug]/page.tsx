@@ -40,7 +40,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const hasHtmlContent = post.content ? /<[^>]+>/.test(post.content) : false;
+  const storyContent = typeof post.content === "string" ? post.content : "";
+  const hasHtmlContent = storyContent ? /<[^>]+>/.test(storyContent) : false;
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
@@ -70,7 +71,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 href="/stories"
                 className="text-gold text-xs tracking-[0.2em]  font-medium hover:text-gold-light transition-colors"
               >
-                ← Back to Blogs
+                ← Back to Stories
               </Link>
             </div>
 
@@ -119,13 +120,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
 
             <div className="text-[var(--color-cream-dark)]/80 leading-relaxed space-y-6">
-              {post.content ? (
+              {storyContent ? (
                 hasHtmlContent ? (
-                  <div dangerouslySetInnerHTML={{ __html: post.content }} className="space-y-6" />
+                  <div dangerouslySetInnerHTML={{ __html: storyContent }} className="space-y-6" />
                 ) : (
-                  post.content.split("\n").map((paragraph: string, index: number) => {
+                  storyContent.split(/\n+/).map((paragraph: string, index: number) => {
                     const trimmed = paragraph.trim();
                     if (!trimmed) return null;
+                    if (trimmed.startsWith("# ")) {
+                      return <h1 key={index} className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("# ", "")}</h1>;
+                    }
                     if (trimmed.startsWith("## ")) {
                       return <h2 key={index} className="text-2xl font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("## ", "")}</h2>;
                     }
@@ -147,10 +151,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="mt-12 text-center">
             <p className="text-gold-muted text-sm mb-4">Continue exploring</p>
             <Link
-              href="/blogs"
+              href="/stories"
               className="text-gold tracking-wider  text-sm font-medium hover:text-gold-light transition-colors"
             >
-              More Blogs →
+              More Stories →
             </Link>
           </div>
         </div>
