@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -28,6 +28,7 @@ import { useUserStore } from "@/store/user";
 import { getCategories } from "@/lib/api";
 import { useTheme } from "@/app/providers";
 import type { Category } from "@/types";
+import { useSearchParams } from "next/navigation";
 
 const TOP_LINKS = [
   // { href: "/collections", label: "Collections" },
@@ -62,12 +63,15 @@ const dropdownVariants = {
 };
 
 export function Header() {
+    const params = useSearchParams();
+  
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [search,setSearch]=useState(params.get("search")||"");
   const catRef = useRef<HTMLDivElement>(null);
   const user = useUserStore((s) => s.user);
   const clearUser = useUserStore((s) => s.clearUser);
@@ -79,7 +83,9 @@ export function Header() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
+ useEffect(() => {
+    setSearch(params.get("search") || "");
+  }, [params.get("search")]);
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -107,68 +113,79 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--color-background)] border-b border-[var(--color-border-subtle)] shadow-[0_4px_30px_rgba(15,23,42,0.08)]">
+
+
+    <header className="sticky top-0 z-50 bg-[#131313] text-white border-b border-[#3a3428] shadow-[0_4px_30px_rgba(0,0,0,0.25)]">
       <motion.div
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="bg-[var(--color-surface-elevated)] text-[var(--color-gold)] text-center text-[11px] tracking-[0.2em] py-2.5  border-b border-[var(--color-border-subtle)]"
+        className="bg-[#1e1e1e] text-[#e9c176] text-center text-[11px] tracking-[0.2em] py-2.5 border-b border-[#3a3428]"
       >
         ✦ Worldwide Shipping &nbsp;·&nbsp; 15+ Years of Trust &nbsp;·&nbsp;
         Authentic Himalayan Handicraft
       </motion.div>
+
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
+          {/* Mobile Menu Button */}
           <div className="flex items-center lg:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="p-2 text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors"
+              className="p-2 text-white hover:text-[#e9c176] transition-colors"
+              aria-label="Toggle menu"
             >
               {mobileOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 text-white" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6 text-white" />
               )}
             </button>
           </div>
 
+          {/* Logo */}
           <Link href="/" className="group">
             <div className="flex items-center gap-4">
               <img
-                src="/logo.png"
+                src="/header.png"
                 alt="Ratna Treasure Handicraft"
-                className="h-auto w-44 invert brightness-0 sepia hue-rotate-[-10deg] saturate-[3]"
+                className="h-auto w-44"
               />
             </div>
           </Link>
 
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               href="/"
-              className=" tracking-[0.2em]  text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors duration-300"
+              className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
             >
               Home
             </Link>
+
             <Link
               href="/product"
-              className=" tracking-[0.2em]  text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors duration-300"
+              className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
             >
               Product
             </Link>
+
+            {/* Categories */}
             <div ref={catRef} className="relative">
               <button
                 onMouseEnter={() => setCatOpen(true)}
                 onClick={() => setCatOpen(!catOpen)}
-                className="flex items-center  gap-1.5 text-sm tracking-[0.2em]  text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors duration-300"
+                className="flex items-center gap-1.5 text-sm tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
               >
                 Categories
                 <motion.span
                   animate={{ rotate: catOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <ChevronDown className="h-3 w-3" />
+                  <ChevronDown className="h-3 w-3 text-white" />
                 </motion.span>
               </button>
+
               <AnimatePresence>
                 {catOpen && (
                   <motion.div
@@ -178,11 +195,11 @@ export function Header() {
                     exit="exit"
                     onMouseEnter={() => setCatOpen(true)}
                     onMouseLeave={() => setCatOpen(false)}
-                    className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-60 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-50 overflow-hidden origin-top"
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-60 bg-[#1e1e1e] border border-[#3a3428] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-50 overflow-hidden origin-top"
                   >
                     <div className="max-h-80 overflow-y-auto overscroll-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                       {categories.length === 0 ? (
-                        <div className="px-4 py-2.5 text-sm text-[var(--color-gold-muted)]">
+                        <div className="px-4 py-2.5 text-sm text-[#d9b66c]">
                           Loading...
                         </div>
                       ) : (
@@ -197,44 +214,50 @@ export function Header() {
                             <Link
                               href={`/product?categoryId=${cat.id}`}
                               onClick={() => setCatOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)] transition-colors duration-150"
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176] transition-colors duration-150"
                             >
-                              <span className="w-5 h-5 rounded-full bg-[rgba(201,168,76,0.12)] flex items-center justify-center text-xs text-[var(--color-gold)]">
+                              <span className="w-5 h-5 rounded-full bg-[rgba(201,168,76,0.12)] flex items-center justify-center text-xs text-[#e9c176]">
                                 ✦
                               </span>
+
                               <span className="tracking-wide">{cat.title}</span>
                             </Link>
                           </motion.div>
                         ))
                       )}
                     </div>
-                    <div className="h-[1px] bg-gradient-to-r from-transparent via-[var(--color-gold)] to-transparent" />
+
+                    <div className="h-[1px] bg-gradient-to-r from-transparent via-[#e9c176] to-transparent" />
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
+            {/* Other Links */}
             {TOP_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="tracking-[0.2em]  text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors duration-300"
+                className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center space-x-3 text-[var(--color-foreground)]">
+          {/* Header Actions */}
+          <div className="flex items-center space-x-3 text-white">
+            {/* Search */}
             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 hover:text-[var(--color-gold)] transition-colors"
+              className="p-2 text-white hover:text-[#e9c176] transition-colors"
               aria-label="Search"
             >
-              <Search className="size-6" />
+              <Search className="size-6 text-white" />
             </button>
 
+            {/* Theme Toggle */}
             <button
               type="button"
               onClick={toggleTheme}
@@ -243,34 +266,38 @@ export function Header() {
                   ? "Switch to light mode"
                   : "Switch to dark mode"
               }
-              className="flex h-10 w-10 items-center justify-center text-[var(--color-foreground)] transition hover:border-[var(--color-gold)] hover:text-[var(--color-gold)]"
+              className="flex h-10 w-10 items-center justify-center text-white transition hover:text-[#e9c176]"
             >
               {theme === "dark" ? (
-                <SunMedium className="size-6" />
+                <SunMedium className="size-6 text-white" />
               ) : (
-                <MoonStar className="size-6" />
+                <MoonStar className="size-6 text-white" />
               )}
             </button>
 
+            {/* User */}
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="p-2 hover:text-[var(--color-gold)] transition-colors"
+                className="p-2 text-white hover:text-[#e9c176] transition-colors"
                 aria-label="Open user menu"
               >
-                <User className="size-6" />
+                <User className="size-6 text-white" />
               </button>
+
               {showUserMenu && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-52 bg-[#1e1e1e] border border-[#3a3428] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.4)] py-2 z-50">
                   {user ? (
                     <>
-                      <p className="px-4 py-1.5 text-xs text-[var(--color-gold-muted)] truncate">
+                      <p className="px-4 py-1.5 text-xs text-[#d9b66c] truncate">
                         {user.email}
                       </p>
-                      <hr className="my-1 border-[var(--color-border-subtle)]" />
+
+                      <hr className="my-1 border-[#3a3428]" />
+
                       <button
                         onClick={handleLogoutRequest}
-                        className="w-full text-left px-4 py-1.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)]"
+                        className="w-full text-left px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
                       >
                         Logout
                       </button>
@@ -279,14 +306,15 @@ export function Header() {
                     <>
                       <Link
                         href="/login"
-                        className="block px-4 py-1.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)]"
+                        className="block px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
                         onClick={() => setShowUserMenu(false)}
                       >
                         Sign In
                       </Link>
+
                       <Link
                         href="/register"
-                        className="block px-4 py-1.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)]"
+                        className="block px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
                         onClick={() => setShowUserMenu(false)}
                       >
                         Create Account
@@ -297,16 +325,18 @@ export function Header() {
               )}
             </div>
 
+            {/* Cart */}
             <Link
               href="/cart"
-              className="relative p-2 hover:text-[var(--color-gold)] transition-colors"
+              className="relative p-2 text-white hover:text-[#e9c176] transition-colors"
             >
-              <ShoppingBag className="szie-6" />
+              <ShoppingBag className="size-6 text-white" />
+
               {mounted && itemCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[var(--color-gold)] text-[#0a0a0a] text-[10px] flex items-center justify-center font-semibold"
+                  className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[#e9c176] text-[#0a0a0a] text-[10px] flex items-center justify-center font-semibold"
                 >
                   {itemCount}
                 </motion.span>
@@ -315,6 +345,7 @@ export function Header() {
           </div>
         </div>
 
+        {/* Search */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -327,12 +358,15 @@ export function Header() {
                 <Input
                   name="search"
                   placeholder="Search products..."
-                  className="flex-1 bg-[var(--color-surface-elevated)] border-[var(--color-border-subtle)] text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:ring-[var(--color-gold)]"
+                  className="flex-1 bg-[#1e1e1e] border-[#3a3428] text-white placeholder:text-[#9a7b2c] focus:border-[#e9c176] focus:ring-[#e9c176]"
                   autoFocus
+                  value={search}
+                  onChange={(e)=>setSearch(e.target.value)}
                 />
+
                 <Button
                   type="submit"
-                  className="bg-[var(--color-gold)] hover:bg-[var(--color-gold-dark)] text-[#0a0a0a] font-medium tracking-wider  text-xs"
+                  className="bg-[#e9c176] hover:bg-[#c5a059] text-[#0a0a0a] font-medium tracking-wider text-xs"
                 >
                   Search
                 </Button>
@@ -342,15 +376,17 @@ export function Header() {
         </AnimatePresence>
       </nav>
 
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[var(--color-background)] border-t border-[var(--color-border-subtle)]"
+            className="lg:hidden bg-[#131313] border-t border-[#3a3428]"
           >
             <div className="px-4 py-6 space-y-4">
+              {/* Mobile Theme Toggle */}
               <div className="flex justify-end">
                 <button
                   type="button"
@@ -360,53 +396,54 @@ export function Header() {
                       ? "Switch to light mode"
                       : "Switch to dark mode"
                   }
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] hover:text-[var(--color-gold)] transition-colors"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#3a3428] bg-[#1e1e1e] text-white hover:text-[#e9c176] transition-colors"
                 >
                   {theme === "dark" ? (
-                    <SunMedium className="h-4 w-4" />
+                    <SunMedium className="h-4 w-4 text-white" />
                   ) : (
-                    <MoonStar className="h-4 w-4" />
+                    <MoonStar className="h-4 w-4 text-white" />
                   )}
                 </button>
               </div>
+
               <Link
                 href="/product"
-                className="block text-sm tracking-wide text-[var(--color-foreground)] hover:text-[var(--color-gold)]"
+                className="block text-sm tracking-wide text-white hover:text-[#e9c176]"
                 onClick={() => setMobileOpen(false)}
               >
                 All Products
               </Link>
+
               <div className="pb-1">
-                <p className="text-[10px] tracking-widest  text-[var(--color-gold-muted)] mb-2 px-1">
+                <p className="text-[10px] tracking-widest text-[#d9b66c] mb-2 px-1">
                   Statues
                 </p>
+
                 <div className="space-y-2 pl-2">
                   {categories.length === 0 ? (
-                    <p className="text-sm text-[var(--color-gold-muted)] pl-2">
-                      Loading...
-                    </p>
+                    <p className="text-sm text-[#d9b66c] pl-2">Loading...</p>
                   ) : (
                     categories.map((cat) => (
                       <Link
                         key={cat.id}
                         href={`/product?categoryId=${cat.id}`}
-                        className="flex items-center gap-2 text-sm tracking-wide text-[var(--color-foreground)] hover:text-[var(--color-gold)]"
+                        className="flex items-center gap-2 text-sm tracking-wide text-white hover:text-[#e9c176]"
                         onClick={() => setMobileOpen(false)}
                       >
-                        <span className="text-xs text-[var(--color-gold]">
-                          ✦
-                        </span>
+                        <span className="text-xs text-[#e9c176]">✦</span>
+
                         <span>{cat.title}</span>
                       </Link>
                     ))
                   )}
                 </div>
               </div>
+
               {TOP_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block text-sm tracking-wide text-[var(--color-foreground)] hover:text-[var(--color-gold)]"
+                  className="block text-sm tracking-wide text-white hover:text-[#e9c176]"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
@@ -417,6 +454,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
+      {/* Logout Confirmation */}
       <Dialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -424,10 +462,12 @@ export function Header() {
               Confirm Logout
             </DialogTitle>
           </DialogHeader>
+
           <DialogDescription className="text-sm text-[var(--color-foreground)]">
             Are you sure you want to sign out? Your cart and theme preferences
             will be preserved.
           </DialogDescription>
+
           <div className="flex justify-end gap-2 mt-4">
             <Button
               variant="outline"
@@ -436,6 +476,7 @@ export function Header() {
             >
               Cancel
             </Button>
+
             <Button
               onClick={handleConfirmLogout}
               className="flex-1 bg-[var(--color-gold)] text-[#0a0a0a] hover:bg-[var(--color-gold-dark)]"

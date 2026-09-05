@@ -1,4 +1,4 @@
-//
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -258,25 +258,6 @@ export function HomePageClient({
                   {/* Left aligned hero content */}
                   <div className="relative z-10 flex h-full items-center px-4 md:px-16">
                     <div className="w-full max-w-3xl text-left">
-                      <motion.span
-                        className="mb-5 flex items-center justify-start gap-3 text-[11px] font-semibold tracking-[0.28em] text-[#e8c779]"
-                        initial={
-                          shouldReduceMotion ? false : { opacity: 0, y: 14 }
-                        }
-                        animate={
-                          shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                        }
-                        transition={{
-                          duration: 0.65,
-                          delay: 0.15,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                      >
-                        <span className="h-px w-8 bg-[#e8c779]/70" />
-                        {slide.eyebrow || "Handcrafted with devotion"}
-                        <span className="h-px w-8 bg-[#e8c779]/70" />
-                      </motion.span>
-
                       <motion.h1
                         className="mb-6 font-serif font-medium leading-[0.95] tracking-[-0.035em] text-[#e8c779]/70 text-5xl"
                         initial={
@@ -293,9 +274,26 @@ export function HomePageClient({
                       >
                         {slide.title}
                       </motion.h1>
-
+                      <motion.span
+                        className="mb-5 flex items-center justify-start gap-3 text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
+                        initial={
+                          shouldReduceMotion ? false : { opacity: 0, y: 14 }
+                        }
+                        animate={
+                          shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
+                        }
+                        transition={{
+                          duration: 0.65,
+                          delay: 0.15,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        <span className="h-px w-8 bg-[#e8c779]/70 " />
+                        {slide.eyebrow || "Handcrafted with devotion"}
+                        <span className="h-px w-8 bg-[#e8c779]/70 " />
+                      </motion.span>
                       <motion.p
-                        className="max-w-lg text-left w-full text-base leading-relaxed text-white md:text-lg"
+                        className="max-w-xl text-left w-full text-base leading-relaxed text-white md:text-lg font-poppins"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 20 }
                         }
@@ -311,28 +309,66 @@ export function HomePageClient({
                         {slide.subtitle ||
                           "Discover pieces made to bring warmth, craft, and meaning into your space."}
                       </motion.p>
-
-                      <motion.div
-                        className="mt-10 flex justify-start gap-4"
-                        initial={
-                          shouldReduceMotion ? false : { opacity: 0, y: 16 }
-                        }
-                        animate={
-                          shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                        }
-                        transition={{
-                          duration: 0.6,
-                          delay: 0.62,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                      >
-                        <Link
-                          href="/jewelry"
-                          className="inline-flex items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gradient-to-r from-[#bd9140] via-[#efd38a] to-[#bd9140] px-8 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
+                      <div className="flex gap-4 items-center">
+                        <motion.div
+                          className="mt-10 flex justify-start gap-4"
+                          initial={
+                            shouldReduceMotion ? false : { opacity: 0, y: 16 }
+                          }
+                          animate={
+                            shouldReduceMotion
+                              ? undefined
+                              : { opacity: 1, y: 0 }
+                          }
+                          transition={{
+                            duration: 0.6,
+                            delay: 0.62,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                         >
-                          Explore the Collection
-                        </Link>
-                      </motion.div>
+                          <Link
+                            href="/jewelry"
+                            className="inline-flex text-sm items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gold-dark px-8 py-4 text-white font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
+                          >
+                            Explore the Collection
+                          </Link>
+                        </motion.div>
+                        <motion.div
+                          className="mt-10 flex justify-start gap-4"
+                          initial={
+                            shouldReduceMotion ? false : { opacity: 0, y: 16 }
+                          }
+                          animate={
+                            shouldReduceMotion
+                              ? undefined
+                              : { opacity: 1, y: 0 }
+                          }
+                          transition={{
+                            duration: 0.6,
+                            delay: 0.62,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                        >
+                          <Link
+                            href="https://wa.me/9818504933?text=Hello%20Ratnagiri%2C%20I%20would%20like%20to%20chat%20with%20you."
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label="Chat with us on WhatsApp"
+                            className="inline-flex  text-sm gap-2 items-center justify-center rounded-full border text-white px-8 py-4  font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
+                          >
+                            Contact on Whatsapp
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              className="h-5 w-5"
+                              fill="currentColor"
+                            >
+                              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.67-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                              <path d="M20.52 3.449A11.87 11.87 0 0012.05 0C5.495 0 .16 5.335.157 11.89c0 2.096.547 4.142 1.588 5.945L.057 24l6.304-1.654a11.933 11.933 0 005.684 1.447h.005c6.554 0 11.89-5.335 11.893-11.893a11.87 11.87 0 00-3.423-8.451zm-8.47 18.275h-.004a9.92 9.92 0 01-5.055-1.386l-.362-.215-3.742.982.999-3.648-.235-.374a9.91 9.91 0 011.514-12.474 9.935 9.935 0 017.071-2.934 9.93 9.93 0 017.067 2.931 9.93 9.93 0 012.92 7.075c-.003 5.505-4.482 9.983-9.973 9.983z" />
+                            </svg>
+                          </Link>
+                        </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -370,7 +406,7 @@ export function HomePageClient({
                 />
               </div>
             </FadeIn>
-{/* 
+            {/* 
             <StaggerContainer
               className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-8 lg:grid-cols-6"
               staggerDelay={0.1}
@@ -411,55 +447,55 @@ export function HomePageClient({
               ))}
             </StaggerContainer> */}
             <StaggerContainer
-  className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4"
-  staggerDelay={0.1}
->
-  {categories.slice(0, 8).map((category: Category) => (
-    <StaggerItem key={category.id}>
-      <Link
-        href={`/jewelry?category=${category.slug}`}
-        className="group block"
-      >
-        <div className="relative aspect-[3/3] overflow-hidden rounded-xl bg-[var(--color-surface-elevated)]">
-          {/* Image */}
-          {category.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={category.image}
-              alt={category.title || ""}
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center font-serif text-3xl text-[var(--color-gold)]/30">
-              ✦
-            </div>
-          )}
+              className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-2 lg:grid-cols-4"
+              staggerDelay={0.1}
+            >
+              {categories.slice(0, 8).map((category: Category) => (
+                <StaggerItem key={category.id}>
+                  <Link
+                    href={`/product?categoryId=${category.id}`}
+                    className="group block"
+                  >
+                    <div className="relative aspect-[2/2] overflow-hidden rounded-xl bg-[var(--color-surface-elevated)]">
+                      {/* Image */}
+                      {category.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={category.image}
+                          alt={category.title || ""}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center font-serif text-3xl text-[var(--color-gold)]/30">
+                          ✦
+                        </div>
+                      )}
 
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/5 transition-all duration-500 group-hover:from-black/90" />
+                      {/* Dark overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/5 transition-all duration-500 group-hover:from-black/90" />
 
-          {/* Content */}
-          <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-3 p-5 text-center bg-black/20 transition-all duration-500 ">
-            <h3 className="font-serif text-sm font-semibold uppercase tracking-[0.12em] text-white drop-shadow-md md:text-base">
-              {category.title}
-            </h3>
+                      {/* Content */}
+                      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-3 p-5 text-center bg-black/20 transition-all duration-500 ">
+                        <h3 className="font-serif text-sm font-semibold uppercase tracking-[0.12em] text-white drop-shadow-md md:text-base">
+                          {category.title}
+                        </h3>
 
-            <span className="mt-2 text-[10px] font-medium uppercase tracking-[0.16em] text-white/90 transition-all duration-500 group-hover:tracking-[0.2em] md:text-xs">
-              View Collection
-              <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">
-                →
-              </span>
-            </span>
+                        <span className="mt-2 text-[10px] font-medium uppercase tracking-[0.16em] text-white/90 transition-all duration-500 group-hover:tracking-[0.2em] md:text-xs">
+                          View Collection
+                          <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">
+                            →
+                          </span>
+                        </span>
 
-            {/* Gold underline */}
-            <span className="mt-2 h-px w-0 bg-[var(--color-gold)] transition-all duration-500 group-hover:w-10" />
-          </div>
-        </div>
-      </Link>
-    </StaggerItem>
-  ))}
-</StaggerContainer>
+                        {/* Gold underline */}
+                        <span className="mt-2 h-px w-0 bg-[var(--color-gold)] transition-all duration-500 group-hover:w-10" />
+                      </div>
+                    </div>
+                  </Link>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
           </div>
         </section>
       ) : (

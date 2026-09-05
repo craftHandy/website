@@ -25,7 +25,7 @@ export default async function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
-            <h3 className="text-2xl font-serif text-[var(--color-foreground)] tracking-wider mb-4">RATNAGIRI</h3>
+            <h3 className="text-2xl font-serif text-[var(--color-foreground)] tracking-wider mb-4">RATNA TREASURE HANDICRAFT</h3>
             <p className="text-sm leading-relaxed mb-6 text-[var(--color-cream-dark)]">
               Curating the Himalaya&apos;s finest handcrafted treasures — statues, ritual art, and timeless heritage pieces from Nepal and Tibet.
             </p>
@@ -79,7 +79,7 @@ export default async function Footer() {
         </div>
 
         <div className="border-t border-[var(--color-border-subtle)] mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-xs text-[var(--color-gold-muted)]">&copy; {new Date().getFullYear()} Ratnagiri. All rights reserved.</p>
+          <p className="text-xs text-[var(--color-gold-muted)]">&copy; {new Date().getFullYear()} Ratna Treasue Handicraft. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-xs text-[var(--color-gold-muted)] hover:text-[var(--color-gold)] transition-colors">Privacy</Link>
             <Link href="/terms" className="text-xs text-[var(--color-gold-muted)] hover:text-[var(--color-gold)] transition-colors">Terms</Link>
