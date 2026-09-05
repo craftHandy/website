@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useCartStore } from "@/store/cart";
 import { useUserStore } from "@/store/user";
 import { getCategories } from "@/lib/api";
@@ -58,6 +65,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const catRef = useRef<HTMLDivElement>(null);
@@ -88,9 +96,14 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handleLogout() {
-    clearUser();
+  function handleLogoutRequest() {
     setShowUserMenu(false);
+    setLogoutConfirmOpen(true);
+  }
+
+  function handleConfirmLogout() {
+    clearUser();
+    setLogoutConfirmOpen(false);
   }
 
   return (
@@ -255,18 +268,11 @@ export function Header() {
                         {user.email}
                       </p>
                       <hr className="my-1 border-[var(--color-border-subtle)]" />
-                      <Link
-                        href="/orders"
-                        className="block px-4 py-1.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)]"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        My Orders
-                      </Link>
                       <button
-                        onClick={handleLogout}
+                        onClick={handleLogoutRequest}
                         className="w-full text-left px-4 py-1.5 text-sm text-[var(--color-foreground)] hover:bg-[rgba(201,168,76,0.08)] hover:text-[var(--color-gold)]"
                       >
-                        Sign Out
+                        Logout
                       </button>
                     </>
                   ) : (
@@ -387,7 +393,7 @@ export function Header() {
                         className="flex items-center gap-2 text-sm tracking-wide text-[var(--color-foreground)] hover:text-[var(--color-gold)]"
                         onClick={() => setMobileOpen(false)}
                       >
-                        <span className="text-xs text-[var(--color-gold)]">
+                        <span className="text-xs text-[var(--color-gold]">
                           ✦
                         </span>
                         <span>{cat.title}</span>
@@ -410,6 +416,35 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Dialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              Confirm Logout
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-sm text-[var(--color-foreground)]">
+            Are you sure you want to sign out? Your cart and theme preferences
+            will be preserved.
+          </DialogDescription>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setLogoutConfirmOpen(false)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmLogout}
+              className="flex-1 bg-[var(--color-gold)] text-[#0a0a0a] hover:bg-[var(--color-gold-dark)]"
+            >
+              Sign Out
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
