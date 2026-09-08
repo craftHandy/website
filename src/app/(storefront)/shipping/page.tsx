@@ -22,22 +22,22 @@ export default function ShippingPage() {
             <div className="space-y-3 text-sm leading-relaxed">
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Standard Delivery</span>
-                <span className="text-gold-muted">5–7 business days</span>
+                <span className="text-gold-muted font-poppins">5–7 business days</span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Express Delivery</span>
-                <span className="text-gold-muted">2–3 business days</span>
+                <span className="text-gold-muted font-poppins">2–3 business days</span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Free Shipping</span>
-                <span className="text-gold-muted">On orders above ₹25,000</span>
+                <span className="text-gold-muted font-poppins">On orders above ₹25,000</span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Standard Shipping Fee</span>
-                <span className="text-gold-muted">₹499</span>
+                <span className="text-gold-muted font-poppins">₹499</span>
               </div>
             </div>
-            <p className="mt-4 text-sm text-gold-muted">
+            <p className="mt-4 text-sm text-gold-muted font-poppins">
               All jewelry is carefully packaged in our signature Ratnagiri box with full insurance coverage during transit.
             </p>
           </section>
@@ -46,7 +46,7 @@ export default function ShippingPage() {
             <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">Returns & Exchanges</h2>
             <div className="space-y-3 text-sm leading-relaxed">
               <p>We want you to love every piece you receive. If for any reason you&apos;re not completely satisfied:</p>
-              <ul className="list-disc pl-5 space-y-2">
+              <ul className="list-disc pl-5 space-y-2 font-poppins">
                 <li>Returns are accepted within 15 days of delivery</li>
                 <li>Jewelry must be unworn, in its original condition and packaging</li>
                 <li>Custom or personalized orders cannot be returned</li>
@@ -58,7 +58,7 @@ export default function ShippingPage() {
 
           <section>
             <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">International Shipping</h2>
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed font-poppins">
               We ship worldwide. International delivery typically takes 7–14 business days depending on your location. Customs duties and taxes may apply and are the responsibility of the recipient.
             </p>
           </section>

@@ -41,35 +41,35 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-serif text-[var(--color-foreground)] mb-1 block">Ratnagiri</Link>
-          <p className="text-[var(--color-cream-dark)] text-sm">Create your account</p>
+          <p className="text-[var(--color-cream-dark)] text-sm font-poppins">Create your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5">Name</label>
+            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5 font-poppins">Name</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-11 px-3 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-foreground)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)]" />
           </div>
           <div>
-            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5">Email</label>
+            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5 font-poppins">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-11 px-3 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-foreground)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)]" required />
           </div>
           <div>
-            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5">Password</label>
+            <label className="block text-xs text-[var(--color-cream-dark)] tracking-wider mb-1.5 font-poppins">Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full h-11 px-3 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-foreground)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)]" required minLength={6} />
           </div>
 
-          {error && <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-sm">{error}</p>}
+          {error && <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-sm font-poppins">{error}</p>}
 
-          <button type="submit" className="w-full h-11 bg-[var(--color-gold)] hover:bg-[var(--color-gold-dark)] text-[#0a0a0a] text-sm font-medium rounded-sm transition-colors">
+          <button type="submit" className="w-full h-11 bg-[var(--color-gold)] hover:bg-[var(--color-gold-dark)] text-[#0a0a0a] text-sm font-medium font-poppins rounded-sm transition-colors">
             Create Account
           </button>
         </form>
 
-        <p className="text-center text-xs text-[var(--color-cream-dark)] mt-4">
+        <p className="text-center text-xs text-[var(--color-cream-dark)] mt-4 font-poppins">
           Demo mode: your account is stored locally in this browser only.
         </p>
 
-        <p className="text-center text-xs text-[var(--color-cream-dark)] mt-6">
+        <p className="text-center text-xs text-[var(--color-cream-dark)] mt-6 font-poppins">
           Already have an account?{" "}
           <Link href="/login" className="text-gold hover:underline">Sign in</Link>
         </p>

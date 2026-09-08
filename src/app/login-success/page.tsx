@@ -104,7 +104,7 @@ export default function LoginSuccessPage() {
           <h1 className="text-2xl font-semibold text-[var(--color-foreground)]">
             {isProcessing ? "Signing You In" : "Login Successful"}
           </h1>
-          <p className="text-[var(--color-cream-dark)] text-sm">{statusText}</p>
+          <p className="text-[var(--color-cream-dark)] text-sm font-poppins">{statusText}</p>
         </div>
 
         <div>

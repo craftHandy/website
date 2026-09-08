@@ -293,7 +293,7 @@ export default function CheckoutPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>Full name</span>
                     </label>
                     <input
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>Mobile Number</span>
                     </label>
                     <input
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                  <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                     <span>Address Line 1</span>
                   </label>
                   <input
@@ -365,7 +365,7 @@ export default function CheckoutPage() {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>City</span>
                     </label>
                     <input
@@ -382,7 +382,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>State</span>
                     </label>
                     <input
@@ -401,7 +401,7 @@ export default function CheckoutPage() {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>Country</span>
                     </label>
                     <input
@@ -418,7 +418,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm text-[var(--color-cream-dark)]/80">
+                    <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
                       <span>Postal Code</span>
                     </label>
                     <input

@@ -32,7 +32,7 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
     { label: "Craft Type", value: product.craftType ?? "Not specified" },
     { label: "Origin", value: product.origin ?? "Not specified" },
     { label: "Materials", value: product.materials.length ? product.materials.join(", ") : "Not specified" },
-    { label: "Discount Percentage", value: product.discountPercentage != null ? `${product.discountPercentage}%` : "Not specified" },
+    { label: "Discount (%)", value: product.discountPercentage != null ? `${product.discountPercentage}%` : "Not specified" },
     { label: "Ideal for", value: occasions.length ? occasions.join(", ") : "Not specified" },
     { label: "Height", value: product.height != null ? `${product.height} cm` : "Not specified" },
     { label: "Width", value: product.width != null ? `${product.width} cm` : "Not specified" },
@@ -54,15 +54,15 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
           <div className="mt-7 flex items-center gap-3"><span className="text-3xl font-semibold">{formatPrice(price)}</span>{discounted && <><span className="text-lg text-[var(--color-gold-muted)] line-through">{formatPrice(product.price)}</span><Badge variant="sale">{calculateDiscount(product.price, price)}% OFF</Badge></>}</div>
           <div className="mt-5">{inStock ? <span className="inline-flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400"><PackageCheck className="h-4 w-4" /> In stock and ready to ship</span> : <span className="text-sm text-[var(--color-gold-muted)]">Currently unavailable</span>}</div>
           <div className="my-8 h-px bg-[var(--color-border-subtle)]" />
-          <p className="whitespace-pre-line text-base leading-8 text-[var(--color-cream-dark)]">{product.description || "A special handcrafted piece, made with the care and attention of traditional artisan work."}</p>
+          <p className="whitespace-pre-line text-base leading-8 text-[var(--color-cream-dark)] font-poppins">{product.description || "A special handcrafted piece, made with the care and attention of traditional artisan work."}</p>
           <div className="mt-8"><AddToCartBtn productId={product.id} slug={product.slug} title={product.title} price={price} image={product.images[0]?.url} disabled={!inStock} className="w-full bg-[var(--color-gold)] text-[#17130a] hover:bg-[var(--color-gold-dark)] sm:w-auto sm:min-w-64">{inStock ? "Add to cart" : "Out of stock"}</AddToCartBtn></div>
           <div className="mt-10 grid gap-4 border-y border-[var(--color-border-subtle)] py-6 sm:grid-cols-2">
             {product.materials.length > 0 && <Info label="Materials" value={product.materials.join(", ")} />}
             {product.origin && <Info label="Origin" value={product.origin} />}
             {occasions.length > 0 && <Info label="Ideal for" value={occasions.join(", ")} />}
-            <div className="flex gap-3 text-sm text-[var(--color-cream-dark)]"><Ruler className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-gold)]" /><span>Made with artisan care</span></div>
+            <div className="flex gap-3 text-sm text-[var(--color-cream-dark)] font-poppins"><Ruler className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-gold)]" /><span>Made with artisan care</span></div>
           </div>
-          <div className="mt-7 flex gap-3 text-sm leading-6 text-[var(--color-cream-dark)]"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-gold)]" /><p>Each order is carefully checked and securely packed before shipping.</p></div>
+          <div className="mt-7 flex gap-3 text-sm leading-6 text-[var(--color-cream-dark)] font-poppins"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-gold)]" /><p>Each order is carefully checked and securely packed before shipping.</p></div>
 
           <div className="mt-10">
             <h2 className="text-xl font-semibold text-[var(--color-foreground)]">Product details</h2>
@@ -79,5 +79,5 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
 }
 
 function Info({ label, value }: { label: string; value: string }) {
-  return <div><p className="text-[11px] font-bold tracking-[0.18em] text-[var(--color-gold-muted)]">{label}</p><p className="mt-1 text-sm text-[var(--color-cream-dark)]">{value}</p></div>;
+  return <div><p className="text-xs font-bold tracking-[0.18em] text-[var(--color-gold-muted)]">{label}</p><p className="mt-1 text-xs text-[var(--color-cream-dark)] font-poppins">{value}</p></div>;
 }
