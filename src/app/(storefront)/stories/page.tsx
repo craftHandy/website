@@ -80,7 +80,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                     {featuredPost.excerpt}
                   </p>
                 )}
-                <div className="flex flex-wrap items-center gap-3 text-sm text-gold-muted">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-gold-muted font-poppins">
                   {featuredPost.author && <span className="text-[var(--color-cream-dark)]">{featuredPost.author}</span>}
                   {featuredPost.publishedAt && (
                     <>
@@ -134,11 +134,11 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                       {post.title}
                     </h3>
                     {post.excerpt && (
-                      <p className="text-sm text-[var(--color-cream-dark)]/70 line-clamp-3 mb-3">
+                      <p className="text-sm text-[var(--color-cream-dark)]/70 line-clamp-3 mb-3 font-poppins">
                         {post.excerpt}
                       </p>
                     )}
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-gold-muted">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-gold-muted font-poppins">
                       {post.author && <span className="text-[var(--color-cream-dark)]">{post.author}</span>}
                       {post.publishedAt && (
                         <>
@@ -162,14 +162,14 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
 
         {posts.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-[var(--color-border-subtle)] rounded-sm bg-[var(--color-surface-elevated)]">
-            <p className="text-[var(--color-cream-dark)]/70 mb-4">No blogs available right now. Check back soon.</p>
+            <p className="text-[var(--color-cream-dark)]/70 mb-4 font-poppins">No blogs available right now. Check back soon.</p>
             <Link href="/" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
               Return Home
             </Link>
           </div>
         ) : (
           <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-            <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-[var(--color-cream-dark)]">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-[var(--color-cream-dark)] font-poppins">
               <span className="text-[var(--color-foreground)]">Page {result.currentPage} of {result.totalPages || 1}</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3">

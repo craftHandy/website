@@ -19,7 +19,7 @@ export default function SizeGuidePage() {
         <div className="space-y-10 text-[var(--color-cream-dark)]/70">
           <section>
             <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-4">Ring Size Guide</h2>
-            <p className="text-sm leading-relaxed mb-4">
+            <p className="text-sm leading-relaxed mb-4 font-poppins">
               Measure the circumference of your finger with a thin strip of paper or string. Use the chart below to find your size.
             </p>
             <div className="overflow-x-auto">
@@ -86,7 +86,7 @@ export default function SizeGuidePage() {
 
           <section>
             <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-4">Bangle Size Guide</h2>
-            <p className="text-sm leading-relaxed mb-4">
+            <p className="text-sm leading-relaxed mb-4 font-poppins">
               Measure your hand circumference by bringing your thumb and little finger together, then measure around the widest part of your hand.
             </p>
             <div className="overflow-x-auto">
@@ -118,9 +118,9 @@ export default function SizeGuidePage() {
 
           <section>
             <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-4">Need Help?</h2>
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed font-poppins">
               If you&apos;re unsure about sizing, our team is happy to help. Contact us at{" "}
-              <span className="text-gold">hello@ratnagiri.com</span> and we&apos;ll guide you to the perfect fit.
+              <span className="text-gold">ratnacraft@gmail.com</span> and we&apos;ll guide you to the perfect fit.
             </p>
           </section>
         </div>

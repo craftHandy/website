@@ -1,26 +1,19 @@
 "use client";
 
-import { Suspense, useCallback, useMemo, useState } from "react";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  SlidersHorizontal,
-  X,
-} from "lucide-react";
 import { ProductCard } from "@/components/shared/product-card";
 import {
   getCategories,
-  getProductList,
-  getProducts,
   getMaterials,
   getOccasions,
+  getProductList,
+  getProducts,
 } from "@/lib/api";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-
+import { useQuery } from "@tanstack/react-query";
+import { motion, useReducedMotion } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useMemo, useState } from "react";
 
 const PAGE_SIZE = 12;
 
@@ -149,7 +142,7 @@ function ProductListing() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <p className="mb-3 text-xs font-semibold  tracking-[0.28em] text-[var(--color-gold)]">Handmade collection</p>
           <h1 className="font-serif text-4xl sm:text-5xl">{activeCategory ? activeCategory.title : "All products"}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--color-cream-dark)]">Discover thoughtful pieces made by skilled artisans, each with its own story and character.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--color-cream-dark)] font-poppins">Discover thoughtful pieces made by skilled artisans, each with its own story and character.</p>
         </div>
       </section> */}
       <section
@@ -158,31 +151,30 @@ function ProductListing() {
       >
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <motion.span
-                        className="mb-5 flex items-center justify-start gap-3 text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
-                        initial={
-                          shouldReduceMotion ? false : { opacity: 0, y: 14 }
-                        }
-                        animate={
-                          shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                        }
-                        transition={{
-                          duration: 0.65,
-                          delay: 0.15,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                      >
-                        <span className="h-px w-8 bg-[#e8c779]/70 " />
-                        Our Collections
-                        <span className="h-px w-8 bg-[#e8c779]/70 " />
-                      </motion.span>
+            className="mb-5 flex items-center justify-start gap-3 text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.65,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <span className="h-px w-8 bg-[#e8c779]/70 " />
+            Our Collections
+            <span className="h-px w-8 bg-[#e8c779]/70 " />
+          </motion.span>
 
           <h1 className="font-serif text-4xl text-white">
-            EXQUISITE HANDCRAFTS  <br/>FROM THE HIMALAYAS
+            EXQUISITE HANDCRAFTS <br />
+            FROM THE HIMALAYAS
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-surface font-poppins">
-            Discover our curated collection of authentic Nepalese and Tibetan<br/>
-            handicrafts. Each piece is a masterpiece of traditional<br/>
+            Discover our curated collection of authentic Nepalese and Tibetan
+            <br />
+            handicrafts. Each piece is a masterpiece of traditional
+            <br />
             craftsmanship, made with devotion and skill.
           </p>
         </div>
@@ -321,7 +313,7 @@ function ProductListing() {
                 <h2 className="mb-3 text-xs font-bold text-gold  tracking-[0.18em]">
                   Price range
                 </h2>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2 font-poppins">
                   <input
                     aria-label="Minimum price"
                     defaultValue={minPrice}
@@ -382,7 +374,7 @@ function ProductListing() {
                 onChange={(event) =>
                   router.push(hrefFor({ sort: event.target.value, page: "0" }))
                 }
-                className="h-10 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 text-sm"
+                className="h-10 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 text-sm font-poppins"
               >
                 <option value="newest">Newest first</option>
                 <option value="price-asc">Price: low to high</option>

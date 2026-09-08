@@ -15,7 +15,7 @@ const API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
 const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/public/hero-slide`;
 const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
 const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/category/all`;
-const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product/featured`;
+const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product`;
 // Updated public products endpoint per backend API
 const PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product`;
 
@@ -489,19 +489,18 @@ export async function getProductById(id: string): Promise<Product | null> {
 export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
   try {
     const response = await fetch(
-      `${FEATURED_PRODUCTS_ENDPOINT}?page=0&size=${limit}&sortBy=id&direction=desc`,
+      `${FEATURED_PRODUCTS_ENDPOINT}?page=0&size=${limit}&featured=true`,
       { next: { revalidate: 60 } }
     );
-
+    console.log("response status:", response.status);
     if (!response.ok) {
         console.warn(`Featured products request failed with status ${response.status}`);
         return [];
-    }
+    } 
 
     const payload = await response.json();
     const rawProducts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
     const products = mapApiProducts(rawProducts);
-
     return products.length > 0 ? products : [];
   } catch (error) {
     console.warn("Featured products request failed.", error);

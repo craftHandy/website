@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">1. Information We Collect</h2>
             <p className="mb-3">We collect information you provide directly to us, including:</p>
-            <ul className="list-disc pl-5 space-y-1">
+            <ul className="list-disc pl-5 space-y-1 font-poppins">
               <li>Personal information (name, email, phone number, shipping address) when you place an order</li>
               <li>Payment information processed securely through our payment providers</li>
               <li>Communication preferences and any messages you send us</li>
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">2. How We Use Your Information</h2>
             <p className="mb-3">We use the information we collect to:</p>
-            <ul className="list-disc pl-5 space-y-1">
+            <ul className="list-disc pl-5 space-y-1 font-poppins">
               <li>Process and fulfill your orders</li>
               <li>Send order confirmations and shipping updates</li>
               <li>Provide customer support</li>
@@ -44,27 +44,27 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">3. Information Sharing</h2>
-            <p>We do not sell or rent your personal information to third parties. We may share information with trusted service providers who assist in operating our website and delivering orders, subject to confidentiality obligations.</p>
+            <p className="font-poppins">We do not sell or rent your personal information to third parties. We may share information with trusted service providers who assist in operating our website and delivering orders, subject to confidentiality obligations.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">4. Data Security</h2>
-            <p>We implement reasonable security measures to protect your personal information. All payment transactions are encrypted and processed through secure, PCI-compliant payment gateways.</p>
+            <p className="font-poppins">We implement reasonable security measures to protect your personal information. All payment transactions are encrypted and processed through secure, PCI-compliant payment gateways.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">5. Cookies</h2>
-            <p>We use cookies and similar tracking technologies to enhance your browsing experience, analyze website traffic, and personalize content. You can manage cookie preferences through your browser settings.</p>
+            <p className="font-poppins">We use cookies and similar tracking technologies to enhance your browsing experience, analyze website traffic, and personalize content. You can manage cookie preferences through your browser settings.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">6. Your Rights</h2>
-            <p>You have the right to access, correct, or delete your personal information. You may also opt out of marketing communications at any time. To exercise these rights, contact us at <span className="text-gold">hello@ratnagiri.com</span>.</p>
+            <p className="font-poppins">You have the right to access, correct, or delete your personal information. You may also opt out of marketing communications at any time. To exercise these rights, contact us at <span className="text-gold">ratnacraft@gmail.com</span>.</p>
           </section>
 
           <section>
             <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-3">7. Contact</h2>
-            <p>For any questions about this privacy policy, please contact us at <span className="text-gold">hello@ratnagiri.com</span>.</p>
+            <p className="font-poppins">For any questions about this privacy policy, please contact us at <span className="text-gold">ratnacraft@gmail.com</span>.</p>
           </section>
         </div>
       </div>

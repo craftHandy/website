@@ -23,7 +23,7 @@ export default async function CollectionsPage() {
           <h1 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-4">
             Collections
           </h1>
-          <p className="text-[var(--color-cream-dark)]/70 max-w-2xl text-lg font-light leading-relaxed">
+          <p className="text-[var(--color-cream-dark)]/70 max-w-2xl text-lg font-light leading-relaxed font-poppins">
             Each collection tells a story — from the grandeur of sacred statues to the understated elegance of ritual objects. Discover the world that speaks to you.
           </p>
         </div>
@@ -52,7 +52,7 @@ export default async function CollectionsPage() {
                       {collection.title}
                     </h2>
                     {collection.description && (
-                      <p className="text-[var(--color-cream-dark)]/80 text-sm max-w-md line-clamp-2">
+                      <p className="text-[var(--color-cream-dark)]/80 text-sm max-w-md line-clamp-2 font-poppins">
                         {collection.description}
                       </p>
                     )}
@@ -67,7 +67,7 @@ export default async function CollectionsPage() {
         ) : (
           <div className="text-center py-20">
             <div className="text-6xl mb-4 text-gold/30">✦</div>
-            <p className="text-[var(--color-cream-dark)]/70 mb-2">Collections are being curated.</p>
+            <p className="text-[var(--color-cream-dark)]/70 mb-2 font-poppins">Collections are being curated.</p>
             <Link href="/jewelry" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
               Browse All Treasures →
             </Link>

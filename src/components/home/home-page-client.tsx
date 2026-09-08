@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -19,6 +18,9 @@ import {
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
+import Reveal from "../animations/Reveal";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ProductCard } from "../shared/product-card";
 
 type Product = {
   id: string;
@@ -152,7 +154,7 @@ export function HomePageClient({
 }: HomePageClientProps) {
   const [autoplayMounted, setAutoplayMounted] = useState(false);
   const shouldReduceMotion = useReducedMotion();
-
+  console.log(featuredProducts);
   useEffect(() => {
     setAutoplayMounted(true);
   }, []);
@@ -175,8 +177,7 @@ export function HomePageClient({
 
   const hasCategories = categories.length > 0;
   const showcaseProducts = featuredProducts.slice(0, 3);
-  const arrivals = newArrivalProducts.slice(0, 8);
-
+  const arrivals = newArrivalProducts.slice(0, 4);
   const featuredGridClassName =
     showcaseProducts.length === 1
       ? "max-w-2xl"
@@ -309,7 +310,7 @@ export function HomePageClient({
                         {slide.subtitle ||
                           "Discover pieces made to bring warmth, craft, and meaning into your space."}
                       </motion.p>
-                      <div className="flex gap-4 items-center">
+                      <div className="flex max-md:flex-col gap-2 md:gap-4 items-center">
                         <motion.div
                           className="mt-10 flex justify-start gap-4"
                           initial={
@@ -350,7 +351,7 @@ export function HomePageClient({
                           }}
                         >
                           <Link
-                            href="https://wa.me/9818504933?text=Hello%20Ratnagiri%2C%20I%20would%20like%20to%20chat%20with%20you."
+                            href="https://wa.me/+91 98714 82162?text=Hello%20Ratnagiri%2C%20I%20would%20like%20to%20chat%20with%20you."
                             target="_blank"
                             rel="noreferrer"
                             aria-label="Chat with us on WhatsApp"
@@ -518,218 +519,7 @@ export function HomePageClient({
           </div>
         </section>
       )}
-
-      {/* Featured Products */}
-      {showcaseProducts.length > 0 && (
-        <section className="mx-auto max-w-[1280px] px-4 py-24 md:px-16 md:py-28">
-          <FadeIn
-            className="mb-12 flex items-center justify-between"
-            direction="none"
-          >
-            <div className="text-left">
-              <p className="mb-3 text-xs font-medium tracking-[0.25em] text-[var(--color-gold)]">
-                Handpicked for you
-              </p>
-
-              <h2 className="font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
-                Featured Products
-              </h2>
-
-              <AnimatedRule
-                reduceMotion={shouldReduceMotion}
-                className="mt-5 w-24"
-              />
-            </div>
-
-            <Link
-              href="/jewelry"
-              className="border-b border-[var(--color-gold)]/30 pb-1 text-[11px] font-semibold tracking-[0.25em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)]"
-            >
-              View All
-            </Link>
-          </FadeIn>
-
-          <div className={`grid grid-cols-1 gap-6 ${featuredGridClassName}`}>
-            {showcaseProducts.map((product, index) => {
-              const isLeadProduct = showcaseProducts.length >= 3 && index === 0;
-
-              const image = product.images?.[0]?.url;
-              const price = product.discountPrice ?? product.price;
-
-              return (
-                <Link
-                  key={product.id}
-                  href={`/product/${product.id}`}
-                  className="group block"
-                >
-                  <motion.article
-                    className={`relative overflow-hidden rounded-lg bg-[var(--color-surface-elevated)] ${
-                      isLeadProduct
-                        ? "h-[420px] md:col-span-2 md:row-span-2 md:h-[584px]"
-                        : showcaseProducts.length <= 2
-                          ? "h-[420px]"
-                          : "h-[280px]"
-                    }`}
-                    initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
-                    whileInView={
-                      shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                    }
-                    whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: shouldReduceMotion
-                        ? 0
-                        : Math.min(index * 0.08, 0.32),
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
-                    {image ? (
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        style={{
-                          backgroundImage: `url(${image})`,
-                        }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(201,168,76,0.2),transparent_34%),linear-gradient(135deg,var(--color-surface-elevated),var(--color-background))]" />
-                    )}
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/5" />
-
-                    {!image && (
-                      <span className="absolute right-7 top-5 font-serif text-7xl text-[var(--color-gold)]/25">
-                        ✦
-                      </span>
-                    )}
-
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-left md:p-8">
-                      {product.category?.title && (
-                        <p className="mb-2 text-[10px] font-semibold tracking-[0.22em] text-[#e8c779]">
-                          {product.category.title}
-                        </p>
-                      )}
-
-                      <h3
-                        className={`font-serif text-white ${
-                          isLeadProduct ? "text-3xl md:text-4xl" : "text-xl"
-                        }`}
-                      >
-                        {product.title}
-                      </h3>
-
-                      {typeof price === "number" && (
-                        <p className="mt-3 text-sm text-white/75">
-                          {formatPrice(price)}
-                        </p>
-                      )}
-                    </div>
-                  </motion.article>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Devotional Art */}
-      <section className="relative overflow-hidden bg-[var(--color-surface-elevated)] py-24 md:py-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(201,168,76,0.1),transparent_30%)]" />
-
-        <div className="relative z-10 mx-auto grid max-w-[1280px] gap-12 px-4 md:grid-cols-2 md:px-16">
-          <FadeIn
-            className="order-2 flex flex-col items-start justify-center text-left md:order-1"
-            direction="right"
-          >
-            <h2 className="mb-6 font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
-              Devotional Art
-            </h2>
-
-            <motion.div
-              className="mb-8 h-px w-16 bg-[var(--color-gold)]"
-              initial={shouldReduceMotion ? false : { scaleX: 0 }}
-              whileInView={shouldReduceMotion ? undefined : { scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.7,
-                delay: 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              style={{ transformOrigin: "left" }}
-            />
-
-            <p className="mb-8 text-lg leading-relaxed text-[var(--color-cream-dark)]">
-              Our collection of devotional wall art and tapestries brings the
-              ethereal into your physical space. Each piece is crafted by
-              artisans who approach their work as a meditative practice, using
-              natural pigments and woven textures to create focal points for
-              your sanctuary.
-            </p>
-
-            <Link
-              href="/stories"
-              className="flex items-center gap-2 font-label-caps text-label-caps text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] group"
-            >
-              DISCOVER THE ART
-              <span className="material-symbols-outlined transform transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
-            </Link>
-          </FadeIn>
-
-          <motion.div
-            className="relative order-1 md:order-2"
-            initial={
-              shouldReduceMotion ? false : { opacity: 0, scale: 0.94, y: 32 }
-            }
-            whileInView={
-              shouldReduceMotion ? undefined : { opacity: 1, scale: 1, y: 0 }
-            }
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <motion.div
-              className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-lg shadow-[0_0_40px_rgba(197,160,89,0.15)]"
-              whileHover={shouldReduceMotion ? undefined : { scale: 1.015 }}
-              transition={{
-                duration: 0.45,
-                ease: "easeOut",
-              }}
-            >
-              <motion.img
-                alt="Devotional Art"
-                className="h-full w-full object-cover"
-                src={devotionalArtImage}
-                initial={shouldReduceMotion ? false : { scale: 1.1 }}
-                whileInView={shouldReduceMotion ? undefined : { scale: 1 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 1.15,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
-            </motion.div>
-
-            <motion.div
-              className="absolute -bottom-8 -left-8 hidden h-48 w-48 rounded-full border border-[var(--color-gold)]/20 mix-blend-overlay md:block"
-              animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      duration: 30,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }
-              }
-            />
-          </motion.div>
-        </div>
-      </section>
-
+      
       {/* New Arrivals */}
       {arrivals.length > 0 && (
         <section className="bg-[var(--color-background)] px-6 py-24 md:py-28">
@@ -752,10 +542,10 @@ export function HomePageClient({
                 </div>
 
                 <Link
-                  href="/jewelry"
-                  className="hidden border-b border-[var(--color-gold)]/30 pb-1 text-[11px] font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:block"
+                  href="/product"
+                  className="hidden border-b border-[var(--color-gold)]/30 pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
                 >
-                  View All
+                  View All <ArrowRight size={14} />
                 </Link>
               </div>
             </FadeIn>
@@ -1025,6 +815,217 @@ export function HomePageClient({
         </section>
       )}
 
+      {/* Devotional Art */}
+      <section className="relative overflow-hidden bg-[var(--color-surface-elevated)] py-24 md:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(201,168,76,0.1),transparent_30%)]" />
+
+        <div className="relative z-10 mx-auto grid max-w-[1280px] gap-12 px-4 md:grid-cols-2 md:px-16">
+          <FadeIn
+            className="order-2 flex flex-col items-start justify-center text-left md:order-1"
+            direction="right"
+          >
+            <h2 className="mb-6 font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
+              Devotional Art
+            </h2>
+
+            <motion.div
+              className="mb-8 h-px w-16 bg-[var(--color-gold)]"
+              initial={shouldReduceMotion ? false : { scaleX: 0 }}
+              whileInView={shouldReduceMotion ? undefined : { scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.7,
+                delay: 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              style={{ transformOrigin: "left" }}
+            />
+
+            <p className="mb-8 text-lg leading-relaxed text-[var(--color-cream-dark)] font-poppins">
+              Our collection of devotional wall art and tapestries brings the
+              ethereal into your physical space. Each piece is crafted by
+              artisans who approach their work as a meditative practice, using
+              natural pigments and woven textures to create focal points for
+              your sanctuary.
+            </p>
+
+            <Link
+              href="/stories"
+              className="flex items-center gap-2 font-label-caps text-label-caps text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] group"
+            >
+              DISCOVER THE ART
+              <span className="material-symbols-outlined transform transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
+            </Link>
+          </FadeIn>
+
+          <motion.div
+            className="relative order-1 md:order-2"
+            initial={
+              shouldReduceMotion ? false : { opacity: 0, scale: 0.94, y: 32 }
+            }
+            whileInView={
+              shouldReduceMotion ? undefined : { opacity: 1, scale: 1, y: 0 }
+            }
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <motion.div
+              className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-lg shadow-[0_0_40px_rgba(197,160,89,0.15)]"
+              whileHover={shouldReduceMotion ? undefined : { scale: 1.015 }}
+              transition={{
+                duration: 0.45,
+                ease: "easeOut",
+              }}
+            >
+              <motion.img
+                alt="Devotional Art"
+                className="h-full w-full object-cover"
+                src={devotionalArtImage}
+                initial={shouldReduceMotion ? false : { scale: 1.1 }}
+                whileInView={shouldReduceMotion ? undefined : { scale: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 1.15,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              />
+            </motion.div>
+
+            <motion.div
+              className="absolute -bottom-8 -left-8 hidden h-48 w-48 rounded-full border border-[var(--color-gold)]/20 mix-blend-overlay md:block"
+              animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+              transition={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      duration: 30,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }
+              }
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      {showcaseProducts.length > 0 && (
+        <section className="mx-auto max-w-[1280px] px-4 py-24 md:px-16 md:py-28">
+          <FadeIn
+            className="mb-12 flex items-center justify-between"
+            direction="none"
+          >
+            <div className="text-left">
+              <p className="mb-3 text-xs font-medium tracking-[0.25em] text-[var(--color-gold)]">
+                Handpicked for you
+              </p>
+
+              <h2 className="font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
+                Featured Products
+              </h2>
+
+              <AnimatedRule
+                reduceMotion={shouldReduceMotion}
+                className="mt-5 w-24"
+              />
+            </div>
+
+            <Link
+              href="/product"
+              className="hidden border-b border-[var(--color-gold)]/30 pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
+            >
+              View All <ArrowRight size={14} />
+            </Link>
+          </FadeIn>
+
+          <div className={`grid grid-cols-1 gap-6 ${featuredGridClassName}`}>
+            {showcaseProducts.map((product, index) => {
+              const isLeadProduct = showcaseProducts.length >= 3 && index === 0;
+
+              const image = product.images?.[0]?.url;
+              const price = product.discountPrice ?? product.price;
+
+              return (
+                <Link
+                  key={product.id}
+                  href={`/product/${product.id}`}
+                  className="group block"
+                >
+                  <motion.article
+                    className={`relative overflow-hidden rounded-lg bg-[var(--color-surface-elevated)] ${
+                      isLeadProduct
+                        ? "h-[420px] md:col-span-2 md:row-span-2 md:h-[584px]"
+                        : showcaseProducts.length <= 2
+                          ? "h-[420px]"
+                          : "h-[280px]"
+                    }`}
+                    initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
+                    whileInView={
+                      shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
+                    }
+                    whileHover={shouldReduceMotion ? undefined : { y: -4 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: shouldReduceMotion
+                        ? 0
+                        : Math.min(index * 0.08, 0.32),
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {image ? (
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                        style={{
+                          backgroundImage: `url(${image})`,
+                        }}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(201,168,76,0.2),transparent_34%),linear-gradient(135deg,var(--color-surface-elevated),var(--color-background))]" />
+                    )}
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/5" />
+
+                    {!image && (
+                      <span className="absolute right-7 top-5 font-serif text-7xl text-[var(--color-gold)]/25">
+                        ✦
+                      </span>
+                    )}
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-left md:p-8">
+                      {product.category?.title && (
+                        <p className="mb-2 text-[10px] font-semibold tracking-[0.22em] text-[#e8c779]">
+                          {product.category.title}
+                        </p>
+                      )}
+
+                      <h3
+                        className={`font-serif text-white ${
+                          isLeadProduct ? "text-3xl md:text-4xl" : "text-xl"
+                        }`}
+                      >
+                        {product.title}
+                      </h3>
+
+                      {typeof price === "number" && (
+                        <p className="mt-3 text-sm text-white/75">
+                          {formatPrice(price)}
+                        </p>
+                      )}
+                    </div>
+                  </motion.article>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Trust Pillars */}
       <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-surface-elevated)] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
@@ -1086,7 +1087,7 @@ export function HomePageClient({
                       {pillar.title}
                     </h3>
 
-                    <p className="max-w-xs text-sm leading-relaxed text-[var(--color-cream-dark)]">
+                    <p className="max-w-xs text-sm leading-relaxed text-[var(--color-cream-dark)] font-poppins">
                       {pillar.description}
                     </p>
                   </div>
@@ -1140,7 +1141,7 @@ export function HomePageClient({
             Generations of Devotion
           </h2>
 
-          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[var(--color-cream-dark)]">
+          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-[var(--color-cream-dark)] font-poppins">
             “Our craft is not merely shaping material; it is a meditation. Each
             strike of the chisel is a mantra, each polished surface a reflection
             of the divine within. We do not make statues; we coax the sacred out
@@ -1215,7 +1216,7 @@ export function HomePageClient({
                     ))}
                   </div>
 
-                  <p className="mb-4 text-lg italic leading-relaxed text-[var(--color-cream-dark)]">
+                  <p className="mb-4 text-lg italic leading-relaxed text-[var(--color-cream-dark)] font-poppins">
                     “{item.quote}”
                   </p>
 

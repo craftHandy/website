@@ -158,14 +158,14 @@ export function Header() {
           <div className="hidden lg:flex items-center space-x-8">
             <Link
               href="/"
-              className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
+              className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
             >
               Home
             </Link>
 
             <Link
               href="/product"
-              className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
+              className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
             >
               Product
             </Link>
@@ -197,7 +197,7 @@ export function Header() {
                     onMouseLeave={() => setCatOpen(false)}
                     className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-60 bg-[#1e1e1e] border border-[#3a3428] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-50 overflow-hidden origin-top"
                   >
-                    <div className="max-h-80 overflow-y-auto overscroll-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="max-h-80 overflow-y-auto overscroll-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden font-poppins">
                       {categories.length === 0 ? (
                         <div className="px-4 py-2.5 text-sm text-[#d9b66c]">
                           Loading...
@@ -238,7 +238,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="tracking-[0.2em] text-white hover:text-[#e9c176] transition-colors duration-300"
+                className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
               >
                 {link.label}
               </Link>

@@ -48,8 +48,8 @@ export default function OrdersPage() {
               <div key={order.id} className="bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-xs text-[var(--color-cream-dark)]">Order #{order.id}</p>
-                    <p className="text-sm text-[var(--color-cream-dark)]">{new Date(order.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
+                    <p className="text-xs text-[var(--color-cream-dark)] font-poppins">Order #{order.id}</p>
+                    <p className="text-sm text-[var(--color-cream-dark)] font-poppins">{new Date(order.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-semibold text-[var(--color-foreground)]">{formatPrice(order.total)}</p>
@@ -62,7 +62,7 @@ export default function OrdersPage() {
                 </div>
                 <div className="border-t border-[var(--color-border-subtle)] pt-4 space-y-2">
                   {order.items?.map((item:any) => (
-                    <div key={item.id} className="flex items-center gap-3 text-sm">
+                    <div key={item.id} className="flex items-center gap-3 text-sm font-poppins">
                       <span className="text-[var(--color-cream-dark)]">{item.quantity}x</span>
                       <Link href={`/jewelry/${item.slug}`} className="text-[var(--color-foreground)] hover:text-gold">{item.title}</Link>
                       <span className="ml-auto text-[var(--color-cream-dark)]">{formatPrice(item.price * item.quantity)}</span>
@@ -74,7 +74,7 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-[var(--color-cream-dark)] mb-4">No orders yet.</p>
+            <p className="text-[var(--color-cream-dark)] mb-4 font-poppins">No orders yet.</p>
             <Link href="/jewelry" className="text-gold hover:underline text-sm font-medium">
               Start Shopping →
             </Link>
