@@ -12,7 +12,7 @@ export default function SizeGuidePage() {
         <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Size Guide
         </p>
-        <h1 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-8">
+        <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-8">
           Find Your Perfect Fit
         </h1>
 

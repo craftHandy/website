@@ -25,7 +25,7 @@ export default function OrderSuccessPage() {
         <p className="text-gold tracking-[0.3em]  text-xs font-medium mb-4">
           Order Confirmed
         </p>
-        <h1 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-4">
+        <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-4">
           Thank You
         </h1>
         <p className="text-[var(--color-cream-dark)]/70 mb-2 leading-relaxed">

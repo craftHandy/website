@@ -12,13 +12,13 @@ export default function CarePage() {
         <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Preserve Your Pieces
         </p>
-        <h1 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-8">
+        <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-8">
           Jewelry Care Guide
         </h1>
 
         <div className="space-y-10 text-[var(--color-cream-dark)]/70">
           <section>
-            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-4">General Care Tips</h2>
+            <h2 className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-4">General Care Tips</h2>
             <ul className="space-y-3 text-sm leading-relaxed list-disc pl-5 font-poppins">
               <li>Store each piece separately in a soft pouch or lined jewelry box to prevent scratching</li>
               <li>Put on jewelry after applying perfume, hairspray, and cosmetics</li>

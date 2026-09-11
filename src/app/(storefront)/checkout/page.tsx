@@ -279,7 +279,7 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-10">
           <p className="text-gold tracking-[0.2em] text-xs font-medium mb-3">Checkout</p>
-          <h1 className="text-3xl font-serif text-[var(--color-foreground)]">Complete Your Order</h1>
+          <h1 className="text-fluid-h3 font-serif text-[var(--color-foreground)]">Complete Your Order</h1>
           <p className="max-w-2xl text-sm text-gold-muted mt-2">
             Enter your delivery address and complete your order with secure Razorpay checkout.
           </p>
@@ -288,7 +288,7 @@ export default function CheckoutPage() {
         <div className="grid lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-6">
             <section className="bg-[var(--color-surface-elevated)] rounded-sm p-6 md:p-8 border border-[var(--color-border-subtle)]">
-              <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">Delivery Details</h2>
+              <h2 className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-6">Delivery Details</h2>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="grid md:grid-cols-2 gap-4">
@@ -451,7 +451,7 @@ export default function CheckoutPage() {
 
           <div className="lg:col-span-1">
             <div className="bg-[var(--color-surface-elevated)] rounded-sm p-6 lg:sticky lg:top-24 border border-[var(--color-border-subtle)]">
-              <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">Items to Pay</h2>
+              <h2 className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-6">Items to Pay</h2>
 
               <div className="space-y-4 mb-6">
                 {items.map((item) => {

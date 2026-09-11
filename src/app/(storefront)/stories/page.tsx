@@ -33,7 +33,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
               <p className="text-gold tracking-[0.28em]  text-xs font-medium mb-4">
                 Ratnagiri Journal
               </p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[var(--color-foreground)] mb-5 leading-tight">
+              <h1 className="text-fluid-h2 md:text-fluid-display lg:text-fluid-hero font-serif text-[var(--color-foreground)] mb-5 leading-tight">
                 Discover the stories shaping our craft
               </h1>
               <p className="text-[var(--color-cream-dark)]/75 max-w-2xl text-lg font-light leading-relaxed">
@@ -72,9 +72,9 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
                 <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
                   Featured Story
                 </p>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-[var(--color-foreground)] mb-4 group-hover:text-gold transition-colors leading-tight">
-                  {featuredPost.title}
-                </h2>
+<h2 className="text-fluid-h2 md:text-fluid-h3 lg:text-fluid-display font-serif text-[var(--color-foreground)] mb-4 group-hover:text-gold transition-colors leading-tight">
+                {featuredPost.title}
+              </h2>
                 {featuredPost.excerpt && (
                   <p className="text-[var(--color-cream-dark)]/70 leading-relaxed mb-5 line-clamp-3">
                     {featuredPost.excerpt}

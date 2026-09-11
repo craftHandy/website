@@ -70,10 +70,10 @@ export default function ContactPage() {
           <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-4">
             Get in Touch
           </p>
-          <h1 className="text-4xl md:text-6xl font-serif text-[var(--color-foreground)] mb-5 leading-tight">
+          <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-5 leading-tight">
             Contact Us
           </h1>
-          <p className="text-[var(--color-cream-dark)]/70 text-lg font-light leading-relaxed max-w-2xl mx-auto font-poppins">
+          <p className="text-[var(--color-cream-dark)]/70 text-fluid-body font-light leading-relaxed max-w-2xl mx-auto font-poppins">
             We&apos;d love to hear from you. Whether you have a question about
             our collections, need help with an order, or want to commission a
             custom piece, our team is here to help.
@@ -177,12 +177,10 @@ export default function ContactPage() {
             <div className="flex items-start gap-4">
               <MapPin size={18} className="text-gold mt-0.5 shrink-0" />
               <div>
-                <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
+                <h3 className="text-fluid-small font-medium tracking-wider text-[var(--color-foreground)] mb-1.5">
                   Visit Our Studio
                 </h3>
                 <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed font-poppins">
-                  Ratnagiri Treasure
-                  <br />
                   Majnu ka tilla, Delhi
                   <br />
                   India
@@ -211,12 +209,20 @@ export default function ContactPage() {
                 <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Phone
                 </h3>
+                <p className="flex items-center gap-4">
                 <a
                   href="tel:+91 98714 82162"
                   className="text-[var(--color-cream-dark)]/70 text-sm hover:text-gold transition-colors font-poppins"
                 >
-                  +91 88603 39072 ,+91 98714 82162
+                  +91 98714 82162
                 </a>
+                <a
+                  href="tel:+91 88603 39072"
+                  className="text-[var(--color-cream-dark)]/70 text-sm hover:text-gold transition-colors font-poppins"
+                >
+                  +91 88603 39072
+                </a>
+                </p>
               </div>
             </div>
 
@@ -298,7 +304,7 @@ export default function ContactPage() {
           <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
             Have Questions?
           </p>
-          <h2 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-12 text-center">
+          <h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-12 text-center">
             Frequently Asked Questions
           </h2>
 

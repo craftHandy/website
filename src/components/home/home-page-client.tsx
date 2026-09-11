@@ -188,7 +188,7 @@ export function HomePageClient({
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
-      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[var(--color-background)] bg-cover bg-center">
+      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[var(--color-background)] bg-cover  lg:bg-center">
         <EmblaCarousel
           opts={{ loop: hasHeroCarousel, align: "start" }}
           plugins={autoplayPlugins}
@@ -202,7 +202,13 @@ export function HomePageClient({
               >
                 <div className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
                   <motion.div
-                    className="absolute inset-0 bg-cover bg-center"
+                    className="
+    absolute inset-0
+    bg-cover
+    bg-[80%_center]
+    sm:bg-[75%_center]
+    lg:bg-center
+  "
                     style={{
                       backgroundImage: slide.image
                         ? `url(${slide.image})`
@@ -258,9 +264,9 @@ export function HomePageClient({
 
                   {/* Left aligned hero content */}
                   <div className="relative z-10 flex h-full items-center px-4 md:px-16">
-                    <div className="w-full max-w-3xl text-left">
+                    <div className="w-full max-w-3xl text-left max-md:px-4">
                       <motion.h1
-                        className="mb-6 font-serif font-medium leading-[0.95] tracking-[-0.035em] text-[#e8c779]/70 text-5xl"
+                        className="mb-6 font-serif font-medium leading-[0.95] tracking-[-0.035em] text-[#e8c779]/70 text-fluid-h3 sm:text-fluid-display"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 28 }
                         }
@@ -276,7 +282,7 @@ export function HomePageClient({
                         {slide.title}
                       </motion.h1>
                       <motion.span
-                        className="mb-5 flex items-center justify-start gap-3 text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
+                        className="mb-5 flex items-center justify-start gap-3 text-fluid-xs sm:text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 14 }
                         }
@@ -294,7 +300,7 @@ export function HomePageClient({
                         <span className="h-px w-8 bg-[#e8c779]/70 " />
                       </motion.span>
                       <motion.p
-                        className="max-w-xl text-left w-full text-base leading-relaxed text-white md:text-lg font-poppins"
+                        className="max-w-xl text-left w-full text-fluid-body leading-relaxed text-white md:text-fluid-h3 font-poppins"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 20 }
                         }
@@ -310,9 +316,8 @@ export function HomePageClient({
                         {slide.subtitle ||
                           "Discover pieces made to bring warmth, craft, and meaning into your space."}
                       </motion.p>
-                      <div className="flex max-md:flex-col gap-2 md:gap-4 items-center">
+                      <div className="flex max-md:flex-col gap-4 md:items-center mt-10">
                         <motion.div
-                          className="mt-10 flex justify-start gap-4"
                           initial={
                             shouldReduceMotion ? false : { opacity: 0, y: 16 }
                           }
@@ -335,7 +340,6 @@ export function HomePageClient({
                           </Link>
                         </motion.div>
                         <motion.div
-                          className="mt-10 flex justify-start gap-4"
                           initial={
                             shouldReduceMotion ? false : { opacity: 0, y: 16 }
                           }
@@ -397,7 +401,7 @@ export function HomePageClient({
                   Handicraft Traditions{" "}
                 </p>
 
-                <h2 className="font-serif text-3xl text-[var(--color-foreground)] md:text-4xl">
+                <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
                   Browse our Collections
                 </h2>
 
@@ -407,48 +411,9 @@ export function HomePageClient({
                 />
               </div>
             </FadeIn>
-            {/* 
+
             <StaggerContainer
-              className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-8 lg:grid-cols-6"
-              staggerDelay={0.1}
-            >
-              {categories.slice(0, 6).map((category: Category) => (
-                <StaggerItem key={category.id}>
-                  <Link
-                    href={`/jewelry?category=${category.slug}`}
-                    className="group block text-left"
-                  >
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-[var(--color-surface-elevated)]">
-                      {category.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={category.image}
-                          alt={category.title || ""}
-                          loading="lazy"
-                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center font-serif text-3xl text-[var(--color-gold)]/30">
-                          ✦
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/0 to-black/0 transition-colors duration-500 group-hover:from-black/55" />
-                    </div>
-
-                    <div className="mt-4 flex flex-col items-start text-left">
-                      <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-foreground)]">
-                        {category.title}
-                      </h3>
-
-                      <span className="mt-2 block h-px w-0 bg-[var(--color-gold)] transition-all duration-500 ease-out group-hover:w-8" />
-                    </div>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </StaggerContainer> */}
-            <StaggerContainer
-              className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-2 lg:grid-cols-4"
+              className="grid gap-3 md:grid-cols-3 md:gap-2 lg:grid-cols-4"
               staggerDelay={0.1}
             >
               {categories.slice(0, 8).map((category: Category) => (
@@ -519,7 +484,7 @@ export function HomePageClient({
           </div>
         </section>
       )}
-      
+
       {/* New Arrivals */}
       {arrivals.length > 0 && (
         <section className="bg-[var(--color-background)] px-6 py-24 md:py-28">
@@ -531,7 +496,7 @@ export function HomePageClient({
                     Just Arrived
                   </p>
 
-                  <h2 className="font-serif text-3xl text-[var(--color-foreground)] md:text-4xl">
+                  <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
                     New Arrivals
                   </h2>
 
@@ -551,7 +516,7 @@ export function HomePageClient({
             </FadeIn>
 
             <StaggerContainer
-              className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4"
+              className="grid gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4"
               staggerDelay={0.05}
               staggerChildren={0.08}
             >
@@ -769,7 +734,7 @@ export function HomePageClient({
                               </p>
                             )}
 
-                            <h3 className="line-clamp-2 font-serif text-lg leading-snug text-white">
+                            <h3 className="line-clamp-2 font-serif text-fluid-h3 text-white">
                               {product.title}
                             </h3>
 
@@ -824,7 +789,7 @@ export function HomePageClient({
             className="order-2 flex flex-col items-start justify-center text-left md:order-1"
             direction="right"
           >
-            <h2 className="mb-6 font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
+            <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
               Devotional Art
             </h2>
 
@@ -925,7 +890,7 @@ export function HomePageClient({
                 Handpicked for you
               </p>
 
-              <h2 className="font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
+              <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
                 Featured Products
               </h2>
 
@@ -1083,7 +1048,7 @@ export function HomePageClient({
                   </motion.span>
 
                   <div className="text-left">
-                    <h3 className="mb-2 font-serif text-2xl text-[var(--color-foreground)]">
+                    <h3 className="mb-2 font-serif text-fluid-h3 text-[var(--color-foreground)]">
                       {pillar.title}
                     </h3>
 
@@ -1137,7 +1102,7 @@ export function HomePageClient({
             workspace_premium
           </motion.span>
 
-          <h2 className="mt-6 font-serif text-4xl text-[var(--color-foreground)] md:text-6xl">
+          <h2 className="mt-6 font-serif text-fluid-h2 text-[var(--color-foreground)] md:text-fluid-display">
             Generations of Devotion
           </h2>
 
@@ -1157,7 +1122,7 @@ export function HomePageClient({
       {/* Testimonials */}
       <section className="mx-auto max-w-[1280px] px-4 py-24 md:px-16 md:py-28">
         <FadeIn className="mb-12 text-center" direction="none">
-          <h2 className="font-serif text-4xl text-[var(--color-foreground)] md:text-5xl">
+          <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
             Sanctuaries Realized
           </h2>
 

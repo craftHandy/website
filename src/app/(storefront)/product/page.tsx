@@ -165,12 +165,12 @@ function ProductListing() {
             <span className="h-px w-8 bg-[#e8c779]/70 " />
           </motion.span>
 
-          <h1 className="font-serif text-4xl text-white">
+          <h1 className="font-serif text-fluid-h3 text-white md:text-fluid-display">
             EXQUISITE HANDCRAFTS <br />
             FROM THE HIMALAYAS
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-surface font-poppins">
+          <p className="mt-3 max-w-2xl text-fluid-body leading-6 text-surface font-poppins">
             Discover our curated collection of authentic Nepalese and Tibetan
             <br />
             handicrafts. Each piece is a masterpiece of traditional
@@ -442,7 +442,7 @@ function ProductListing() {
               </>
             ) : (
               <div className="border border-dashed border-[var(--color-border-subtle)] py-20 text-center">
-                <p className="font-serif text-2xl">No products found</p>
+                <p className="font-serif text-fluid-h3">No products found</p>
                 <Link
                   href="/product"
                   className="mt-3 inline-block text-sm text-[var(--color-gold)]"

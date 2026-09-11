@@ -97,12 +97,12 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <h1 className="text-4xl md:text-7xl font-serif text-[var(--color-foreground)] mb-6 leading-tight">
+            <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-6 leading-tight">
               Our Story
             </h1>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <p className="text-[var(--color-cream-dark)]/70 text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[var(--color-cream-dark)]/70 text-fluid-body leading-relaxed mb-10 max-w-xl mx-auto font-poppins">
               For over three generations, Ratnagiri has been synonymous with the finest Indian
               jewelry — a legacy of artistry, tradition, and an unwavering commitment to beauty
               that flows from the heart of Jaipur to the world.
@@ -116,18 +116,18 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6">
           <StaggerContainer>
             <StaggerItem>
-              <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3 text-center">
+<p className="text-gold text-fluid-xs tracking-[0.15em]  font-medium mb-3 text-center">
                 Our Heritage
               </p>
             </StaggerItem>
             <StaggerItem>
-              <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-12 text-center">
-                A Legacy of Light
-              </h2>
+<h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-12 text-center">
+              A Legacy of Light
+            </h2>
             </StaggerItem>
           </StaggerContainer>
 
-          <div className="space-y-8 text-[var(--color-cream-dark)]/70 text-sm md:text-base leading-relaxed max-w-4xl mx-auto font-poppins">
+          <div className="space-y-8 text-[var(--color-cream-dark)]/70 text-fluid-body leading-relaxed max-w-4xl mx-auto font-poppins">
             <FadeIn>
               <p>
                 Ratnagiri &mdash; meaning &quot;mountain of gems&quot; &mdash; was born in the pink-hued city of Jaipur,
@@ -178,7 +178,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-14 text-center">
+            <h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-14 text-center">
               Our Values
             </h2>
           </FadeIn>
@@ -192,8 +192,8 @@ export default function AboutPage() {
                     <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-[var(--color-surface-elevated)] flex items-center justify-center group-hover:bg-gold/10 transition-colors duration-500 border border-[var(--color-border-subtle)]">
                       <Icon className="w-6 h-6 text-gold" />
                     </div>
-                    <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-3">{value.title}</h3>
-                    <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed font-poppins">{value.description}</p>
+                    <h3 className="text-fluid-h4 font-serif text-[var(--color-foreground)] mb-3">{value.title}</h3>
+                    <p className="text-[var(--color-cream-dark)]/70 text-fluid-small leading-relaxed font-poppins">{value.description}</p>
                   </div>
                 </StaggerItem>
               );
@@ -211,7 +211,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-16 text-center">
+            <h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-16 text-center">
               Our Process
             </h2>
           </FadeIn>
@@ -223,12 +223,12 @@ export default function AboutPage() {
                 <StaggerItem key={step.title}>
                   <div className="text-center relative">
                     <ScaleIn delay={0.2 * index}>
-                      <span className="text-5xl md:text-7xl font-serif text-gold/20 block mb-4">
+                      <span className="text-fluid-h3 md:text-fluid-display font-serif text-gold/20 block mb-4">
                         {step.number}
                       </span>
                     </ScaleIn>
-                    <h3 className="text-xl font-serif text-[var(--color-foreground)] mb-4">{step.title}</h3>
-                    <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed font-poppins">{step.description}</p>
+                    <h3 className="text-fluid-h4 font-serif text-[var(--color-foreground)] mb-4">{step.title}</h3>
+                    <p className="text-[var(--color-cream-dark)]/70 text-fluid-small leading-relaxed font-poppins">{step.description}</p>
                   </div>
                 </StaggerItem>
               ))}
@@ -246,7 +246,7 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-14 text-center">
+            <h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-14 text-center">
               Meet the Artisans
             </h2>
           </FadeIn>
@@ -258,11 +258,11 @@ export default function AboutPage() {
                   <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-5">
                     <Sparkles className="w-6 h-6 text-gold" />
                   </div>
-                  <h3 className="text-lg font-serif text-[var(--color-foreground)] mb-1">{artisan.name}</h3>
-                  <p className="text-gold text-xs tracking-[0.15em]  font-medium mb-4">
+                  <h3 className="text-fluid-h4 font-serif text-[var(--color-foreground)] mb-1">{artisan.name}</h3>
+                  <p className="text-gold text-fluid-xs tracking-[0.15em] font-medium mb-4">
                     {artisan.role}
                   </p>
-                  <p className="text-[var(--color-cream-dark)]/70 text-sm leading-relaxed font-poppins">{artisan.description}</p>
+                  <p className="text-[var(--color-cream-dark)]/70 text-fluid-small leading-relaxed font-poppins">{artisan.description}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -279,12 +279,12 @@ export default function AboutPage() {
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h2 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-6">
+            <h2 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-6">
               Discover the Collection
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-[var(--color-cream-dark)]/70 text-sm md:text-base leading-relaxed mb-10 max-w-xl mx-auto font-poppins">
+            <p className="text-[var(--color-cream-dark)]/70 text-fluid-body leading-relaxed mb-10 max-w-xl mx-auto font-poppins">
               From everyday elegance to heirloom masterpieces, each Ratnagiri creation carries the
               soul of India&apos;s finest jewelry traditions. Explore our collections and find a piece
               that speaks to your story.

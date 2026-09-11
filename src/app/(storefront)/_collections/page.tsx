@@ -20,9 +20,9 @@ export default async function CollectionsPage() {
           <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-3">
             Curated Worlds
           </p>
-          <h1 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-4">
-            Collections
-          </h1>
+<h1 className="text-fluid-h3 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-4">
+              Collections
+            </h1>
           <p className="text-[var(--color-cream-dark)]/70 max-w-2xl text-lg font-light leading-relaxed font-poppins">
             Each collection tells a story — from the grandeur of sacred statues to the understated elegance of ritual objects. Discover the world that speaks to you.
           </p>

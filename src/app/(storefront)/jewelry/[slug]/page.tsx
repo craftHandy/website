@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     {product.category.title}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[var(--color-foreground)] mb-4">
+                <h1 className="text-fluid-h3 md:text-fluid-h2 lg:text-fluid-display font-serif text-[var(--color-foreground)] mb-4">
                   {product.title}
                 </h1>
                 {product.craftType && (

@@ -40,7 +40,7 @@ useEffect(() => {
           "
         />
 
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 font-poppins">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366]/15">
               <MessageCircle className="h-5 w-5 text-[#25D366]" />
@@ -84,7 +84,7 @@ useEffect(() => {
             transition-all duration-200
             hover:bg-[#20bd5a]
             hover:shadow-[0_5px_20px_rgba(37,211,102,0.25)]
-            active:scale-[0.98]
+            active:scale-[0.98] font-poppins
           "
         >
           Start a conversation
