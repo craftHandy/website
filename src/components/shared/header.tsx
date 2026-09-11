@@ -662,7 +662,7 @@ export function Header() {
               href="/product"
               className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
             >
-              Product
+              Collection
             </Link>
 
             {/* Categories */}
@@ -913,7 +913,7 @@ export function Header() {
                 className="block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]"
                 onClick={() => setMobileOpen(false)}
               >
-                Product
+                Collection
               </Link>
 
               <div className="pb-1">

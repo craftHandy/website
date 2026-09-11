@@ -64,7 +64,7 @@ export default function OrdersPage() {
                   {order.items?.map((item:any) => (
                     <div key={item.id} className="flex items-center gap-3 text-sm font-poppins">
                       <span className="text-[var(--color-cream-dark)]">{item.quantity}x</span>
-                      <Link href={`/jewelry/${item.slug}`} className="text-[var(--color-foreground)] hover:text-gold">{item.title}</Link>
+                      <Link href={`/product/${item.slug}`} className="text-[var(--color-foreground)] hover:text-gold">{item.title}</Link>
                       <span className="ml-auto text-[var(--color-cream-dark)]">{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   ))}
@@ -75,7 +75,7 @@ export default function OrdersPage() {
         ) : (
           <div className="text-center py-20">
             <p className="text-[var(--color-cream-dark)] mb-4 font-poppins">No orders yet.</p>
-            <Link href="/jewelry" className="text-gold hover:underline text-sm font-medium">
+            <Link href="/product" className="text-gold hover:underline text-sm font-medium">
               Start Shopping →
             </Link>
           </div>

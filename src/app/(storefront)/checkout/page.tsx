@@ -266,7 +266,7 @@ export default function CheckoutPage() {
             <h1 className="text-3xl font-serif text-[var(--color-foreground)] mb-4">Nothing to Checkout</h1>
             <p className="text-[var(--color-cream-dark)]/70 mb-8">Your cart is empty. Add some beautiful pieces before checking out.</p>
             <Button asChild size="lg" variant="default" className="px-8">
-              <Link href="/jewelry">Explore Collection</Link>
+              <Link href="/product">Explore Collection</Link>
             </Button>
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function CheckoutPage() {
             <section className="bg-[var(--color-surface-elevated)] rounded-sm p-6 md:p-8 border border-[var(--color-border-subtle)]">
               <h2 className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-6">Delivery Details</h2>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 font-poppins">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="block text-sm text-[var(--color-cream-dark)]/80 font-poppins">
@@ -299,7 +299,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("fullName", { required: "Full name is required" })}
                       aria-invalid={!!errors.fullName}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.fullName
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -324,7 +324,7 @@ export default function CheckoutPage() {
                       type="tel"
                       inputMode="numeric"
                       aria-invalid={!!errors.mobileNo}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.mobileNo
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -342,7 +342,7 @@ export default function CheckoutPage() {
                   <input
                     {...register("addressLine1", { required: "Address line 1 is required" })}
                     aria-invalid={!!errors.addressLine1}
-                    className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                    className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                       errors.addressLine1
                         ? "border-red-400 focus:border-red-500"
                         : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -358,7 +358,7 @@ export default function CheckoutPage() {
                   </label>
                   <input
                     {...register("addressLine2")}
-                    className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:border-[var(--color-gold)] focus:outline-none"
+                    className="w-full rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:border-[var(--color-gold)] focus:outline-none"
                     placeholder="Apt 4B"
                   />
                 </div>
@@ -371,7 +371,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("city", { required: "City is required" })}
                       aria-invalid={!!errors.city}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.city
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -388,7 +388,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("state", { required: "State is required" })}
                       aria-invalid={!!errors.state}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.state
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -407,7 +407,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("country", { required: "Country is required" })}
                       aria-invalid={!!errors.country}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.country
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"
@@ -424,7 +424,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("postalCode", { required: "Postal code is required" })}
                       aria-invalid={!!errors.postalCode}
-                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)] placeholder:text-[var(--color-gold-muted)] focus:outline-none ${
+                      className={`w-full rounded-md border bg-[var(--color-surface)] px-3 py-2.5 text-[var(--color-foreground)]  focus:outline-none ${
                         errors.postalCode
                           ? "border-red-400 focus:border-red-500"
                           : "border-[var(--color-border-subtle)] focus:border-[var(--color-gold)]"

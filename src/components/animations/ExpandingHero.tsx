@@ -202,7 +202,7 @@ export function ExpandingHero({
                           transition={{ duration: 0.5 }}
                         >
                           <Link
-                            href="/jewelry"
+                            href="/product"
                             className="inline-flex items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gradient-to-r from-[#bd9140] via-[#efd38a] to-[#bd9140] px-8 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
                           >
                             Explore the Collection

@@ -37,6 +37,13 @@ type Category = {
   title?: string;
   slug?: string;
   image?: string;
+  categoryName: string;
+  categoryCode: string;
+  description: string;
+  file: {
+    id: 103;
+    key: string
+  };
 };
 
 type Collection = {
@@ -184,7 +191,7 @@ export function HomePageClient({
       : showcaseProducts.length === 2
         ? "md:grid-cols-2"
         : "md:grid-cols-3";
-
+console.log({categories},'cat')
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
@@ -333,7 +340,7 @@ export function HomePageClient({
                           }}
                         >
                           <Link
-                            href="/jewelry"
+                            href="/product"
                             className="inline-flex text-sm items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gold-dark px-8 py-4 text-white font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
                           >
                             Explore the Collection
@@ -427,7 +434,7 @@ export function HomePageClient({
                       {category.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={category.image}
+                          src={category?.image}
                           alt={category.title || ""}
                           loading="lazy"
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
@@ -447,7 +454,7 @@ export function HomePageClient({
                           {category.title}
                         </h3>
 
-                        <span className="mt-2 text-[10px] font-medium uppercase tracking-[0.16em] text-white/90 transition-all duration-500 group-hover:tracking-[0.2em] md:text-xs">
+                        <span className="font-poppins mt-2 text-[10px] font-medium  tracking-[0.16em] text-white/90 transition-all duration-500 group-hover:tracking-[0.2em] md:text-xs">
                           View Collection
                           <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">
                             →

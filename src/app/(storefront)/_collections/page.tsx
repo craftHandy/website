@@ -68,7 +68,7 @@ export default async function CollectionsPage() {
           <div className="text-center py-20">
             <div className="text-6xl mb-4 text-gold/30">✦</div>
             <p className="text-[var(--color-cream-dark)]/70 mb-2 font-poppins">Collections are being curated.</p>
-            <Link href="/jewelry" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
+            <Link href="/product" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
               Browse All Treasures →
             </Link>
           </div>

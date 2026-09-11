@@ -124,7 +124,7 @@ export async function getCategories(): Promise<Category[]> {
         title: String(category.categoryName),
         slug: toCategorySlug(String(category.categoryCode || category.categoryName), `category-${category.id}`),
         description: category.description || undefined,
-        image: category.file || undefined,
+        image: category.file?.key || undefined,
       }));
 
     return categories.length > 0 ? categories : [];
@@ -198,7 +198,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         title: slide?.title || "Featured Collection",
         subtitle: slide?.subtitle || slide?.description || undefined,
         ctaText: slide?.ctaText || slide?.buttonText || undefined,
-        ctaLink: slide?.ctaLink || slide?.buttonLink || "/jewelry",
+        ctaLink: slide?.ctaLink || slide?.buttonLink || "/product",
         image: slide?.backgroundImageUrl || slide?.image || slide?.backgroundImage || undefined,
         order: typeof slide?.order === "number" ? slide.order : index + 1,
         active: slide?.active !== false,
