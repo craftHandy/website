@@ -40,40 +40,35 @@ export function ImageGallery({ images, className }: ImageGalleryProps) {
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      <div
-        className="relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm cursor-zoom-in luxe-card"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsZoomed(true)}
-        onMouseLeave={() => setIsZoomed(false)}
-      >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedImage.url}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={selectedImage.url}
-              alt={selectedImage.alt || ""}
-              fill
-              className={cn(
-                "object-cover transition-transform duration-500",
-                isZoomed && "scale-[2]"
-              )}
-              style={
-                isZoomed
-                  ? { transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%` }
-                  : undefined
-              }
-              sizes="(max-width: 640px) 100vw, 50vw"
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
+        <div
+          className="relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm cursor-zoom-in luxe-card"
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => setIsZoomed(true)}
+          onMouseLeave={() => setIsZoomed(false)}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedImage.url}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-0 img-fill-responsive"
+            >
+              <Image
+                src={selectedImage.url}
+                alt={selectedImage.alt || ""}
+                fill
+                className={cn(
+                  "object-cover transition-transform duration-500",
+                  isZoomed && "scale-[2]"
+                )}
+                sizes="(max-width: 640px) 100vw, 50vw"
+                priority
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">

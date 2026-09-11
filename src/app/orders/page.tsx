@@ -35,7 +35,7 @@ export default function OrdersPage() {
           <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
             Your Account
           </p>
-          <h1 className="text-3xl font-serif text-[var(--color-foreground)]">My Orders</h1>
+          <h1 className="text-fluid-h3 font-serif text-[var(--color-foreground)]">My Orders</h1>
         </div>
 
         {loading ? (

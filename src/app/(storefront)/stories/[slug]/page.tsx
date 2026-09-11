@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <p className="text-gold tracking-[0.25em]  text-xs font-medium mb-4">
                 Featured Article
               </p>
-              <h1 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-6 leading-tight">
+              <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-6 leading-tight">
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gold-muted">
@@ -128,13 +128,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     const trimmed = paragraph.trim();
                     if (!trimmed) return null;
                     if (trimmed.startsWith("# ")) {
-                      return <h1 key={index} className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("# ", "")}</h1>;
+                      return <h2 key={index} className="text-fluid-h3 font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("# ", "")}</h2>;
                     }
                     if (trimmed.startsWith("## ")) {
-                      return <h2 key={index} className="text-2xl font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("## ", "")}</h2>;
+                      return <h2 key={index} className="text-fluid-h3 font-serif text-[var(--color-foreground)] mt-10 mb-4">{trimmed.replace("## ", "")}</h2>;
                     }
                     if (trimmed.startsWith("### ")) {
-                      return <h3 key={index} className="text-xl font-serif text-[var(--color-foreground)] mt-8 mb-3">{trimmed.replace("### ", "")}</h3>;
+                      return <h3 key={index} className="text-fluid-h4 font-serif text-[var(--color-foreground)] mt-6 mb-3">{trimmed.replace("### ", "")}</h3>;
                     }
                     if (trimmed.startsWith("> ")) {
                       return <blockquote key={index} className="border-l-2 border-gold pl-6 italic text-gold-muted my-6">{trimmed.replace("> ", "")}</blockquote>;

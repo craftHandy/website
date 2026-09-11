@@ -56,14 +56,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               {product.category.title}
             </p>
           )} */}
-          <h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2">
-            {product.title}
-          </h3>
+<h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small">
+              {product.title}
+            </h3>
           {product.craftType && (
-            <p className="text-[11px] text-gold-muted">{product.craftType}</p>
+            <p className="text-[11px] text-gold-muted text-fluid-xs">{product.craftType}</p>
           )}
           <div className="flex items-center gap-2 pt-0.5">
-            <span className="text-base font-semibold text-[var(--color-foreground)]">
+            <span className="text-base font-semibold text-[var(--color-foreground)] text-fluid-small">
               {formatPrice(hasDiscount ? product.discountPrice! : product.price)}
             </span>
             {hasDiscount && (

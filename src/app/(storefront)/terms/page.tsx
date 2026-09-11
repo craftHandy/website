@@ -12,7 +12,7 @@ export default function TermsPage() {
         <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           Legal
         </p>
-        <h1 className="text-3xl md:text-4xl font-serif text-[var(--color-foreground)] mb-8">
+        <h1 className="text-fluid-h2 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-8">
           Terms of Service
         </h1>
         <p className="text-sm text-gold-muted mb-10">Last updated: January 2025</p>

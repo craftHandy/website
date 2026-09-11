@@ -104,9 +104,9 @@ export default function CartPage() {
           <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
             Your Cart
           </p>
-          <h1 className="text-3xl font-serif text-[var(--color-foreground)]">
-            Shopping Bag
-          </h1>
+<h1 className="text-fluid-h3 font-serif text-[var(--color-foreground)]">
+              Shopping Bag
+            </h1>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-10">
@@ -234,7 +234,7 @@ export default function CartPage() {
 
           <div className="lg:col-span-1">
             <div className="cart-order-summary bg-[var(--color-surface-elevated)] rounded-sm p-6 lg:sticky lg:top-24 border border-[var(--color-border-subtle)]">
-              <h2 className="text-lg font-serif text-[var(--color-foreground)] mb-6">
+              <h2 className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-6">
                 Order Summary
               </h2>
 

@@ -41,7 +41,7 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
         <p className="text-gold tracking-[0.2em]  text-xs font-medium mb-3">
           {page.title}
         </p>
-        <h1 className="text-3xl md:text-5xl font-serif text-[var(--color-foreground)] mb-8">
+        <h1 className="text-fluid-h3 md:text-fluid-display font-serif text-[var(--color-foreground)] mb-8">
           {page.title}
         </h1>
         <div className="prose prose-neutral max-w-none">
@@ -51,10 +51,10 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
                 const trimmed = paragraph.trim();
                 if (!trimmed) return null;
                 if (trimmed.startsWith("## ")) {
-                  return <h2 key={index} className="text-2xl font-serif text-[var(--color-foreground)] mt-8 mb-4">{trimmed.replace("## ", "")}</h2>;
+                  return <h2 key={index} className="text-fluid-h3 font-serif text-[var(--color-foreground)] mt-8 mb-4">{trimmed.replace("## ", "")}</h2>;
                 }
                 if (trimmed.startsWith("### ")) {
-                  return <h3 key={index} className="text-xl font-serif text-[var(--color-foreground)] mt-6 mb-3">{trimmed.replace("### ", "")}</h3>;
+                  return <h3 key={index} className="text-fluid-h4 font-serif text-[var(--color-foreground)] mt-6 mb-3">{trimmed.replace("### ", "")}</h3>;
                 }
                 return <p key={index}>{trimmed}</p>;
               })}

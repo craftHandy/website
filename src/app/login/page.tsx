@@ -40,8 +40,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-serif text-[var(--color-foreground)] mb-1 block">Ratnagiri</Link>
-          <p className="text-[var(--color-cream-dark)] text-sm font-poppins">Sign in to your account</p>
+          <Link href="/" className="text-fluid-h3 font-serif text-[var(--color-foreground)] mb-1 block">Ratnagiri</Link>
+          <p className="text-[var(--color-cream-dark)] text-fluid-small font-poppins">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
