@@ -89,7 +89,7 @@ export default function CartPage() {
               Your cart is empty. Discover handcrafted pieces that speak to your soul.
             </p>
             <Button asChild size="lg" variant="default" className="px-8">
-              <Link href="/jewelry">Explore Collection</Link>
+              <Link href="/product">Explore Collection</Link>
             </Button>
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function CartPage() {
                   </div>
                   <div>
                     <Link
-                      href={`/jewelry/${item.slug}`}
+                      href={`/product/${item.slug}`}
                       className="text-sm font-medium text-[var(--color-foreground)] hover:text-gold transition-colors line-clamp-2"
                     >
                       {item.title}
@@ -226,7 +226,7 @@ export default function CartPage() {
               >
                 Clear Cart
               </Button>
-              <Link href="/jewelry" className="text-xs text-gold tracking-wider  hover:underline">
+              <Link href="/product" className="text-xs text-gold tracking-wider  hover:underline">
                 Continue Shopping
               </Link>
             </div>
@@ -286,7 +286,7 @@ export default function CartPage() {
               </Button>
 
               <p className="text-xs text-gold-muted text-center mt-4">
-                Demo checkout — no payment is processed
+                checkout — no payment is processed
               </p>
             </div>
           </div>

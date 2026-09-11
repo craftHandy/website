@@ -87,12 +87,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <nav className="text-sm text-gold-muted mb-8 flex items-center gap-2">
             <Link href="/" className="hover:text-gold transition-colors">Home</Link>
             <span className="text-gold/30">/</span>
-            <Link href="/jewelry" className="hover:text-gold transition-colors">Jewelry</Link>
+            <Link href="/product" className="hover:text-gold transition-colors">Jewelry</Link>
             {product.category && (
               <>
                 <span className="text-gold/30">/</span>
                 <Link
-                  href={`/jewelry?category=${product.category.slug}`}
+                  href={`/product?category=${product.category.slug}`}
                   className="hover:text-gold transition-colors"
                 >
                   {product.category.title}

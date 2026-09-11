@@ -271,7 +271,7 @@ export const FALLBACK_HERO_SLIDES: HeroSlide[] = [
     title: "Heritage in Every Halo",
     subtitle: "Handcrafted jewellery carrying centuries of Indian and Himalayan artistry.",
     ctaText: "Explore Collection",
-    ctaLink: "/jewelry",
+    ctaLink: "/product",
     order: 1,
     active: true,
   },

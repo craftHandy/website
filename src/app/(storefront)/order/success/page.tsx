@@ -37,7 +37,7 @@ export default function OrderSuccessPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg" variant="default" className="px-8">
-            <Link href="/jewelry">Continue Shopping</Link>
+            <Link href="/product">Continue Shopping</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="px-8">
             <Link href="/stories">Read Our Stories</Link>

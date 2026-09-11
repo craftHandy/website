@@ -92,7 +92,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           ) : (
             <div className="text-center py-20">
               <p className="text-[var(--color-cream-dark)]/70 mb-4">This collection is being curated. Check back soon.</p>
-              <Link href="/jewelry" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
+              <Link href="/product" className="text-gold hover:text-gold-light text-sm font-medium transition-colors">
                 Browse All Treasures
               </Link>
             </div>
