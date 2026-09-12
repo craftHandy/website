@@ -21,19 +21,19 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
   const product = await getProductById((await params).id);
   if (!product) notFound();
 
-  const discounted = product.discountPrice && product.discountPrice < product.price;
+  const discounted = !!product.discountPrice && product.discountPrice < product.price;
   const price = discounted ? product.discountPrice! : product.price;
   const inStock = product.stockStatus === "IN_STOCK" || product.stockStatus === "In Stock";
-  const occasions = product.occasions && product.occasions.length ? product.occasions : product.occasion;
+  const occasions = product.occasions?.length ? product.occasions : (product.occasion ?? []);
   const productDetails = [
     // { label: "Product ID", value: product.id },
     // { label: "Slug", value: product.slug },
     // { label: "Category", value: product.category?.title ?? product.categoryName ?? "Uncategorized" },
     { label: "Craft Type", value: product.craftType ?? "Not specified" },
     { label: "Origin", value: product.origin ?? "Not specified" },
-    { label: "Materials", value: product.materials.length ? product.materials.join(", ") : "Not specified" },
+    { label: "Materials", value: product.materials?.length ? product.materials.join(", ") : "Not specified" },
     { label: "Discount (%)", value: product.discountPercentage != null ? `${product.discountPercentage}%` : "Not specified" },
-    { label: "Ideal for", value: occasions.length ? occasions.join(", ") : "Not specified" },
+    { label: "Ideal for", value: occasions?.length ? occasions.join(", ") : "Not specified" },
     { label: "Height", value: product.height != null ? `${product.height} cm` : "Not specified" },
     { label: "Width", value: product.width != null ? `${product.width} cm` : "Not specified" },
     { label: "Weight", value: product.weight != null ? `${product.weight} kg` : "Not specified" },
@@ -57,9 +57,9 @@ export default async function ProductDetailPage({ params }: ProductDetailProps) 
           <p className="whitespace-pre-line text-base leading-8 text-[var(--color-cream-dark)] font-poppins">{product.description || "A special handcrafted piece, made with the care and attention of traditional artisan work."}</p>
           <div className="mt-8"><AddToCartBtn productId={product.id} slug={product.slug} title={product.title} price={price} image={product.images[0]?.url} disabled={!inStock} className="w-full bg-[var(--color-gold)] text-[#17130a] hover:bg-[var(--color-gold-dark)] sm:w-auto sm:min-w-64">{inStock ? "Add to cart" : "Out of stock"}</AddToCartBtn></div>
           <div className="mt-10 grid gap-4 border-y border-[var(--color-border-subtle)] py-6 sm:grid-cols-2">
-            {product.materials.length > 0 && <Info label="Materials" value={product.materials.join(", ")} />}
+            {(product.materials?.length ?? 0) > 0 && <Info label="Materials" value={product.materials!.join(", ")} />}
             {product.origin && <Info label="Origin" value={product.origin} />}
-            {occasions.length > 0 && <Info label="Ideal for" value={occasions.join(", ")} />}
+            {(occasions?.length ?? 0) > 0 && <Info label="Ideal for" value={occasions!.join(", ")} />}
             <div className="flex gap-3 text-sm text-[var(--color-cream-dark)] font-poppins"><Ruler className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-gold)]" /><span>Made with artisan care</span></div>
           </div>
           <div className="mt-7 flex gap-3 text-sm leading-6 text-[var(--color-cream-dark)] font-poppins"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--color-gold)]" /><p>Each order is carefully checked and securely packed before shipping.</p></div>

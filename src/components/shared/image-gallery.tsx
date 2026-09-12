@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface GalleryImage {
@@ -29,6 +30,10 @@ export function ImageGallery({ images, className }: ImageGalleryProps) {
   }
 
   const selectedImage = images[selectedIndex];
+  const hasMultiple = images.length > 1;
+  const goPrev = () =>
+    setSelectedIndex((i) => (i - 1 + images.length) % images.length);
+  const goNext = () => setSelectedIndex((i) => (i + 1) % images.length);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isZoomed) return;
@@ -63,11 +68,47 @@ export function ImageGallery({ images, className }: ImageGalleryProps) {
                   "object-cover transition-transform duration-500",
                   isZoomed && "scale-[2]"
                 )}
+                style={
+                  isZoomed
+                    ? {
+                        transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                      }
+                    : undefined
+                }
                 sizes="(max-width: 640px) 100vw, 50vw"
                 priority
               />
             </motion.div>
           </AnimatePresence>
+          {hasMultiple && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goPrev();
+                }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 hover:text-gold active:scale-95"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goNext();
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 hover:text-gold active:scale-95"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <span className="absolute bottom-3 right-3 z-10 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium tracking-wider text-white backdrop-blur-sm">
+                {selectedIndex + 1} / {images.length}
+              </span>
+            </>
+          )}
         </div>
 
       {images.length > 1 && (
