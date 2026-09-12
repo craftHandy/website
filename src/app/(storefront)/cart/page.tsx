@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/store/toast";
 import type { CartItemType } from "@/types";
 
 export default function CartPage() {
@@ -174,24 +175,50 @@ export default function CartPage() {
                   </span>
                 </div>
 
-                <div className="flex items-center border border-[rgba(201,168,76,0.2)] rounded-sm w-28">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="flex-1 h-9 flex items-center justify-center text-cream-dark/70 hover:text-gold transition-colors"
-                    aria-label="Decrease quantity"
-                  >
-                    −
-                  </button>
-                  <span className="flex-1 h-9 flex items-center justify-center text-sm font-medium border-x border-[rgba(201,168,76,0.2)] text-[var(--color-foreground)]">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="flex-1 h-9 flex items-center justify-center text-cream-dark/70 hover:text-gold transition-colors"
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
+                <div>
+                  <div className="flex items-center border border-[rgba(201,168,76,0.2)] rounded-sm w-28">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                      className="flex-1 h-9 flex items-center justify-center text-cream-dark/70 hover:text-gold transition-colors disabled:opacity-30"
+                      aria-label="Decrease quantity"
+                    >
+                      −
+                    </button>
+                    <span className="flex-1 h-9 flex items-center justify-center text-sm font-medium border-x border-[rgba(201,168,76,0.2)] text-[var(--color-foreground)]">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (
+                          item.stockQuantity != null &&
+                          item.quantity >= item.stockQuantity
+                        ) {
+                          toast("Stock limit reached", {
+                            description: `Only ${item.stockQuantity} available for ${item.title}.`,
+                            variant: "error",
+                          });
+                          return;
+                        }
+                        updateQuantity(item.id, item.quantity + 1);
+                      }}
+                      disabled={
+                        item.stockQuantity != null &&
+                        item.quantity >= item.stockQuantity
+                      }
+                      className="flex-1 h-9 flex items-center justify-center text-cream-dark/70 hover:text-gold transition-colors disabled:opacity-30"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {item.stockQuantity != null && (
+                    <p className="mt-1 text-[11px] text-gold-muted">
+                      {item.quantity >= item.stockQuantity
+                        ? `Max available (${item.stockQuantity})`
+                        : `${item.stockQuantity} in stock`}
+                    </p>
+                  )}
                 </div>
 
                 <button

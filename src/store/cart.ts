@@ -21,16 +21,28 @@ export const useCartStore = create<CartState>()(
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => i.productId === item.productId);
+          const max = item.stockQuantity ?? existing?.stockQuantity ?? null;
           if (existing) {
+            const nextQty =
+              max != null
+                ? Math.min(existing.quantity + item.quantity, Math.max(max, 1))
+                : existing.quantity + item.quantity;
             return {
               items: state.items.map((i) =>
                 i.productId === item.productId
-                  ? { ...i, quantity: i.quantity + item.quantity }
+                  ? {
+                      ...i,
+                      quantity: nextQty,
+                      stockQuantity: max ?? i.stockQuantity,
+                    }
                   : i
               ),
             };
           }
-          return { items: [...state.items, item] };
+          const clampedQty =
+            max != null ? Math.min(item.quantity, Math.max(max, 1)) : item.quantity;
+          if (max != null && max <= 0) return state;
+          return { items: [...state.items, { ...item, quantity: clampedQty }] };
         }),
 
       removeItem: (id) =>
@@ -45,9 +57,15 @@ export const useCartStore = create<CartState>()(
 
       updateQuantity: (id, quantity) =>
         set((state) => ({
-          items: state.items.map((i) =>
-            i.id === id ? { ...i, quantity: Math.max(1, quantity) } : i
-          ),
+          items: state.items.map((i) => {
+            if (i.id !== id) return i;
+            const max = i.stockQuantity ?? null;
+            const clamped =
+              max != null
+                ? Math.min(Math.max(1, quantity), Math.max(max, 1))
+                : Math.max(1, quantity);
+            return { ...i, quantity: clamped };
+          }),
         })),
 
       clearCart: () => set({ items: [] }),

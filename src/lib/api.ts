@@ -10,7 +10,7 @@ import {
   type PageContent,
 } from "./fallback-data";
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 const API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
 const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/public/hero-slide`;
 const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";

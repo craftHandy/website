@@ -160,7 +160,7 @@ export function HomePageClient({
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
-     
+
       <section className="relative h-[48vh] lg:h-[80vh] w-full overflow-hidden bg-[var(--color-background)] bg-cover lg:bg-center">
         <EmblaCarousel
           opts={{ loop: hasHeroCarousel, align: "start" }}
@@ -355,7 +355,7 @@ export function HomePageClient({
       </section>
       {/* Categories */}
       {hasCategories ? (
-        <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-background)] px-6 py-16 md:py-28">
+        <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-background)] px-6  py-8 lg:py-16 ">
           <div className="mx-auto max-w-7xl">
             <FadeIn>
               <div className="mb-16 text-center">
@@ -449,7 +449,7 @@ export function HomePageClient({
 
       {/* New Arrivals */}
       {arrivals.length > 0 && (
-        <section className="bg-[url('/bg.jpeg')] bg-cover bg-center bg-no-repeat px-6 py-16 md:py-28">
+        <section className="bg-[url('/bg.jpeg')] bg-cover bg-center bg-no-repeat px-6 py-8 lg:py-16">
           <div className="mx-auto max-w-7xl">
             <FadeIn>
               <div className="mb-14 flex flex-col items-center gap-4">
@@ -515,7 +515,7 @@ export function HomePageClient({
       )}
 
       {/* Devotional Art */}
-      <section className="relative overflow-hidden bg-[var(--color-surface-elevated)] py-24 md:py-28">
+      <section className="relative overflow-hidden bg-[var(--color-surface-elevated)] py-8 lg:py-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,rgba(201,168,76,0.1),transparent_30%)]" />
 
         <div className="relative z-10 mx-auto grid max-w-[1280px] gap-12 px-4 md:grid-cols-2 md:px-16">
@@ -614,7 +614,7 @@ export function HomePageClient({
 
       {/* Featured Products */}
       {showcaseProducts.length > 0 && (
-        <section className="mx-auto max-w-[1280px] px-4 py-24 md:px-16 md:py-28">
+        <section className="mx-auto max-w-[1280px] px-4  md:px-16 py-8 lg:py-16">
           <FadeIn
             className="mb-12 flex items-center justify-between"
             direction="none"
@@ -642,14 +642,21 @@ export function HomePageClient({
             </Link>
           </FadeIn>
 
-          <EmblaCarousel opts={{ align: "start", loop: false }} className="relative">
+          <EmblaCarousel
+            opts={{ align: "start", loop: false }}
+            className="relative"
+          >
             <CarouselContent className="-ml-4 md:-ml-6">
               {showcaseProducts.map((product, index) => (
                 <CarouselItem
                   key={product.id}
                   className="pl-4 md:pl-6 basis-[78%] sm:basis-[46%] lg:basis-1/4"
                 >
-                  <ProductCard key={product.id} product={product} index={index} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -664,7 +671,7 @@ export function HomePageClient({
       )}
 
       {/* Trust Pillars */}
-      <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-surface-elevated)] px-6 py-16 md:py-20">
+      <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-surface-elevated)] px-6 py-8 lg:py-16">
         <div className="mx-auto max-w-7xl">
           <StaggerContainer
             className="grid gap-8 md:grid-cols-3 md:gap-0"
@@ -736,7 +743,7 @@ export function HomePageClient({
       </section>
 
       {/* Generations of Devotion */}
-      <section className="relative overflow-hidden py-28 md:py-32">
+      <section className="relative overflow-hidden py-8 lg:py-16">
         <div
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{
@@ -792,7 +799,7 @@ export function HomePageClient({
       </section>
 
       {/* Testimonials */}
-      <section className="mx-auto max-w-[1280px] px-4 py-24 md:px-16 md:py-28">
+      <section className="mx-auto max-w-[1280px] px-4  md:px-16 py-8 lg:py-16">
         <FadeIn className="mb-12 text-center" direction="none">
           <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
             Sanctuaries Realized

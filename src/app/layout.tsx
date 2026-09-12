@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { Providers } from "./providers";
 import { WhatsAppWidget } from "@/components/shared/whatsappWidget";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: {
@@ -362,6 +363,7 @@ export default function RootLayout({
         <Providers>{children}</Providers>
 
         <WhatsAppWidget />
+        <Toaster />
       </body>
     </html>
   );
