@@ -492,7 +492,6 @@ export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
       `${FEATURED_PRODUCTS_ENDPOINT}?page=0&size=${limit}&featured=true`,
       { next: { revalidate: 60 } }
     );
-    console.log("response status:", response.status);
     if (!response.ok) {
         console.warn(`Featured products request failed with status ${response.status}`);
         return [];

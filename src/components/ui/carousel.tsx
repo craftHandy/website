@@ -125,7 +125,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.HTMLAttribute
         ref={ref}
         variant="outline"
         size="icon"
-        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -left-4 top-1/2 -translate-y-1/2 z-10", className)}
+        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -left-4 top-1/2 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 z-10 [&_svg]:size-6", className)}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         {...props}
@@ -145,7 +145,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.HTMLAttributes<HT
         ref={ref}
         variant="outline"
         size="icon"
-        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -right-4 top-1/2 -translate-y-1/2 z-10", className)}
+        className={cn("absolute h-12 w-12 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-elevated)] shadow-lg -right-4 top-1/2 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 z-10 [&_svg]:size-6", className)}
         disabled={!canScrollNext}
         onClick={scrollNext}
         {...props}
