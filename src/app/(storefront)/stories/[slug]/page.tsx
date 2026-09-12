@@ -114,12 +114,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </header>
 
             {post.excerpt && (
-              <p className="text-lg text-[var(--color-cream-dark)]/90 font-light leading-relaxed mb-10 border-l-2 border-gold pl-6 italic">
+              <p className="text-lg text-[var(--color-cream-dark)]/90 font-light leading-relaxed mb-10 border-l-2 border-gold pl-6 italic font-poppins">
                 {post.excerpt}
               </p>
             )}
 
-            <div className="text-[var(--color-cream-dark)]/80 leading-relaxed space-y-6">
+            <div className="text-[var(--color-cream-dark)]/80 leading-relaxed space-y-6 font-poppins">
               {storyContent ? (
                 hasHtmlContent ? (
                   <div dangerouslySetInnerHTML={{ __html: storyContent }} className="space-y-6" />
