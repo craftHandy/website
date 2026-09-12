@@ -10,12 +10,16 @@ import type { Product } from "@/types";
 interface ProductCardProps {
   product: Product;
   index?: number;
+  section?:string
 }
 
-export function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const discountPercent = hasDiscount ? calculateDiscount(product.price, product.discountPrice!) : 0;
-
+export function ProductCard({ product, index = 0, section }: ProductCardProps) {
+  const hasDiscount =
+    product.discountPrice && product.discountPrice < product.price;
+  const discountPercent = hasDiscount
+    ? calculateDiscount(product.price, product.discountPrice!)
+    : 0;
+const isArrivalSection = section === "new-arrivals";
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -24,7 +28,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
       <Link href={`/product/${product.id}`} className="group block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
+        <div className=" relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
           {product.images?.[0]?.url ? (
             <Image
               src={product.images[0].url}
@@ -39,32 +43,36 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           )}
           {hasDiscount && (
-            <Badge variant="sale" className="absolute top-3 left-3">
+            <Badge variant="default" className="absolute top-3 left-3">
               {discountPercent}% OFF
             </Badge>
           )}
-          {product.stockStatus === "Limited Stock" && (
+          {product?.stockStatus === "Limited Stock" && (
             <Badge variant="limited" className="absolute top-3 right-3">
               Limited
             </Badge>
           )}
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0a]/90 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
         </div>
-        <div className="space-y-1.5">
-          {/* {product.category && (
-            <p className="text-[10px] tracking-widest  text-gold font-medium">
+        <div className="space-y-1.5 text-center">
+          {product?.category && (
+            <p className="text-[10px] tracking-widest text-center text-gold font-medium font-poppins">
               {product.category.title}
             </p>
-          )} */}
-<h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small">
-              {product.title}
-            </h3>
-          {product.craftType && (
-            <p className="text-[11px] text-gold-muted text-fluid-xs">{product.craftType}</p>
           )}
-          <div className="flex items-center gap-2 pt-0.5">
-            <span className="text-base font-semibold text-[var(--color-foreground)] text-fluid-small">
-              {formatPrice(hasDiscount ? product.discountPrice! : product.price)}
+          <h3 className={`font-poppins text-sm font-medium text-center text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small ${isArrivalSection &&'text-white' }`}>
+            {product?.title}
+          </h3>
+          {product.craftType && (
+            <p className=" font-poppins text-[11px] text-center text-gold-muted text-fluid-xs">
+              {product.craftType}
+            </p>
+          )}
+          <div className=" font-poppins flex items-center justify-center gap-2 pt-0.5 text-center">
+            <span className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && 'text-white' }`}>
+              {formatPrice(
+                hasDiscount ? product.discountPrice! : product.price,
+              )}
             </span>
             {hasDiscount && (
               <span className="text-sm text-gold-muted line-through">
@@ -77,5 +85,3 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
     </motion.div>
   );
 }
-
-

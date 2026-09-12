@@ -6,13 +6,13 @@ export interface Product {
   discountPrice?: number;
   discountPercentage?: number;
   description?: string;
-  materials: string[];
+  materials?: string[];
   craftType?: string;
   origin?: string;
-  occasion: string[];
+  occasion?: string[];
   occasions?: string[];
   images: { url: string; alt?: string }[];
-  stockStatus: string;
+  stockStatus?: string;
   stockQuantity?: number;
   featured: boolean;
   height?: number | string;
@@ -28,7 +28,7 @@ export interface Product {
   category?: Category | null;
   collectionId?: string | null;
   collection?: Collection | null;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface Category {

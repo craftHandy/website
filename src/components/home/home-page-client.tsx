@@ -21,36 +21,7 @@ import { formatPrice } from "@/lib/utils";
 import Reveal from "../animations/Reveal";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ProductCard } from "../shared/product-card";
-
-type Product = {
-  id: string;
-  title: string;
-  slug?: string;
-  price?: number;
-  discountPrice?: number;
-  images?: { url: string; alt?: string }[];
-  category?: { title: string } | null;
-};
-
-type Category = {
-  id: string;
-  title?: string;
-  slug?: string;
-  image?: string;
-  categoryName: string;
-  categoryCode: string;
-  description: string;
-  file: {
-    id: 103;
-    key: string
-  };
-};
-
-type Collection = {
-  id: string;
-  title?: string;
-  image?: string;
-};
+import type { Product, Category, Collection } from "@/types";
 
 interface HomePageClientProps {
   featuredProducts: Product[];
@@ -161,7 +132,6 @@ export function HomePageClient({
 }: HomePageClientProps) {
   const [autoplayMounted, setAutoplayMounted] = useState(false);
   const shouldReduceMotion = useReducedMotion();
-  console.log(featuredProducts);
   useEffect(() => {
     setAutoplayMounted(true);
   }, []);
@@ -183,7 +153,7 @@ export function HomePageClient({
       : [];
 
   const hasCategories = categories.length > 0;
-  const showcaseProducts = featuredProducts.slice(0, 3);
+  const showcaseProducts = featuredProducts.slice(0, 4);
   const arrivals = newArrivalProducts.slice(0, 4);
   const featuredGridClassName =
     showcaseProducts.length === 1
@@ -191,7 +161,7 @@ export function HomePageClient({
       : showcaseProducts.length === 2
         ? "md:grid-cols-2"
         : "md:grid-cols-3";
-console.log({categories},'cat')
+
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
@@ -494,30 +464,31 @@ console.log({categories},'cat')
 
       {/* New Arrivals */}
       {arrivals.length > 0 && (
-        <section className="bg-[var(--color-background)] px-6 py-24 md:py-28">
+        <section className="bg-[url('/bg.jpeg')] bg-cover bg-center bg-no-repeat px-6 py-24 md:py-28">
           <div className="mx-auto max-w-7xl">
             <FadeIn>
-              <div className="mb-14 flex items-end justify-between gap-6">
-                <div className="text-left">
+              <div className="mb-14 flex flex-col items-center gap-4">
+                <div className="text-center">
                   <p className="mb-3 text-xs font-medium tracking-[0.25em] text-[var(--color-gold)]">
                     Just Arrived
                   </p>
 
-                  <h2 className="font-serif text-fluid-h3 text-[var(--color-foreground)] md:text-fluid-display">
+                  <h2 className="font-serif text-fluid-h3 text-white md:text-fluid-display">
                     New Arrivals
                   </h2>
 
                   <AnimatedRule
                     reduceMotion={shouldReduceMotion}
-                    className="mt-5 w-24"
+                    className="mx-auto mt-5 w-24"
                   />
                 </div>
 
                 <Link
                   href="/product"
-                  className="hidden border-b border-[var(--color-gold)]/30 pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
+                  className="hidden w-fit items-center gap-2  pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex"
                 >
-                  View All <ArrowRight size={14} />
+                  View All
+                  <ArrowRight size={14} />
                 </Link>
               </div>
             </FadeIn>
@@ -527,261 +498,9 @@ console.log({categories},'cat')
               staggerDelay={0.05}
               staggerChildren={0.08}
             >
-              {arrivals.map((product) => {
-                const image = product.images?.[0]?.url;
-
-                const hasDiscount =
-                  typeof product.discountPrice === "number" &&
-                  typeof product.price === "number" &&
-                  product.discountPrice < product.price;
-
-                const price = product.discountPrice ?? product.price;
-
-                const discountPercent = hasDiscount
-                  ? Math.round(
-                      (1 - product.discountPrice! / product.price!) * 100,
-                    )
-                  : 0;
-
-                const containerVariants: Variants = {
-                  rest: {
-                    scale: 1,
-                    y: 0,
-                  },
-                  hover: shouldReduceMotion
-                    ? {}
-                    : {
-                        scale: 1.03,
-                        y: -8,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                          mass: 0.8,
-                        },
-                      },
-                };
-
-                const imageVariants: Variants = {
-                  rest: {
-                    scale: 1,
-                  },
-                  hover: {
-                    scale: 1.1,
-                  },
-                };
-
-                const overlayVariants: Variants = {
-                  rest: {
-                    y: "100%",
-                    opacity: 0,
-                  },
-                  hover: {
-                    y: "0%",
-                    opacity: 1,
-                    transition: {
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 28,
-                      mass: 0.6,
-                      staggerChildren: 0.1,
-                      delayChildren: 0.1,
-                    },
-                  },
-                };
-
-                const contentVariants: Variants = {
-                  rest: {
-                    opacity: 0,
-                    y: 20,
-                    scale: 0.95,
-                  },
-                  hover: {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    transition: {
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 25,
-                      mass: 0.5,
-                    },
-                  },
-                };
-
-                const buttonMotion: Variants = {
-                  rest: {
-                    scale: 1,
-                    y: 0,
-                  },
-                  hover: shouldReduceMotion
-                    ? {}
-                    : {
-                        scale: 1.05,
-                        y: -2,
-                        transition: {
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 25,
-                        },
-                      },
-                  tap: shouldReduceMotion
-                    ? {}
-                    : {
-                        scale: 0.95,
-                      },
-                };
-
-                return (
-                  <StaggerItem key={product.id}>
-                    <motion.div
-                      data-slot="arrival-reveal-card"
-                      initial="rest"
-                      whileHover="hover"
-                      variants={containerVariants}
-                      className="group relative cursor-pointer overflow-hidden rounded-[20px] border border-[var(--color-gold)]/15 bg-[var(--color-surface-elevated)] text-left shadow-[0_10px_32px_rgba(0,0,0,0.18)]"
-                    >
-                      {/* Base Image */}
-                      <div className="relative aspect-[3/4] overflow-hidden">
-                        {image ? (
-                          <motion.div
-                            className="absolute inset-0 bg-cover bg-center"
-                            style={{
-                              backgroundImage: `url(${image})`,
-                            }}
-                            variants={imageVariants}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 30,
-                            }}
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_50%_32%,rgba(201,168,76,0.2),transparent_28%),linear-gradient(135deg,var(--color-surface-elevated),var(--color-background))]">
-                            <span className="font-serif text-5xl text-[var(--color-gold)]/30">
-                              ✦
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-
-                        {hasDiscount && (
-                          <motion.div
-                            initial={{
-                              opacity: 0,
-                              scale: 0.8,
-                              x: 20,
-                            }}
-                            animate={{
-                              opacity: 1,
-                              scale: 1,
-                              x: 0,
-                            }}
-                            transition={{
-                              delay: 0.2,
-                            }}
-                            className="absolute left-4 top-4 z-10 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold text-white"
-                          >
-                            {discountPercent}% OFF
-                          </motion.div>
-                        )}
-                      </div>
-
-                      {/* Base Info */}
-                      <div className="space-y-1 p-4 text-left md:p-5">
-                        {product.category?.title && (
-                          <p className="text-[10px] font-medium tracking-[0.16em] text-[var(--color-gold)]">
-                            {product.category.title}
-                          </p>
-                        )}
-
-                        <h3 className="line-clamp-2 text-sm font-medium text-[var(--color-foreground)]">
-                          {product.title}
-                        </h3>
-
-                        {typeof price === "number" && (
-                          <div className="flex items-center gap-2 pt-1">
-                            <span className="text-sm font-semibold text-[var(--color-foreground)]">
-                              {formatPrice(price)}
-                            </span>
-
-                            {hasDiscount && (
-                              <span className="text-xs text-[var(--color-gold-muted)] line-through">
-                                {formatPrice(product.price!)}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Reveal Overlay */}
-                      <motion.div
-                        variants={overlayVariants}
-                        className="absolute inset-0 flex flex-col justify-end overflow-hidden"
-                      >
-                        {image ? (
-                          <div
-                            className="absolute inset-0 bg-cover bg-center"
-                            style={{
-                              backgroundImage: `url(${image})`,
-                            }}
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-[linear-gradient(135deg,var(--color-surface-elevated),var(--color-background))]" />
-                        )}
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
-
-                        <div className="relative z-10 space-y-4 p-5 text-left md:p-6">
-                          <motion.div variants={contentVariants}>
-                            {product.category?.title && (
-                              <p className="mb-1 text-[10px] font-medium tracking-[0.2em] text-[#e8c779]">
-                                {product.category.title}
-                              </p>
-                            )}
-
-                            <h3 className="line-clamp-2 font-serif text-fluid-h3 text-white">
-                              {product.title}
-                            </h3>
-
-                            {typeof price === "number" && (
-                              <div className="mt-2 flex items-center gap-2">
-                                <span className="text-lg font-semibold text-white">
-                                  {formatPrice(price)}
-                                </span>
-
-                                {hasDiscount && (
-                                  <span className="text-sm text-white/60 line-through">
-                                    {formatPrice(product.price!)}
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </motion.div>
-
-                          <motion.div variants={contentVariants}>
-                            <Link href={`/product/${product.id}`}>
-                              <motion.div
-                                variants={buttonMotion}
-                                initial="rest"
-                                whileHover="hover"
-                                whileTap="tap"
-                                className="flex w-full items-center justify-center gap-2 rounded-full border border-[var(--color-gold)]/60 bg-gradient-to-r from-[#bd9140] via-[#efd38a] to-[#bd9140] py-3 text-[11px] font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
-                              >
-                                <span className="material-symbols-outlined text-sm">
-                                  visibility
-                                </span>
-                                VIEW
-                              </motion.div>
-                            </Link>
-                          </motion.div>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-                  </StaggerItem>
-                );
-              })}
+              {arrivals.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} section="new-arrivals"/>
+              ))}
             </StaggerContainer>
           </div>
         </section>
@@ -909,13 +628,15 @@ console.log({categories},'cat')
 
             <Link
               href="/product"
-              className="hidden border-b border-[var(--color-gold)]/30 pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
+              className="hidden  pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
             >
               View All <ArrowRight size={14} />
             </Link>
           </FadeIn>
 
-          <div className={`grid grid-cols-1 gap-6 ${featuredGridClassName}`}>
+          <div
+            className={`grid gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4${featuredGridClassName}`}
+          >
             {showcaseProducts.map((product, index) => {
               const isLeadProduct = showcaseProducts.length >= 3 && index === 0;
 
@@ -923,75 +644,7 @@ console.log({categories},'cat')
               const price = product.discountPrice ?? product.price;
 
               return (
-                <Link
-                  key={product.id}
-                  href={`/product/${product.id}`}
-                  className="group block"
-                >
-                  <motion.article
-                    className={`relative overflow-hidden rounded-lg bg-[var(--color-surface-elevated)] ${
-                      isLeadProduct
-                        ? "h-[420px] md:col-span-2 md:row-span-2 md:h-[584px]"
-                        : showcaseProducts.length <= 2
-                          ? "h-[420px]"
-                          : "h-[280px]"
-                    }`}
-                    initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
-                    whileInView={
-                      shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
-                    }
-                    whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: shouldReduceMotion
-                        ? 0
-                        : Math.min(index * 0.08, 0.32),
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
-                    {image ? (
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        style={{
-                          backgroundImage: `url(${image})`,
-                        }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(201,168,76,0.2),transparent_34%),linear-gradient(135deg,var(--color-surface-elevated),var(--color-background))]" />
-                    )}
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/5" />
-
-                    {!image && (
-                      <span className="absolute right-7 top-5 font-serif text-7xl text-[var(--color-gold)]/25">
-                        ✦
-                      </span>
-                    )}
-
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-left md:p-8">
-                      {product.category?.title && (
-                        <p className="mb-2 text-[10px] font-semibold tracking-[0.22em] text-[#e8c779]">
-                          {product.category.title}
-                        </p>
-                      )}
-
-                      <h3
-                        className={`font-serif text-white ${
-                          isLeadProduct ? "text-3xl md:text-4xl" : "text-xl"
-                        }`}
-                      >
-                        {product.title}
-                      </h3>
-
-                      {typeof price === "number" && (
-                        <p className="mt-3 text-sm text-white/75">
-                          {formatPrice(price)}
-                        </p>
-                      )}
-                    </div>
-                  </motion.article>
-                </Link>
+                <ProductCard key={product.id} product={product} index={index} />
               );
             })}
           </div>
