@@ -8,6 +8,8 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselDots,
+  CarouselPrevious,
+  CarouselNext,
 } from "@/components/ui/carousel";
 import {
   FadeIn,
@@ -140,7 +142,6 @@ export function HomePageClient({
   const slides = hasApiHeroSlides ? existingSlides : [heroSlides[0]];
   const hasHeroCarousel = hasApiHeroSlides && slides.length > 1;
   const hasHeroImage = Boolean(slides[0]?.image);
-
   const autoplayPlugins =
     autoplayMounted && hasHeroCarousel && !shouldReduceMotion
       ? [
@@ -153,19 +154,14 @@ export function HomePageClient({
       : [];
 
   const hasCategories = categories.length > 0;
-  const showcaseProducts = featuredProducts.slice(0, 4);
-  const arrivals = newArrivalProducts.slice(0, 4);
-  const featuredGridClassName =
-    showcaseProducts.length === 1
-      ? "max-w-2xl"
-      : showcaseProducts.length === 2
-        ? "md:grid-cols-2"
-        : "md:grid-cols-3";
+  const showcaseProducts = featuredProducts.slice(0, 8);
+  const arrivals = newArrivalProducts.slice(0, 8);
 
   return (
     <main className="bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* Hero */}
-      <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-[var(--color-background)] bg-cover  lg:bg-center">
+     
+      <section className="relative h-[48vh] lg:h-[80vh] w-full overflow-hidden bg-[var(--color-background)] bg-cover lg:bg-center">
         <EmblaCarousel
           opts={{ loop: hasHeroCarousel, align: "start" }}
           plugins={autoplayPlugins}
@@ -177,15 +173,9 @@ export function HomePageClient({
                 key={slide.id ?? `${slide.title}-${index}`}
                 className="h-full basis-full pl-0"
               >
-                <div className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
+                <div className="relative h-[48vh] min-h-[360px] lg:h-[80vh] lg:min-h-[640px] w-full overflow-hidden">
                   <motion.div
-                    className="
-    absolute inset-0
-    bg-cover
-    bg-[80%_center]
-    sm:bg-[75%_center]
-    lg:bg-center
-  "
+                    className="absolute inset-0 bg-cover bg-[80%_center] sm:bg-[75%_center] lg:bg-center"
                     style={{
                       backgroundImage: slide.image
                         ? `url(${slide.image})`
@@ -200,11 +190,7 @@ export function HomePageClient({
                     transition={
                       shouldReduceMotion
                         ? undefined
-                        : {
-                            duration: 16,
-                            ease: "easeInOut",
-                            repeat: Infinity,
-                          }
+                        : { duration: 16, ease: "easeInOut", repeat: Infinity }
                     }
                   />
 
@@ -231,11 +217,7 @@ export function HomePageClient({
                     transition={
                       shouldReduceMotion
                         ? undefined
-                        : {
-                            duration: 7,
-                            ease: "easeInOut",
-                            repeat: Infinity,
-                          }
+                        : { duration: 7, ease: "easeInOut", repeat: Infinity }
                     }
                   />
 
@@ -243,7 +225,7 @@ export function HomePageClient({
                   <div className="relative z-10 flex h-full items-center px-4 md:px-16">
                     <div className="w-full max-w-3xl text-left max-md:px-4">
                       <motion.h1
-                        className="mb-6 font-serif font-medium leading-[0.95] tracking-[-0.035em] text-[#e8c779]/70 text-fluid-h3 sm:text-fluid-display"
+                        className="mb-1.5 lg:mb-6 font-serif font-medium leading-[0.95] tracking-[-0.035em] text-[#e8c779]/70 text-fluid-h3 sm:text-fluid-display"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 28 }
                         }
@@ -258,8 +240,9 @@ export function HomePageClient({
                       >
                         {slide.title}
                       </motion.h1>
+
                       <motion.span
-                        className="mb-5 flex items-center justify-start gap-3 text-fluid-xs sm:text-xs font-semibold tracking-[0.28em] text-[#e8c779] "
+                        className="mb-1.5 lg:mb-5 flex items-center justify-start gap-3 text-[10px] sm:text-xs font-semibold tracking-[0.28em] text-[#e8c779]"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 14 }
                         }
@@ -272,12 +255,13 @@ export function HomePageClient({
                           ease: [0.22, 1, 0.36, 1],
                         }}
                       >
-                        <span className="h-px w-8 bg-[#e8c779]/70 " />
+                        <span className="h-px w-6 lg:w-8 bg-[#e8c779]/70" />
                         {slide.eyebrow || "Handcrafted with devotion"}
-                        <span className="h-px w-8 bg-[#e8c779]/70 " />
+                        <span className="h-px w-6 lg:w-8 bg-[#e8c779]/70" />
                       </motion.span>
+
                       <motion.p
-                        className="max-w-xl text-left w-full text-fluid-body leading-relaxed text-white md:text-fluid-h3 font-poppins"
+                        className="max-w-xl text-left w-full text-fluid-body leading-tight lg:leading-relaxed text-white md:text-fluid-h3 font-poppins"
                         initial={
                           shouldReduceMotion ? false : { opacity: 0, y: 20 }
                         }
@@ -293,7 +277,8 @@ export function HomePageClient({
                         {slide.subtitle ||
                           "Discover pieces made to bring warmth, craft, and meaning into your space."}
                       </motion.p>
-                      <div className="flex max-md:flex-col gap-4 md:items-center mt-10">
+
+                      <div className="flex max-md:flex-col gap-2 lg:gap-4 md:items-center mt-3 lg:mt-10">
                         <motion.div
                           initial={
                             shouldReduceMotion ? false : { opacity: 0, y: 16 }
@@ -311,11 +296,12 @@ export function HomePageClient({
                         >
                           <Link
                             href="/product"
-                            className="inline-flex text-sm items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gold-dark px-8 py-4 text-white font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
+                            className="inline-flex text-[11px] lg:text-sm items-center justify-center rounded-full border border-[#f5d98e]/70 bg-gold-dark px-5 py-2.5 lg:px-8 lg:py-4 text-white font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
                           >
                             Explore the Collection
                           </Link>
                         </motion.div>
+
                         <motion.div
                           initial={
                             shouldReduceMotion ? false : { opacity: 0, y: 16 }
@@ -336,13 +322,13 @@ export function HomePageClient({
                             target="_blank"
                             rel="noreferrer"
                             aria-label="Chat with us on WhatsApp"
-                            className="inline-flex  text-sm gap-2 items-center justify-center rounded-full border text-white px-8 py-4  font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
+                            className="inline-flex text-[11px] lg:text-sm gap-2 items-center justify-center rounded-full border text-white px-5 py-2.5 lg:px-8 lg:py-4 font-semibold tracking-[0.2em] text-[#21170b] shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(0,0,0,0.36)]"
                           >
                             Contact on Whatsapp
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
-                              className="h-5 w-5"
+                              className="h-3.5 w-3.5 lg:h-5 lg:w-5"
                               fill="currentColor"
                             >
                               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.67-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -367,10 +353,9 @@ export function HomePageClient({
           )}
         </EmblaCarousel>
       </section>
-
       {/* Categories */}
       {hasCategories ? (
-        <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-background)] px-6 py-24 md:py-28">
+        <section className="border-y border-[var(--color-gold)]/10 bg-[var(--color-background)] px-6 py-16 md:py-28">
           <div className="mx-auto max-w-7xl">
             <FadeIn>
               <div className="mb-16 text-center">
@@ -464,7 +449,7 @@ export function HomePageClient({
 
       {/* New Arrivals */}
       {arrivals.length > 0 && (
-        <section className="bg-[url('/bg.jpeg')] bg-cover bg-center bg-no-repeat px-6 py-24 md:py-28">
+        <section className="bg-[url('/bg.jpeg')] bg-cover bg-center bg-no-repeat px-6 py-16 md:py-28">
           <div className="mx-auto max-w-7xl">
             <FadeIn>
               <div className="mb-14 flex flex-col items-center gap-4">
@@ -493,15 +478,38 @@ export function HomePageClient({
               </div>
             </FadeIn>
 
-            <StaggerContainer
-              className="grid gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4"
-              staggerDelay={0.05}
-              staggerChildren={0.08}
+            <EmblaCarousel
+              opts={{ align: "start", loop: false }}
+              className="relative"
             >
-              {arrivals.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} section="new-arrivals"/>
-              ))}
-            </StaggerContainer>
+              <CarouselContent className="-ml-4 md:-ml-6">
+                {arrivals.map((product, index) => (
+                  <CarouselItem
+                    key={product.id}
+                    className="pl-4 md:pl-6 basis-[78%] sm:basis-[46%] lg:basis-1/4"
+                  >
+                    <ProductCard
+                      product={product}
+                      index={index}
+                      section="new-arrivals"
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {arrivals.length > 1 && (
+                <>
+                  <CarouselPrevious className="-left-3 md:-left-6 h-10 w-10 md:h-12 md:w-12 border border-[var(--color-gold)]/60 bg-[#0a0a0a]/85 text-[#e8c779] shadow-xl backdrop-blur hover:bg-[var(--color-gold)] hover:text-black hover:border-[var(--color-gold)] hover:opacity-100 disabled:opacity-30" />
+                  <CarouselNext className="-right-3 md:-right-6 h-10 w-10 md:h-12 md:w-12 border border-[var(--color-gold)]/60 bg-[#0a0a0a]/85 text-[#e8c779] shadow-xl backdrop-blur hover:bg-[var(--color-gold)] hover:text-black hover:border-[var(--color-gold)] hover:opacity-100 disabled:opacity-30" />
+                </>
+              )}
+            </EmblaCarousel>
+            {arrivals.length > 1 && (
+              <div className="mt-6 flex items-center justify-center gap-3 md:hidden">
+                <span className="text-[11px] tracking-[0.2em] text-[var(--color-gold)]">
+                  SWIPE TO EXPLORE
+                </span>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -634,20 +642,24 @@ export function HomePageClient({
             </Link>
           </FadeIn>
 
-          <div
-            className={`grid gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4${featuredGridClassName}`}
-          >
-            {showcaseProducts.map((product, index) => {
-              const isLeadProduct = showcaseProducts.length >= 3 && index === 0;
-
-              const image = product.images?.[0]?.url;
-              const price = product.discountPrice ?? product.price;
-
-              return (
-                <ProductCard key={product.id} product={product} index={index} />
-              );
-            })}
-          </div>
+          <EmblaCarousel opts={{ align: "start", loop: false }} className="relative">
+            <CarouselContent className="-ml-4 md:-ml-6">
+              {showcaseProducts.map((product, index) => (
+                <CarouselItem
+                  key={product.id}
+                  className="pl-4 md:pl-6 basis-[78%] sm:basis-[46%] lg:basis-1/4"
+                >
+                  <ProductCard key={product.id} product={product} index={index} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {showcaseProducts.length > 1 && (
+              <>
+                <CarouselPrevious className="-left-3 md:-left-6 h-10 w-10 md:h-12 md:w-12 border border-[var(--color-gold)]/60 bg-[#0a0a0a]/85 text-[#e8c779] shadow-xl backdrop-blur hover:bg-[var(--color-gold)] hover:text-black hover:border-[var(--color-gold)] hover:opacity-100 disabled:opacity-30" />
+                <CarouselNext className="-right-3 md:-right-6 h-10 w-10 md:h-12 md:w-12 border border-[var(--color-gold)]/60 bg-[#0a0a0a]/85 text-[#e8c779] shadow-xl backdrop-blur hover:bg-[var(--color-gold)] hover:text-black hover:border-[var(--color-gold)] hover:opacity-100 disabled:opacity-30" />
+              </>
+            )}
+          </EmblaCarousel>
         </section>
       )}
 
