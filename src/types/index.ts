@@ -18,6 +18,7 @@ export interface Product {
   height?: number | string;
   width?: number | string;
   weight?: number | string;
+  depth?: number | string;
   seo?: {
     title?: string;
     description?: string;
@@ -74,6 +75,7 @@ export interface CartItemType {
   price: number;
   quantity: number;
   image?: string;
+  stockQuantity?: number | null;
 }
 
 export interface CartType {

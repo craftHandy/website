@@ -10,6 +10,7 @@ import { useUserStore } from "@/store/user";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRazorpay } from "react-razorpay";
+import { API_BASE_URL } from "@/lib/api";
 
 type AddressFormValues = {
   fullName: string;
@@ -90,7 +91,7 @@ export default function CheckoutPage() {
     const cartItemId = Number.isFinite(numericId) && numericId > 0 ? numericId : rawId;
 
     return {
-      cartItemId,
+      productId: cartItemId,
       quantity: item.quantity,
     };
   };
@@ -146,7 +147,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const checkoutResponse = await fetch("https://backend-4gle.onrender.com/api/v1/checkout", {
+      const checkoutResponse = await fetch( `${API_BASE_URL}/api/v1/checkout/buy-now`, {
         method: "POST",
         headers: checkoutHeaders,
         body: JSON.stringify({
@@ -157,7 +158,7 @@ export default function CheckoutPage() {
             addressLine1: data.addressLine1,
             addressLine2: data.addressLine2 || "",
             city: data.city,
-            state: data.state,
+            state: data.state,  
             country: data.country,
             postalCode: data.postalCode,
           },

@@ -277,8 +277,10 @@ export default async function ProductDetailPage({
   const discounted =
     !!product.discountPrice && product.discountPrice < product.price;
   const price = discounted ? product.discountPrice! : product.price;
+  const hasStockLeft = product.stockQuantity == null || product.stockQuantity > 0;
   const inStock =
-    product.stockStatus === "IN_STOCK" || product.stockStatus === "In Stock";
+    (product.stockStatus === "IN_STOCK" || product.stockStatus === "In Stock") &&
+    hasStockLeft;
   const occasions = product.occasions?.length
     ? product.occasions
     : (product.occasion ?? []);
@@ -314,6 +316,10 @@ export default async function ProductDetailPage({
     {
       label: "Width",
       value: product.width != null ? `${product.width} cm` : "Not specified",
+    },
+    {
+      label: "Depth",
+      value: product.depth != null ? `${product.depth} cm` : "Not specified",
     },
     {
       label: "Weight",
@@ -392,11 +398,24 @@ export default async function ProductDetailPage({
                 title={product.title}
                 price={price}
                 image={product.images[0]?.url}
+                stockQuantity={product.stockQuantity ?? null}
                 disabled={!inStock}
                 className="w-full bg-[var(--color-gold)] text-[#17130a] hover:bg-[var(--color-gold-dark)] sm:w-auto sm:min-w-64"
               >
                 {inStock ? "Add to cart" : "Out of stock"}
               </AddToCartBtn>
+              {!hasStockLeft && (
+                <p className="mt-2 text-xs text-red-400">
+                  This piece is out of stock.
+                </p>
+              )}
+              {hasStockLeft &&
+                product.stockQuantity != null &&
+                product.stockQuantity <= 5 && (
+                  <p className="mt-2 text-xs text-[var(--color-gold)]">
+                    Only {product.stockQuantity} left in stock.
+                  </p>
+                )}
             </div>
             <div className="my-8 h-px bg-[var(--color-border-subtle)]" />
 
