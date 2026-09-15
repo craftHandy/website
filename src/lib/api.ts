@@ -708,3 +708,22 @@ export function decodeJwtPayload(token: string): Record<string, any> | null {
     return null;
   }
 }
+
+// ---- Enquiries ----
+
+export interface EnquiryPayload {
+  email: string;
+  subject: string;
+  body: string;
+}
+
+export async function sendEnquiry(data: EnquiryPayload) {
+  const res = await fetch(`${API_ORIGIN}/api/v1/enquiries`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", accept: "*/*" },
+    body: JSON.stringify(data),
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Failed to send your message. Please try again."));
+  return payload;
+}

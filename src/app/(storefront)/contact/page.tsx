@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   FadeIn,
   StaggerContainer,
@@ -17,6 +18,8 @@ import {
   Twitter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { sendEnquiry } from "@/lib/api";
+import { toast } from "@/store/toast";
 
 const faqs = [
   {
@@ -41,25 +44,43 @@ const faqs = [
   },
 ];
 
+interface ContactForm {
+  email: string;
+  subject: string;
+  message: string;
+}
+
 export default function ContactPage() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactForm>({
+    mode: "onChange",
+    defaultValues: { email: "", subject: "", message: "" },
+  });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // handle form submission
-  };
+  async function onSubmit(data: ContactForm) {
+    try {
+      await sendEnquiry({
+        email: data.email.trim(),
+        subject: data.subject.trim(),
+        body: data.message.trim(),
+      });
+      toast("Message sent", {
+        description: "Thanks for reaching out. We'll get back to you soon.",
+        variant: "success",
+      });
+      reset();
+    } catch (e: any) {
+      toast("Failed to send message", {
+        description: e?.message || "Please try again.",
+        variant: "error",
+      });
+    }
+  }
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
@@ -86,24 +107,7 @@ export default function ContactPage() {
         <div className="grid md:grid-cols-5 gap-16 md:gap-20">
           {/* Form */}
           <FadeIn direction="left" className="md:col-span-3">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-gold tracking-[0.2em]  text-xs font-medium mb-2 font-poppins"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow font-poppins"
-                  placeholder="Your name"
-                />
-              </div>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div>
                 <label
                   htmlFor="email"
@@ -113,13 +117,17 @@ export default function ContactPage() {
                 </label>
                 <input
                   id="email"
-                  name="email"
                   type="email"
-                  value={form.email}
-                  onChange={handleChange}
                   className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm font-poppins focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow"
                   placeholder="your@email.com"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: { value: /^\S+@\S+\.\S+$/, message: "Enter a valid email" },
+                  })}
                 />
+                {errors.email && (
+                  <p className="text-red-600 text-xs mt-1.5 font-poppins">{errors.email.message}</p>
+                )}
               </div>
               <div>
                 <label
@@ -130,13 +138,14 @@ export default function ContactPage() {
                 </label>
                 <input
                   id="subject"
-                  name="subject"
                   type="text"
-                  value={form.subject}
-                  onChange={handleChange}
                   className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-sm text-sm font-poppins focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow"
                   placeholder="How can we help?"
+                  {...register("subject", { required: "Subject is required" })}
                 />
+                {errors.subject && (
+                  <p className="text-red-600 text-xs mt-1.5 font-poppins">{errors.subject.message}</p>
+                )}
               </div>
               <div>
                 <label
@@ -147,22 +156,27 @@ export default function ContactPage() {
                 </label>
                 <textarea
                   id="message"
-                  name="message"
                   rows={5}
-                  value={form.message}
-                  onChange={handleChange}
                   className="w-full px-4 py-3 border border-[var(--color-border-subtle)] rounded-sm text-sm font-poppins focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-[var(--color-background)] bg-[var(--color-surface-elevated)] text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)]/40 transition-shadow resize-none"
                   placeholder="Tell us more..."
+                  {...register("message", {
+                    required: "Message is required",
+                    minLength: { value: 10, message: "Message must be at least 10 characters" },
+                  })}
                 />
+                {errors.message && (
+                  <p className="text-red-600 text-xs mt-1.5 font-poppins">{errors.message.message}</p>
+                )}
               </div>
               <Button
                 type="submit"
                 size="lg"
                 variant="default"
                 className="w-full"
+                disabled={isSubmitting}
               >
                 <span className="flex items-center justify-center gap-2">
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                   <Send
                     size={14}
                     className="group-hover:translate-x-0.5 transition-transform"
