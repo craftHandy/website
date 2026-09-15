@@ -30,15 +30,16 @@ export function Toaster() {
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
                 "pointer-events-auto flex w-full items-start gap-3 rounded-md border px-4 py-3 shadow-2xl backdrop-blur",
-                "border-[var(--color-gold)]/30 bg-[#14100a]/95 text-[var(--color-foreground)]",
-                t.variant === "error" && "border-red-400/40"
+                "border-[var(--color-border-subtle)] bg-[var(--color-surface-strong)] text-[var(--color-foreground)]",
+                t.variant === "error" && "border-red-500/40",
+                t.variant === "success" && "border-emerald-500/40"
               )}
             >
               <Icon
                 className={cn(
                   "mt-0.5 h-5 w-5 shrink-0 text-[var(--color-gold)]",
-                  t.variant === "error" && "text-red-400",
-                  t.variant === "success" && "text-emerald-400"
+                  t.variant === "error" && "text-red-500",
+                  t.variant === "success" && "text-emerald-500"
                 )}
               />
               <div className="min-w-0 flex-1">

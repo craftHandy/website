@@ -631,3 +631,80 @@ export function getPageContent(slug: string): PageContent | null {
 export const FALLBACK = {
   settings: fallbackSettingsRecord,
 };
+
+// ---- Auth ----
+
+export function getApiOrigin() {
+  return API_ORIGIN;
+}
+
+export interface RegisterPayload {
+  fullName: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  address: string;
+  email: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+function extractErrorMessage(payload: any, fallback: string) {
+  if (!payload) return fallback;
+  if (typeof payload.message === "string") return payload.message;
+  if (typeof payload.error === "string") return payload.error;
+  if (payload.errors && typeof payload.errors === "object") {
+    const first = Object.values(payload.errors).flat().find(Boolean);
+    if (typeof first === "string") return first;
+  }
+  return fallback;
+}
+
+export async function registerUser(data: RegisterPayload) {
+  const res = await fetch(`${API_ORIGIN}/api/v1/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", accept: "*/*" },
+    body: JSON.stringify(data),
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Registration failed. Please try again."));
+  return payload;
+}
+
+export async function loginUser(data: LoginPayload) {
+  const res = await fetch(`${API_ORIGIN}/api/v1/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", accept: "*/*" },
+    body: JSON.stringify(data),
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Invalid email or password."));
+  return payload;
+}
+
+export function getAccessTokenFromLoginResponse(payload: any): string | null {
+  if (!payload) return null;
+  if (typeof payload.accessToken === "string") return payload.accessToken;
+  if (typeof payload.access_token === "string") return payload.access_token;
+  if (typeof payload.token === "string") return payload.token;
+  if (typeof payload?.data?.accessToken === "string") return payload.data.accessToken;
+  if (typeof payload?.data?.access_token === "string") return payload.data.access_token;
+  if (typeof payload?.data?.token === "string") return payload.data.token;
+  return null;
+}
+
+export function decodeJwtPayload(token: string): Record<string, any> | null {
+  try {
+    const part = token.split(".")[1];
+    if (!part) return null;
+    const normalized = part.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+    const json = typeof window !== "undefined" ? window.atob(padded) : Buffer.from(padded, "base64").toString("binary");
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
