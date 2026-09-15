@@ -106,7 +106,7 @@ useEffect(() => {
           transition-all duration-300
           hover:scale-110
           hover:shadow-[0_12px_35px_rgba(37,211,102,0.45)]
-          active:scale-95
+          active:scale-95 cursor-pointer
         "
       >
         {/* Animated pulse */}

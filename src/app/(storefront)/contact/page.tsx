@@ -223,7 +223,7 @@ export default function ContactPage() {
                 <h3 className="text-sm font-medium tracking-wider  text-[var(--color-foreground)] mb-1.5">
                   Phone
                 </h3>
-                <p className="flex items-center gap-4">
+                <p className="flex flex-col gap-2">
                 <a
                   href="tel:+91 98714 82162"
                   className="text-[var(--color-cream-dark)]/70 text-sm hover:text-gold transition-colors font-poppins"
