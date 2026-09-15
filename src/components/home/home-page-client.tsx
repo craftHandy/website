@@ -11,17 +11,10 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import {
-  FadeIn,
-  HoverScale,
-  StaggerContainer,
-  StaggerItem,
-} from "../animations/motion";
-import Image from "next/image";
+import { FadeIn, StaggerContainer, StaggerItem } from "../animations/motion";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { formatPrice } from "@/lib/utils";
-import Reveal from "../animations/Reveal";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+
+import { ArrowRight } from "lucide-react";
 import { ProductCard } from "../shared/product-card";
 import type { Product, Category, Collection } from "@/types";
 
@@ -75,9 +68,6 @@ const trustPillars = [
       "Secure packaging and dependable delivery, wherever your sanctuary is.",
   },
 ];
-
-const devotionalArtImage =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuCG_ui5TWIMZ9Ekl2V8WmFKg30ixvHKMZ64RO_Fer4XQrSNR4l0-LRa79Q-NVvJMZaODl2tjty-K3dIrk4sx9BRNxzPrhxTaPrJord20TjjzwvN2f-dqeFtyOdaF8_RFupyVVdkvnYCSwwKPQUN7VLEIGF1yK4rGy-Ja-3BHCWIYlFF-9nYPSQV2KcrPT88GT2m4Xoz2mPeW-srgdVizDyZuiHtqrVqlwO7hqOQ9RuZVkmYhJKdz8_U";
 
 const testimonials = [
   {
@@ -470,7 +460,7 @@ export function HomePageClient({
 
                 <Link
                   href="/product"
-                  className="hidden w-fit items-center gap-2  pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex"
+                  className="flex w-fit items-center gap-2 pb-1 font-poppins text-xs font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)]"
                 >
                   View All
                   <ArrowRight size={14} />
@@ -584,7 +574,7 @@ export function HomePageClient({
               <motion.img
                 alt="Devotional Art"
                 className="h-full w-full object-cover"
-                src={devotionalArtImage}
+                src={"/devotional-art.jpeg"}
                 initial={shouldReduceMotion ? false : { scale: 1.1 }}
                 whileInView={shouldReduceMotion ? undefined : { scale: 1 }}
                 viewport={{ once: true }}
@@ -634,12 +624,13 @@ export function HomePageClient({
               />
             </div>
 
-            <Link
-              href="/product"
-              className="hidden  pb-1 text-xs font-poppins font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)] md:flex items-center gap-2"
-            >
-              View All <ArrowRight size={14} />
-            </Link>
+             <Link
+                  href="/product"
+                  className="flex w-fit items-center gap-2 pb-1 font-poppins text-xs font-semibold tracking-[0.2em] text-[var(--color-gold)] transition-colors hover:text-[var(--color-foreground)]"
+                >
+                  View All
+                  <ArrowRight size={14} />
+                </Link>
           </FadeIn>
 
           <EmblaCarousel

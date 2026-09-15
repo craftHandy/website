@@ -749,10 +749,10 @@ export function Header() {
             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
-              className="md:inline-flex p-2 text-white hover:text-[#e9c176] transition-colors"
+              className="md:inline-flex p-2 text-white hover:text-[#e9c176] transition-colors cursor-pointer"
               aria-label="Search"
             >
-              <Search className="size-5 text-white" />
+              <Search className="size-5 text-white " />
             </button>
 
             {/* Theme Toggle - hidden on the smallest screens, still available in mobile drawer */}
@@ -764,7 +764,7 @@ export function Header() {
                   ? "Switch to light mode"
                   : "Switch to dark mode"
               }
-              className="  items-center justify-center text-white transition hover:text-[#e9c176]"
+              className="  items-center justify-center text-white transition hover:text-[#e9c176] cursor-pointer"
             >
               {theme === "dark" ? (
                 <SunMedium className="size-5 text-white" />
@@ -777,7 +777,7 @@ export function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="p-2 text-white hover:text-[#e9c176] transition-colors"
+                className="p-2 text-white hover:text-[#e9c176] transition-colors cursor-pointer"
                 aria-label="Open user menu"
               >
                 <User className="size-5 text-white" />
