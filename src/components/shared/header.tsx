@@ -522,7 +522,7 @@ import {
 } from "@/components/ui/dialog";
 import { useCartStore } from "@/store/cart";
 import { useUserStore } from "@/store/user";
-import { getCategories } from "@/lib/api";
+import { decodeJwtPayload, getCategories, isAccessTokenExpired } from "@/lib/api";
 import { useTheme } from "@/app/providers";
 import type { Category } from "@/types";
 import { useSearchParams } from "next/navigation";
@@ -568,6 +568,8 @@ export function Header() {
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hasAccessToken, setHasAccessToken] = useState(false);
+  const [tokenEmail, setTokenEmail] = useState("");
   const [search, setSearch] = useState(params.get("search") || "");
   const catRef = useRef<HTMLDivElement>(null);
   const user = useUserStore((s) => s.user);
@@ -579,7 +581,46 @@ export function Header() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const token = window.localStorage.getItem("access_token");
+
+    if (token && isAccessTokenExpired(token)) {
+      clearUser();
+      return;
+    }
+
+    setHasAccessToken(Boolean(token));
+    if (token) {
+      const tokenUser = decodeJwtPayload(token);
+      setTokenEmail(String(tokenUser?.email || tokenUser?.username || tokenUser?.sub || ""));
+    }
+  }, [clearUser]);
+
+  useEffect(() => {
+    const token = window.localStorage.getItem("access_token");
+    const expiresAt = Number(token ? decodeJwtPayload(token)?.exp : NaN);
+    if (!Number.isFinite(expiresAt)) return;
+
+    let timeoutId: number | undefined;
+
+    const logOutWhenExpired = () => {
+      const remainingMs = expiresAt * 1000 - Date.now();
+      if (remainingMs <= 0) {
+        clearUser();
+        setHasAccessToken(false);
+        setTokenEmail("");
+        setShowUserMenu(false);
+        return;
+      }
+
+      // Browsers cap timer durations, so re-check long-lived tokens safely.
+      timeoutId = window.setTimeout(logOutWhenExpired, Math.min(remainingMs, 2_147_000_000));
+    };
+
+    logOutWhenExpired();
+    return () => {
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [clearUser]);
   useEffect(() => {
     setSearch(params.get("search") || "");
   }, [params.get("search")]);
@@ -606,8 +647,12 @@ export function Header() {
 
   function handleConfirmLogout() {
     clearUser();
+    setHasAccessToken(false);
+    setTokenEmail("");
     setLogoutConfirmOpen(false);
   }
+
+  const isLoggedIn = Boolean(user || hasAccessToken);
 
   return (
     <header className="sticky top-0 z-50 bg-[#131313] text-white border-b border-[#3a3428] shadow-[0_4px_30px_rgba(0,0,0,0.25)]">
@@ -785,13 +830,21 @@ export function Header() {
 
               {showUserMenu && (
                 <div className="absolute right-0 top-full mt-2 w-52 bg-[#1e1e1e] border border-[#3a3428] rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.4)] py-2 z-50">
-                  {user ? (
+                  {isLoggedIn ? (
                     <>
                       <p className="px-4 py-1.5 text-xs text-[#d9b66c] truncate">
-                        {user.email}
+                        {user?.email || tokenEmail || "My account"}
                       </p>
 
                       <hr className="my-1 border-[#3a3428]" />
+
+                      <Link
+                        href="/my-orders"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
+                      >
+                        My Orders
+                      </Link>
 
                       <button
                         onClick={handleLogoutRequest}
@@ -975,7 +1028,7 @@ export function Header() {
             <Button
               variant="outline"
               onClick={() => setLogoutConfirmOpen(false)}
-              className="flex-1"
+              className="flex-1 bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-gold)] hover:text-[#0a0a0a]"
             >
               Cancel
             </Button>

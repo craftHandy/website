@@ -541,6 +541,10 @@ type RazorpayPaymentFailure = {
   };
 };
 
+type RazorpayCheckoutInstance = {
+  close?: () => void;
+};
+
 type CheckoutPayload = {
   orderId?: string;
   data?: {
@@ -572,6 +576,7 @@ export default function CheckoutPage() {
   const [razorpayKeyId, setRazorpayKeyId] = useState<string | null>(null);
   const [isKeyLoading, setIsKeyLoading] = useState(true);
   const [keyError, setKeyError] = useState<string | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   const {
     Razorpay,
@@ -580,6 +585,18 @@ export default function CheckoutPage() {
   } = useRazorpay();
 
   const loadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const paymentCheckoutRef = useRef<RazorpayCheckoutInstance | null>(null);
+
+  function finishPaymentAttempt() {
+    paymentCheckoutRef.current = null;
+    setIsPaymentModalOpen(false);
+    setIsSubmitting(false);
+  }
+
+  function cancelPaymentAttempt() {
+    paymentCheckoutRef.current?.close?.();
+    finishPaymentAttempt();
+  }
 
   const {
     register,
@@ -947,7 +964,16 @@ export default function CheckoutPage() {
           color: "#c9a84c",
         },
 
+        // This checkout uses the handler below to receive the completed
+        // payment IDs. Do not switch to a callback/redirect flow here.
+        redirect: false,
+
         handler: async (paymentResult: RazorpayPaymentResult) => {
+          // The Razorpay window has completed. Keep the submit state active
+          // while the backend verifies the successful payment.
+          paymentCheckoutRef.current = null;
+          setIsPaymentModalOpen(false);
+
           try {
             /**
              * 4. Verify payment on the backend.
@@ -956,14 +982,25 @@ export default function CheckoutPage() {
              * The backend must perform signature verification using
              * the Razorpay secret.
              */
+            // These values are supplied only after Razorpay Checkout succeeds.
+            // Keep the gateway order ID tied to the order we opened, and never
+            // substitute the application's checkout/order ID for it.
+            const razorpayOrderId =
+              paymentResult.razorpay_order_id || paymentOrder.id;
+            const razorpayPaymentId = paymentResult.razorpay_payment_id;
+
+            if (!razorpayOrderId || !razorpayPaymentId) {
+              throw new Error("Razorpay did not return the payment details needed for verification.");
+            }
+
             const verifyResponse = await fetch(
               `${API_BASE_URL}/api/v1/payments/verify`,
               {
                 method: "POST",
                 headers: verifyHeaders,
                 body: JSON.stringify({
-                  razorpayOrderId: paymentResult.razorpay_order_id,
-                  razorpayPaymentId: paymentResult.razorpay_payment_id,
+                  razorpayOrderId,
+                  razorpayPaymentId,
                   razorpaySignature: paymentResult.razorpay_signature,
                 }),
               },
@@ -1014,13 +1051,13 @@ export default function CheckoutPage() {
               variant: "error",
             });
 
-            setIsSubmitting(false);
+            finishPaymentAttempt();
           }
         },
 
         modal: {
           ondismiss: () => {
-            setIsSubmitting(false);
+            finishPaymentAttempt();
           },
 
           confirm_close: true,
@@ -1039,13 +1076,15 @@ export default function CheckoutPage() {
             variant: "error",
           });
 
-          setIsSubmitting(false);
+          finishPaymentAttempt();
         },
       );
 
       /**
        * 5. Open Razorpay modal.
        */
+      paymentCheckoutRef.current = razorpayCheckout as unknown as RazorpayCheckoutInstance;
+      setIsPaymentModalOpen(true);
       razorpayCheckout.open();
     } catch (error) {
       toast("Checkout failed", {
@@ -1056,7 +1095,7 @@ export default function CheckoutPage() {
         variant: "error",
       });
 
-      setIsSubmitting(false);
+      finishPaymentAttempt();
     }
   };
 
@@ -1334,6 +1373,15 @@ export default function CheckoutPage() {
                         ? "Loading Payment..."
                         : "Proceed to Payment"}
                   </Button>
+                  {isPaymentModalOpen && (
+                    <button
+                      type="button"
+                      onClick={cancelPaymentAttempt}
+                      className="mt-3 block text-sm text-[var(--color-cream-dark)] underline underline-offset-4 hover:text-gold"
+                    >
+                      Cancel payment
+                    </button>
+                  )}
                 </div>
               </form>
             </section>
