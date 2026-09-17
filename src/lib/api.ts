@@ -709,6 +709,70 @@ export function decodeJwtPayload(token: string): Record<string, any> | null {
   }
 }
 
+/** Returns true only when a JWT has an expiry claim that has elapsed. */
+export function isAccessTokenExpired(token: string): boolean {
+  const expiresAt = Number(decodeJwtPayload(token)?.exp);
+  return Number.isFinite(expiresAt) && Date.now() >= expiresAt * 1000;
+}
+
+export interface OrderItem {
+  id: number;
+  productId: number;
+  productName: string;
+  productSlug: string;
+  unitPrice: number;
+  quantity: number;
+  totalPrice: number;
+  imageUrl?: string;
+}
+
+export interface CustomerOrder {
+  id: number;
+  orderNumber: string;
+  status: string;
+  subtotal: number;
+  discount: number;
+  tax: number;
+  shippingCharge: number;
+  totalAmount: number;
+  currency: string;
+  createdDate: string;
+  items: OrderItem[];
+}
+
+export interface OrdersResult {
+  content: CustomerOrder[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+/** Gets the authenticated customer's orders. */
+export async function getMyOrders(accessToken: string, page = 0, size = 10): Promise<OrdersResult> {
+  const url = new URL(`${API_ORIGIN}/api/v1/orders`);
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("size", String(size));
+
+  const res = await fetch(url.toString(), {
+    headers: { accept: "*/*", Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not load your orders."));
+
+  const data = payload?.data ?? {};
+  return {
+    content: Array.isArray(data.content) ? data.content : [],
+    page: typeof data.page === "number" ? data.page : page,
+    size: typeof data.size === "number" ? data.size : size,
+    totalElements: typeof data.totalElements === "number" ? data.totalElements : 0,
+    totalPages: typeof data.totalPages === "number" ? data.totalPages : 0,
+    last: typeof data.last === "boolean" ? data.last : true,
+  };
+}
+
 // ---- Enquiries ----
 
 export interface EnquiryPayload {
