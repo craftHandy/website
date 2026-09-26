@@ -47,9 +47,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const images = product.images as { url: string; alt?: string }[];
-  const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const discountPercent = hasDiscount ? calculateDiscount(product.price, product.discountPrice!) : 0;
-  const currentPrice = hasDiscount ? product.discountPrice! : product.price;
+  const hasDiscount = product.discountedPrice && product.discountedPrice < product.price;
+  const discountPercent = hasDiscount ? calculateDiscount(product.price, product.discountedPrice!) : 0;
+  const currentPrice = hasDiscount ? product.discountedPrice! : product.price;
 
   const relatedProducts = getRelatedProducts(product, 4);
 
