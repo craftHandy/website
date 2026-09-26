@@ -510,7 +510,7 @@ import { useCartStore } from "@/store/cart";
 import { useUserStore } from "@/store/user";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useRazorpay } from "react-razorpay";
+import { useRazorpay } from "@/hooks/use-razorpay-safe";
 import { API_BASE_URL } from "@/lib/api";
 import { toast } from "@/store/toast";
 
@@ -541,6 +541,10 @@ type RazorpayPaymentFailure = {
   };
 };
 
+type RazorpayCheckoutInstance = {
+  close?: () => void;
+};
+
 type CheckoutPayload = {
   orderId?: string;
   data?: {
@@ -565,21 +569,39 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const items = useCartStore((state) => state.items);
-  const clearCart = useCartStore((state) => state.clearCart);
+  const removeSelectedItems = useCartStore(
+    (state) => state.removeSelectedItems,
+  );
   const user = useUserStore((state) => state.user);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [razorpayKeyId, setRazorpayKeyId] = useState<string | null>(null);
   const [isKeyLoading, setIsKeyLoading] = useState(true);
   const [keyError, setKeyError] = useState<string | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const {
-    Razorpay,
-    isLoading: razorpayIsLoading,
-    error: razorpayError,
-  } = useRazorpay();
+  // Fix for useRazorpay isLoading bug: when script is already loaded, isLoading should be false
+  const { Razorpay, isLoading: razorpayIsLoading, error: razorpayError } = useRazorpay();
+  const [razorpayLoading, setRazorpayLoading] = useState(false);
 
-  const loadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (!razorpayIsLoading) {
+      setRazorpayLoading(false);
+    }
+  }, [razorpayIsLoading]);
+
+  const paymentCheckoutRef = useRef<RazorpayCheckoutInstance | null>(null);
+
+  function finishPaymentAttempt() {
+    paymentCheckoutRef.current = null;
+    setIsPaymentModalOpen(false);
+    setIsSubmitting(false);
+  }
+
+  function cancelPaymentAttempt() {
+    paymentCheckoutRef.current?.close?.();
+    finishPaymentAttempt();
+  }
 
   const {
     register,
@@ -641,12 +663,20 @@ export default function CheckoutPage() {
           return;
         }
 
-        const message =
-          fetchError instanceof Error
-            ? fetchError.message
-            : "Unable to load Razorpay public key.";
+        const fallbackKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
 
-        setKeyError(message);
+        if (fallbackKey) {
+          if (isMounted) {
+            setRazorpayKeyId(fallbackKey);
+          }
+        } else {
+          const message =
+            fetchError instanceof Error
+              ? fetchError.message
+              : "Unable to load Razorpay public key.";
+
+          setKeyError(message);
+        }
       } finally {
         if (isMounted) {
           setIsKeyLoading(false);
@@ -658,29 +688,23 @@ export default function CheckoutPage() {
 
     return () => {
       isMounted = false;
-
-      if (loadTimeoutRef.current) {
-        clearTimeout(loadTimeoutRef.current);
-      }
     };
   }, []);
 
-  const selectedItems = useMemo(() => items, [items]);
-
   const subtotal = useMemo(
     () =>
-      selectedItems.reduce(
+      items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0,
       ),
-    [selectedItems],
+    [items],
   );
 
   const freeShipping = subtotal >= 25000;
 
   const shippingCost = freeShipping
     ? 0
-    : selectedItems.length > 0
+    : items.length > 0
       ? 150
       : 0;
 
@@ -715,29 +739,40 @@ export default function CheckoutPage() {
    * before the Razorpay constructor becomes available.
    */
   function waitForRazorpay(maxWaitMs = 12000): Promise<boolean> {
-    if (Razorpay) {
+    // Capture current state for the polling loop
+    const currentError = razorpayError;
+    const currentRazorpay = Razorpay;
+
+    if (currentRazorpay) {
       return Promise.resolve(true);
     }
 
-    if (razorpayError) {
+    if (currentError) {
       return Promise.resolve(false);
     }
 
     return new Promise((resolve) => {
       const start = Date.now();
-
       const interval = setInterval(() => {
-        if (Razorpay) {
+        // Check if Razorpay is now available
+        if (typeof window !== 'undefined' && (window as any).Razorpay) {
           clearInterval(interval);
           resolve(true);
           return;
         }
 
+        // Check if we have an error now or timed out
         if (razorpayError || Date.now() - start > maxWaitMs) {
           clearInterval(interval);
           resolve(false);
         }
       }, 200);
+
+      // Additional timeout safety net
+      setTimeout(() => {
+        clearInterval(interval);
+        resolve(typeof window !== 'undefined' && !!(window as any).Razorpay);
+      }, maxWaitMs);
     });
   }
 
@@ -745,15 +780,6 @@ export default function CheckoutPage() {
     if (items.length === 0) {
       toast("Cart is empty", {
         description: "Add items before checking out.",
-        variant: "error",
-      });
-
-      return;
-    }
-
-    if (selectedItems.length === 0) {
-      toast("No items selected", {
-        description: "Select at least one item to checkout.",
         variant: "error",
       });
 
@@ -791,6 +817,11 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Keep the exact cart entries that this checkout was created for. The
+    // cart can change while the Razorpay window is open, so only these items
+    // should be removed after the server confirms payment.
+    const purchasedItemIds = items.map((item) => item.id);
+
     setIsSubmitting(true);
 
     /**
@@ -822,242 +853,291 @@ export default function CheckoutPage() {
       ...authHeaders,
     };
 
-    try {
-      /**
-       * 1. Create the application order.
-       */
-      const checkoutResponse = await fetch(
-        `${API_BASE_URL}/api/v1/checkout/buy-now`,
-        {
-          method: "POST",
-          headers: checkoutHeaders,
-          body: JSON.stringify({
-            cartItems: selectedItems.map(createCartPayloadItem),
+try {
+        /**
+         * 1. Create the application order.
+         */
+        const controller1 = new AbortController();
+        const timeout1 = setTimeout(() => controller1.abort(), 15000); // 15s timeout
 
-            address: {
-              fullName: data.fullName,
-              mobileNo: data.mobileNo,
-              addressLine1: data.addressLine1,
-              addressLine2: data.addressLine2 || "",
-              city: data.city,
-              state: data.state,
-              country: data.country,
-              postalCode: data.postalCode,
-            },
-          }),
-        },
-      );
+        const checkoutResponse = await fetch(
+          `${API_BASE_URL}/api/v1/checkout/buy-now`,
+          {
+            method: "POST",
+            headers: checkoutHeaders,
+            body: JSON.stringify({
+              cartItems: items.map(createCartPayloadItem),
 
-      const checkoutPayload = (await checkoutResponse
-        .json()
-        .catch(() => null)) as CheckoutPayload | null;
-
-      if (!checkoutResponse.ok) {
-        throw new Error(
-          checkoutPayload?.data?.orderId ||
-            checkoutPayload?.orderId ||
-            "Checkout failed. Please try again.",
-        );
-      }
-
-      /**
-       * 2. Create Razorpay order.
-       *
-       * IMPORTANT:
-       * Do not put Razorpay secret credentials here.
-       *
-       * Also don't send `notes` as an object here because the
-       * react-razorpay frontend type expects a string.
-       *
-       * If you need Razorpay notes, create them server-side in
-       * your /api/razorpay route using the Razorpay SDK.
-       */
-      const paymentResponse = await fetch("/api/razorpay", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          amount: Math.round(total * 100),
-          currency: "INR",
-          receipt: `receipt_${Date.now()}`,
-        }),
-      });
-
-      const paymentOrder = (await paymentResponse
-        .json()
-        .catch(() => null)) as PaymentOrderPayload | { error?: string } | null;
-
-      if (!paymentResponse.ok) {
-        const message =
-          paymentOrder &&
-          "error" in paymentOrder &&
-          typeof paymentOrder.error === "string"
-            ? paymentOrder.error
-            : "Unable to create payment order. Please try again.";
-
-        throw new Error(message);
-      }
-
-      if (
-        !paymentOrder ||
-        !("id" in paymentOrder) ||
-        !paymentOrder.id ||
-        typeof paymentOrder.amount !== "number" ||
-        !paymentOrder.currency
-      ) {
-        throw new Error("Invalid Razorpay payment order received.");
-      }
-
-      /**
-       * 3. Open Razorpay Checkout.
-       *
-       * IMPORTANT:
-       *
-       * Do NOT add:
-       *
-       * config.display.preferences
-       * retry.max_count
-       * notes: {}
-       *
-       * Those are not compatible with the react-razorpay types
-       * used by your project.
-       */
-      const razorpayCheckout = new Razorpay({
-        key: razorpayKeyId,
-
-        amount: paymentOrder.amount,
-
-        currency: paymentOrder.currency,
-
-        name: "Ratna Treaseure",
-
-        description: "Secure  payment",
-
-        order_id: paymentOrder.id,
-
-        prefill: {
-          name: data.fullName,
-          email: user?.email || "",
-          contact: data.mobileNo,
-        },
-
-        theme: {
-          color: "#c9a84c",
-        },
-
-        handler: async (paymentResult: RazorpayPaymentResult) => {
-          try {
-            /**
-             * 4. Verify payment on the backend.
-             *
-             * Never verify the Razorpay signature in the browser.
-             * The backend must perform signature verification using
-             * the Razorpay secret.
-             */
-            const verifyResponse = await fetch(
-              `${API_BASE_URL}/api/v1/payments/verify`,
-              {
-                method: "POST",
-                headers: verifyHeaders,
-                body: JSON.stringify({
-                  razorpayOrderId: paymentResult.razorpay_order_id,
-                  razorpayPaymentId: paymentResult.razorpay_payment_id,
-                  razorpaySignature: paymentResult.razorpay_signature,
-                }),
+              address: {
+                fullName: data.fullName,
+                mobileNo: data.mobileNo,
+                addressLine1: data.addressLine1,
+                addressLine2: data.addressLine2 || "",
+                city: data.city,
+                state: data.state,
+                country: data.country,
+                postalCode: data.postalCode,
               },
-            );
+            }),
+            signal: controller1.signal,
+          },
+        );
 
-            const verifyPayload = (await verifyResponse
-              .json()
-              .catch(() => null)) as CheckoutPayload | null;
+        clearTimeout(timeout1);
 
-            if (!verifyResponse.ok) {
-              throw new Error(
-                verifyPayload?.data?.orderId ||
-                  verifyPayload?.orderId ||
-                  "Payment verification failed.",
-              );
-            }
+        const checkoutPayload = (await checkoutResponse
+          .json()
+          .catch(() => null)) as CheckoutPayload | null;
 
-            /**
-             * Try to obtain the actual application order ID from
-             * the verification response first, then checkout response.
-             */
-            const serverOrderId =
-              verifyPayload?.orderId ||
-              verifyPayload?.data?.orderId ||
-              verifyPayload?.data?.id ||
+        if (!checkoutResponse.ok) {
+          throw new Error(
+            checkoutPayload?.data?.orderId ||
               checkoutPayload?.orderId ||
-              checkoutPayload?.data?.orderId ||
-              checkoutPayload?.data?.id ||
-              null;
+              "Checkout failed. Please try again.",
+          );
+        }
 
-            /**
-             * Payment has been verified successfully.
-             */
-            clearCart();
+        /**
+         * 2. Create Razorpay order.
+         *
+         * IMPORTANT:
+         * Do not put Razorpay secret credentials here.
+         *
+         * Also don't send `notes` as an object here because the
+         * react-razorpay frontend type expects a string.
+         *
+         * If you need Razorpay notes, create them server-side in
+         * your /api/razorpay route using the Razorpay SDK.
+         */
+        const controller2 = new AbortController();
+        const timeout2 = setTimeout(() => controller2.abort(), 15000); // 15s timeout
 
-            const finalOrderId =
-              serverOrderId || `local-${Date.now()}`;
+        const paymentResponse = await fetch("/api/razorpay", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            amount: Math.round(total * 100),
+            currency: "INR",
+            receipt: `receipt_${Date.now()}`,
+          }),
+          signal: controller2.signal,
+        });
 
-            router.push(
-              `/order/success?orderId=${encodeURIComponent(finalOrderId)}`,
-            );
-          } catch (verifyError) {
-            toast("Verification failed", {
+        clearTimeout(timeout2);
+
+        const paymentOrder = (await paymentResponse
+          .json()
+          .catch(() => null)) as PaymentOrderPayload | { error?: string } | null;
+
+        if (!paymentResponse.ok) {
+          const message =
+            paymentOrder &&
+            "error" in paymentOrder &&
+            typeof paymentOrder.error === "string"
+              ? paymentOrder.error
+              : "Unable to create payment order. Please try again.";
+
+          throw new Error(message);
+        }
+
+        if (
+          !paymentOrder ||
+          !("id" in paymentOrder) ||
+          !paymentOrder.id ||
+          typeof paymentOrder.amount !== "number" ||
+          !paymentOrder.currency
+        ) {
+          throw new Error("Invalid Razorpay payment order received.");
+        }
+
+        /**
+         * 3. Open Razorpay Checkout.
+         *
+         * IMPORTANT:
+         *
+         * Do NOT add:
+         *
+         * config.display.preferences
+         * retry.max_count
+         * notes: {}
+         *
+         * Those are not compatible with the react-razorpay types
+         * used by your project.
+         */
+        const razorpayCheckout = new Razorpay({
+          key: razorpayKeyId,
+
+          amount: paymentOrder.amount,
+
+          currency: paymentOrder.currency,
+
+          name: "Ratna Treaseure",
+
+          description: "Secure  payment",
+
+          order_id: paymentOrder.id,
+
+          prefill: {
+            name: data.fullName,
+            email: user?.email || "",
+            contact: data.mobileNo,
+          },
+
+          theme: {
+            color: "#c9a84c",
+          },
+
+          // This checkout uses the handler below to receive the completed
+          // payment IDs. Do not switch to a callback/redirect flow here.
+          redirect: false,
+
+          handler: async (paymentResult: RazorpayPaymentResult) => {
+            // The Razorpay window has completed. Keep the submit state active
+            // while the backend verifies the successful payment.
+            paymentCheckoutRef.current = null;
+            setIsPaymentModalOpen(false);
+
+            try {
+              /**
+               * 4. Verify payment on the backend.
+               *
+               * Never verify the Razorpay signature in the browser.
+               * The backend must perform signature verification using
+               * the Razorpay secret.
+               */
+              // These values are supplied only after Razorpay Checkout succeeds.
+              // Keep the gateway order ID tied to the order we opened, and never
+              // substitute the application's checkout/order ID for it.
+              const razorpayOrderId =
+                paymentResult.razorpay_order_id || paymentOrder.id;
+              const razorpayPaymentId = paymentResult.razorpay_payment_id;
+
+              if (!razorpayOrderId || !razorpayPaymentId) {
+                throw new Error("Razorpay did not return the payment details needed for verification.");
+              }
+
+              const controller3 = new AbortController();
+              const timeout3 = setTimeout(() => controller3.abort(), 30000); // 30s timeout for verification
+
+              const verifyResponse = await fetch(
+                `${API_BASE_URL}/api/v1/payments/verify`,   
+                {
+                  method: "POST",
+                  headers: verifyHeaders,
+                  body: JSON.stringify({
+                    razorpayOrderId,
+                    razorpayPaymentId,
+                    razorpaySignature: paymentResult.razorpay_signature,
+                  }),
+                  signal: controller3.signal,
+                },
+              );
+
+              clearTimeout(timeout3);
+
+              const verifyPayload = (await verifyResponse
+                .json()
+                .catch(() => null)) as CheckoutPayload | null;
+
+              if (!verifyResponse.ok) {
+                throw new Error(
+                  verifyPayload?.data?.orderId ||
+                    verifyPayload?.orderId ||
+                    "Payment verification failed.",
+                );
+              }
+
+              /**
+               * Try to obtain the actual application order ID from
+               * the verification response first, then checkout response.
+               */
+              const serverOrderId =
+                verifyPayload?.orderId ||
+                verifyPayload?.data?.orderId ||
+                verifyPayload?.data?.id ||
+                checkoutPayload?.orderId ||
+                checkoutPayload?.data?.orderId ||
+                checkoutPayload?.data?.id ||
+                null;
+
+              /**
+               * Payment has been verified successfully.
+               */
+              removeSelectedItems(purchasedItemIds);
+
+              toast("Payment successful", {
+                description: "Your payment has been verified and your order is confirmed.",
+                variant: "success",
+              });
+
+              finishPaymentAttempt();
+
+              const finalOrderId =
+                serverOrderId || `local-${Date.now()}`;
+
+              router.push(
+                `/order/success?orderId=${encodeURIComponent(finalOrderId)}`,
+              );
+            } catch (verifyError) {
+              toast("Verification failed", {
+                description:
+                  verifyError instanceof Error
+                    ? verifyError.message
+                    : "Payment succeeded but verification failed.",
+                variant: "error",
+              });
+
+              finishPaymentAttempt();
+            }
+          },
+
+          modal: {
+            ondismiss: () => {
+              finishPaymentAttempt();
+            },
+
+            confirm_close: true,
+          },
+        });
+
+        /**
+         * Handle Razorpay payment failures.
+         */
+        razorpayCheckout.on(
+          "payment.failed",
+          (failure: RazorpayPaymentFailure) => {
+            toast("Payment failed", {
               description:
-                verifyError instanceof Error
-                  ? verifyError.message
-                  : "Payment succeeded but verification failed.",
+                failure.error?.description || "Please try again.",
               variant: "error",
             });
 
-            setIsSubmitting(false);
-          }
-        },
-
-        modal: {
-          ondismiss: () => {
-            setIsSubmitting(false);
+            finishPaymentAttempt();
           },
+        );
 
-          confirm_close: true,
-        },
-      });
+        /**
+         * 5. Open Razorpay modal.
+         */
+        paymentCheckoutRef.current = razorpayCheckout as unknown as RazorpayCheckoutInstance;
+        setIsPaymentModalOpen(true);
+        razorpayCheckout.open();
+      } catch (error) {
+        // Clear any active timeouts on error
+        // Note: We don't have references to the timeouts here, but they will fire and abort
+        toast("Checkout failed", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
+          variant: "error",
+        });
 
-      /**
-       * Handle Razorpay payment failures.
-       */
-      razorpayCheckout.on(
-        "payment.failed",
-        (failure: RazorpayPaymentFailure) => {
-          toast("Payment failed", {
-            description:
-              failure.error?.description || "Please try again.",
-            variant: "error",
-          });
-
-          setIsSubmitting(false);
-        },
-      );
-
-      /**
-       * 5. Open Razorpay modal.
-       */
-      razorpayCheckout.open();
-    } catch (error) {
-      toast("Checkout failed", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong. Please try again.",
-        variant: "error",
-      });
-
-      setIsSubmitting(false);
-    }
+        finishPaymentAttempt();
+      }
   };
 
   /**
@@ -1325,15 +1405,22 @@ export default function CheckoutPage() {
                       isSubmitting ||
                       isKeyLoading ||
                       !razorpayKeyId ||
-                      razorpayIsLoading
+                      razorpayLoading
                     }
                   >
                     {isSubmitting
                       ? "Processing..."
-                      : isKeyLoading || razorpayIsLoading
-                        ? "Loading Payment..."
-                        : "Proceed to Payment"}
+                      : "Proceed to Payment"}
                   </Button>
+                  {isPaymentModalOpen && (
+                    <button
+                      type="button"
+                      onClick={cancelPaymentAttempt}
+                      className="mt-3 block text-sm text-[var(--color-cream-dark)] underline underline-offset-4 hover:text-gold"
+                    >
+                      Cancel payment
+                    </button>
+                  )}
                 </div>
               </form>
             </section>
@@ -1347,7 +1434,7 @@ export default function CheckoutPage() {
               </h2>
 
               <div className="mb-6 space-y-4">
-                {selectedItems.map((item) => (
+                {items.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-start gap-3 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface)] p-3"
@@ -1380,7 +1467,7 @@ export default function CheckoutPage() {
                       </p>
 
                       <p className="mt-1 text-xs text-gold">
-                        {formatPrice(item.price * item.quantity)}
+                        {(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -1395,7 +1482,7 @@ export default function CheckoutPage() {
                   </span>
 
                   <span className="text-[var(--color-foreground)]">
-                    {formatPrice(subtotal)}
+                    {subtotal.toFixed(2)}
                   </span>
                 </div>
 
@@ -1417,7 +1504,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
 
-                {!freeShipping && selectedItems.length > 0 && (
+                {!freeShipping && items.length > 0 && (
                   <p className="text-xs text-[var(--color-gold-muted)]">
                     Add {formatPrice(25000 - subtotal)} more for free
                     shipping
@@ -1432,19 +1519,19 @@ export default function CheckoutPage() {
                 </span>
 
                 <span className="text-[var(--color-foreground)]">
-                  {formatPrice(total)}
+                  {total.toFixed(2)}
                 </span>
               </div>
 
               {/* Razorpay status */}
               <p className="mt-4 text-center text-xs text-gold-muted">
-                {keyError
-                  ? `Payment configuration error: ${keyError}`
-                  : razorpayError
-                    ? `Razorpay failed to load: ${razorpayError}`
-                    : razorpayIsLoading || isKeyLoading
-                      ? "Loading secure payment checkout..."
-                      : "Payments are processed securely through Razorpay."}
+{keyError
+                   ? `Payment configuration error: ${keyError}`
+                   : razorpayError
+                     ? `Razorpay failed to load: ${razorpayError}`
+                     : razorpayLoading || isKeyLoading
+                       ? "Loading secure payment checkout..."
+                       : "Payments are processed securely through Razorpay."}
               </p>
             </div>
           </div>

@@ -1,3 +1,104 @@
+// "use client";
+
+// import Image from "next/image";
+// import Link from "next/link";
+// import { motion } from "framer-motion";
+// import { Badge } from "@/components/ui/badge";
+// import { formatPrice, calculateDiscount } from "@/lib/utils";
+// import type { Product } from "@/types";
+
+// interface ProductCardProps {
+//   product: Product;
+//   index?: number;
+//   section?: string;
+// }
+
+// export function ProductCard({ product, index = 0, section }: ProductCardProps) {
+//   // const hasDiscount =
+//   //   product.discountPrice && product.discountPrice < product.price;
+//   // const discountPercent = hasDiscount
+//   //   ? calculateDiscount(product.price, product.discountPrice!)
+//   //   : 0;
+//   const isArrivalSection = section === "new-arrivals";
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 30 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true }}
+//       transition={{ duration: 0.5, delay: index * 0.05 }}
+//     >
+//       <Link href={`/product/${product.id}`} className="group block">
+//         <div className=" relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
+//           {product.images?.[0]?.url ? (
+//             <Image
+//               src={product.images[0].url}
+//               alt={product.images[0].alt || product.title}
+//               fill
+//               className="object-cover transition-transform duration-700 group-hover:scale-105"
+//               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+//             />
+//           ) : (
+//             <div className="w-full h-full flex items-center justify-center text-gold-muted">
+//               No Image
+//             </div>
+//           )}
+//           {product?.discountPercentage ? (
+//             <Badge variant="default" className="absolute top-3 left-3">
+//               {product.discountPercentage}% OFF
+//             </Badge>
+//           ) : null}
+//           {product?.stockStatus === "Limited Stock" && (
+//             <Badge variant="limited" className="absolute top-3 right-3">
+//               Limited
+//             </Badge>
+//           )}
+//           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0a]/90 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+//         </div>
+//         <div className="space-y-1.5 text-center">
+//           {product?.category && (
+//             <p className="text-[10px] tracking-widest text-center text-gold font-medium font-poppins">
+//               {product.category.title}
+//             </p>
+//           )}
+//           <h3
+//             className={`font-poppins text-sm font-medium text-center text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small ${isArrivalSection && "text-white"}`}
+//           >
+//             {product?.title}
+//           </h3>
+//           {product.craftType && (
+//             <p className=" font-poppins text-[11px] text-center text-gold-muted text-fluid-xs">
+//               {product.craftType}
+//             </p>
+//           )}
+//          <div className="font-poppins flex items-center justify-center gap-2 pt-0.5 text-center">
+//             {Number(product?.discountPercentage) > 0 ? (
+//               <>
+//                 {/* Discounted price in white */}
+//                 <span
+//                   className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}
+//                 >
+//                   {product.discountedPrice}
+//                 </span>
+
+//                 {/* Original price with line-through */}
+//                 <span className="text-sm text-gold-muted line-through">
+//                   {product.price}
+//                 </span>
+//               </>
+//             ) : (
+//               <span
+//                 className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}>
+//                 {product.price}
+//               </span>
+//             )}
+//           </div>  
+//         </div>
+//       </Link>
+//     </motion.div>
+//   );
+// }
+
+
 "use client";
 
 import Image from "next/image";
@@ -10,16 +111,15 @@ import type { Product } from "@/types";
 interface ProductCardProps {
   product: Product;
   index?: number;
-  section?:string
+  section?: string;
 }
 
 export function ProductCard({ product, index = 0, section }: ProductCardProps) {
-  const hasDiscount =
-    product.discountPrice && product.discountPrice < product.price;
-  const discountPercent = hasDiscount
-    ? calculateDiscount(product.price, product.discountPrice!)
-    : 0;
-const isArrivalSection = section === "new-arrivals";
+  const isArrivalSection = section === "new-arrivals";
+  
+  // Handles potential API mismatch between 'discountedPrice' and 'discountPrice'
+  const discountedVal = product.discountedPrice ?? product.discountedPrice;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -28,7 +128,7 @@ const isArrivalSection = section === "new-arrivals";
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
       <Link href={`/product/${product.id}`} className="group block">
-        <div className=" relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--color-surface-elevated)] rounded-sm mb-4 border border-[var(--color-border-subtle)] group-hover:border-[rgba(201,168,76,0.35)] transition-all duration-500 luxe-card">
           {product.images?.[0]?.url ? (
             <Image
               src={product.images[0].url}
@@ -42,11 +142,11 @@ const isArrivalSection = section === "new-arrivals";
               No Image
             </div>
           )}
-          {hasDiscount && (
+          {product?.discountPercentage ? (
             <Badge variant="default" className="absolute top-3 left-3">
-              {discountPercent}% OFF
+              {product.discountPercentage}% OFF
             </Badge>
-          )}
+          ) : null}
           {product?.stockStatus === "Limited Stock" && (
             <Badge variant="limited" className="absolute top-3 right-3">
               Limited
@@ -54,29 +154,46 @@ const isArrivalSection = section === "new-arrivals";
           )}
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0a]/90 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
         </div>
+        
         <div className="space-y-1.5 text-center">
           {product?.category && (
             <p className="text-[10px] tracking-widest text-center text-gold font-medium font-poppins">
               {product.category.title}
             </p>
           )}
-          <h3 className={`font-poppins text-sm font-medium text-center text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small ${isArrivalSection &&'text-white' }`}>
+          <h3
+            className={`font-poppins text-sm font-medium text-center text-[var(--color-foreground)] group-hover:text-gold transition-colors line-clamp-2 text-fluid-small ${isArrivalSection && "text-white"}`}
+          >
             {product?.title}
           </h3>
           {product.craftType && (
-            <p className=" font-poppins text-[11px] text-center text-gold-muted text-fluid-xs">
+            <p className="font-poppins text-[11px] text-center text-gold-muted text-fluid-xs">
               {product.craftType}
             </p>
           )}
-          <div className=" font-poppins flex items-center justify-center gap-2 pt-0.5 text-center">
-            <span className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && 'text-white' }`}>
-              {formatPrice(
-                hasDiscount ? product.discountPrice! : product.price,
-              )}
-            </span>
-            {hasDiscount && (
-              <span className="text-sm text-gold-muted line-through">
-                {formatPrice(product.price)}
+          
+          {/* Price Section */}
+          <div className="font-poppins flex items-center justify-center gap-2 pt-0.5 text-center">
+            {Number(product?.discountPercentage) > 0 ? (
+              <>
+                {/* Discounted price in white */}
+                <span
+                  className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}
+                >
+                  {discountedVal}
+                </span>
+
+                {/* Original price with line-through */}
+                <span className="text-sm text-gold-muted line-through">
+                  {product.price}
+                </span>
+              </>
+            ) : (
+              /* No discount: Regular price in white, line-through part hidden completely */
+              <span
+                className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}
+              >
+                {product.price}
               </span>
             )}
           </div>

@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/store/toast";
 import type { CartItemType } from "@/types";
+import { CrossIcon, XIcon } from "lucide-react";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -168,7 +169,7 @@ export default function CartPage() {
 
                 <div className="md:text-left">
                   <span className="text-sm font-semibold text-[var(--color-foreground)]">
-                    {formatPrice(item.price)}
+                    {item.price}
                   </span>
                   <span className="md:hidden text-sm text-gold-muted ml-2">
                     each
@@ -223,10 +224,10 @@ export default function CartPage() {
 
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-gold-muted hover:text-red-400 transition-colors p-1"
+                  className="text-gold-muted hover:text-red-400 transition-colors"
                   aria-label={`Remove ${item.title}`}
                 >
-                  <svg
+                  {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="16"
@@ -239,7 +240,8 @@ export default function CartPage() {
                   >
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
+                  </svg> */}
+                  <XIcon size={16} className="-mt-2"/>
                 </button>
               </div>
             ))}
@@ -270,7 +272,7 @@ export default function CartPage() {
                   <span className="text-cream-dark/70">
                     {subtotalText}
                   </span>
-                  <span className="text-[var(--color-foreground)]">{formatPrice(selectedSubtotal)}</span>
+                  <span className="text-[var(--color-foreground)]">{selectedSubtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-cream-dark/70">Shipping</span>
@@ -280,7 +282,7 @@ export default function CartPage() {
                 </div>
                 {selectedItems.length > 0 && !freeShipping && (
                   <p className="text-xs text-gold-muted">
-                    Add {formatPrice(shippingThreshold - selectedSubtotal)} more for free shipping
+                    Add {shippingThreshold - selectedSubtotal} more for free shipping
                   </p>
                 )}
               </div>
@@ -289,7 +291,7 @@ export default function CartPage() {
 
               <div className="flex justify-between text-base font-semibold mb-6">
                 <span className="text-[var(--color-foreground)]">Total</span>
-                <span className="text-[var(--color-foreground)]">{formatPrice(total)}</span>
+                <span className="text-[var(--color-foreground)]">{total.toFixed(2)}</span>
               </div>
 
               <Button

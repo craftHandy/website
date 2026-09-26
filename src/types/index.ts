@@ -3,8 +3,7 @@ export interface Product {
   title: string;
   slug: string;
   price: number;
-  discountPrice?: number;
-  discountPercentage?: number;
+  discountPercentage: number;
   description?: string;
   materials?: string[];
   craftType?: string;
@@ -30,6 +29,9 @@ export interface Product {
   collectionId?: string | null;
   collection?: Collection | null;
   createdAt?: string;
+  discountedPrice:number
+  discountAmount?:number
+  
 }
 
 export interface Category {

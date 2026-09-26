@@ -331,7 +331,7 @@ function mapApiProducts(rawProducts: any[]): Product[] {
         title: String(product.title),
         slug: product.slug || `product-${product.id}`,
         price,
-        discountPrice: discountPercentage > 0 ? price * (1 - discountPercentage / 100) : undefined,
+        discountedPrice: product.discountedPrice? product.discountedPrice: undefined,
         discountPercentage,
         materials: Array.isArray(product.materials)
           ? product.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
@@ -454,7 +454,7 @@ export async function getProductById(id: string): Promise<Product | null> {
       slug: raw.slug || product.slug,
       price: Number(raw.price) || product.price,
       discountPercentage: Number(raw.discountPercentage) || product.discountPercentage || 0,
-      discountPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountPrice,
+      discountedPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountedPrice,
       description: raw.description || product.description || undefined,
       materials,
       occasion: occasions,
@@ -707,6 +707,71 @@ export function decodeJwtPayload(token: string): Record<string, any> | null {
   } catch {
     return null;
   }
+}
+
+/** Returns true only when a JWT has an expiry claim that has elapsed. */
+export function isAccessTokenExpired(token: string): boolean {
+  const expiresAt = Number(decodeJwtPayload(token)?.exp);
+  return Number.isFinite(expiresAt) && Date.now() >= expiresAt * 1000;
+}
+
+export interface OrderItem {
+  id: number;
+  productId: number;
+  productName: string;
+  productSlug: string;
+  unitPrice: number;
+  quantity: number;
+  totalPrice: number;
+  imageUrl?: string;
+}
+
+export interface CustomerOrder {
+  id: number;
+  orderNumber: string;
+  status: string;
+  subtotal: number;
+  discount: number;
+  tax: number;
+  shippingCharge: number;
+  totalAmount: number;
+  currency: string;
+  createdDate: string;
+  items: OrderItem[];
+  trackingNumber?:string
+}
+
+export interface OrdersResult {
+  content: CustomerOrder[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+/** Gets the authenticated customer's orders. */
+export async function getMyOrders(accessToken: string, page = 0, size = 10): Promise<OrdersResult> {
+  const url = new URL(`${API_ORIGIN}/api/v1/orders`);
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("size", String(size));
+
+  const res = await fetch(url.toString(), {
+    headers: { accept: "*/*", Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not load your orders."));
+
+  const data = payload?.data ?? {};
+  return {
+    content: Array.isArray(data.content) ? data.content : [],
+    page: typeof data.page === "number" ? data.page : page,
+    size: typeof data.size === "number" ? data.size : size,
+    totalElements: typeof data.totalElements === "number" ? data.totalElements : 0,
+    totalPages: typeof data.totalPages === "number" ? data.totalPages : 0,
+    last: typeof data.last === "boolean" ? data.last : true,
+  };
 }
 
 // ---- Enquiries ----
