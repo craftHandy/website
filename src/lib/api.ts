@@ -331,7 +331,7 @@ function mapApiProducts(rawProducts: any[]): Product[] {
         title: String(product.title),
         slug: product.slug || `product-${product.id}`,
         price,
-        discountPrice: discountPercentage > 0 ? price * (1 - discountPercentage / 100) : undefined,
+        discountedPrice: product.discountedPrice? product.discountedPrice: undefined,
         discountPercentage,
         materials: Array.isArray(product.materials)
           ? product.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
@@ -454,7 +454,7 @@ export async function getProductById(id: string): Promise<Product | null> {
       slug: raw.slug || product.slug,
       price: Number(raw.price) || product.price,
       discountPercentage: Number(raw.discountPercentage) || product.discountPercentage || 0,
-      discountPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountPrice,
+      discountedPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountedPrice,
       description: raw.description || product.description || undefined,
       materials,
       occasion: occasions,

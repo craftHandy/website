@@ -275,11 +275,13 @@ export default async function ProductDetailPage({
   if (!product) notFound();
 
   const discounted =
-    !!product.discountPrice && product.discountPrice < product.price;
-  const price = discounted ? product.discountPrice! : product.price;
-  const hasStockLeft = product.stockQuantity == null || product.stockQuantity > 0;
+    !!product.discountedPrice && product.discountedPrice < product.price;
+  const price = discounted ? product.discountedPrice! : product.price;
+  const hasStockLeft =
+    product.stockQuantity == null || product.stockQuantity > 0;
   const inStock =
-    (product.stockStatus === "IN_STOCK" || product.stockStatus === "In Stock") &&
+    (product.stockStatus === "IN_STOCK" ||
+      product.stockStatus === "In Stock") &&
     hasStockLeft;
   const occasions = product.occasions?.length
     ? product.occasions
@@ -365,16 +367,18 @@ export default async function ProductDetailPage({
 
             <div className="mt-7 flex items-center gap-3">
               <span className="text-3xl font-semibold">
-                {formatPrice(price)}
+                {product?.discountedPrice}
               </span>
               {discounted && (
                 <>
                   <span className="text-lg text-[var(--color-gold-muted)] line-through">
-                    {formatPrice(product.price)}
+                    {product.price}
                   </span>
-                  <Badge variant="default">
-                    {calculateDiscount(product.price, price)}% OFF
-                  </Badge>
+                  {product.discountPercentage > 0 ? (
+                    <Badge variant="default">
+                      {product.discountPercentage}% OFF
+                    </Badge>
+                  ) : null}
                 </>
               )}
             </div>
@@ -396,7 +400,7 @@ export default async function ProductDetailPage({
                 productId={product.id}
                 slug={product.slug}
                 title={product.title}
-                price={price}
+                price={product.discountedPrice}
                 image={product.images[0]?.url}
                 stockQuantity={product.stockQuantity ?? null}
                 disabled={!inStock}
