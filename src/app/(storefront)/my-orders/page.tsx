@@ -74,8 +74,8 @@ export default function MyOrdersPage() {
             {orders.map((order) => (
               <article key={order.id} className="bg-[var(--color-surface-elevated)] border border-[var(--color-border-subtle)] rounded-sm p-5 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
-                  <div><p className="text-sm font-medium font-poppins">{order.orderNumber}</p><p className="text-sm text-[var(--color-cream-dark)] font-poppins mt-1">Placed on {formatOrderDate(order.createdDate)}</p></div>
-                  <div className="sm:text-right flex sm:block items-center justify-between gap-4"><p className="text-lg font-semibold">{formatPrice(order.totalAmount)}</p><span className={`inline-block mt-1 text-xs px-2.5 py-1 rounded-full font-medium ${orderStatusClass(order.status)}`}>{order.status}</span></div>
+                  <div><p className="text-sm font-medium font-poppins">{order.trackingNumber||order.orderNumber}</p><p className="text-sm text-[var(--color-cream-dark)] font-poppins mt-1">Placed on {formatOrderDate(order.createdDate)}</p></div>
+                  <div className="sm:text-right flex sm:block items-center justify-between gap-4"><p className="text-lg font-semibold">{order.totalAmount}</p><span className={`inline-block mt-1 text-xs px-2.5 py-1 rounded-full font-medium ${orderStatusClass(order.status)}`}>{order.status}</span></div>
                 </div>
                 <div className="border-t border-[var(--color-border-subtle)] pt-4 space-y-4">
                   {order.items.map((item) => (

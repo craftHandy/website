@@ -29,19 +29,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { amount, currency, receipt, notes } = body;
 
-    console.log("Razorpay API: create order", {
-        amount,
-        currency,
-        receipt,
-        notes: {
-            customerName: notes?.customerName,
-            customerEmail: notes?.customerEmail,
-        },
-        credentialsPresent: {
-            keyId: !!RAZORPAY_KEY_ID,
-            keySecret: !!RAZORPAY_KEY_SECRET,
-        },
-    });
+
 
     if (!amount || !currency || !receipt) {
         return new Response(JSON.stringify({ error: "Missing order creation data." }), {
@@ -80,7 +68,6 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log("Razorpay API: order created", { id: data.id, amount: data.amount, currency: data.currency });
     return new Response(JSON.stringify(data), {
         status: 200,
         headers: { "Content-Type": "application/json" },

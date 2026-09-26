@@ -738,6 +738,7 @@ export interface CustomerOrder {
   currency: string;
   createdDate: string;
   items: OrderItem[];
+  trackingNumber?:string
 }
 
 export interface OrdersResult {

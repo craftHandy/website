@@ -525,7 +525,7 @@ import { useUserStore } from "@/store/user";
 import { decodeJwtPayload, getCategories, isAccessTokenExpired } from "@/lib/api";
 import { useTheme } from "@/app/providers";
 import type { Category } from "@/types";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 
 const TOP_LINKS = [
   // { href: "/collections", label: "Collections" },
@@ -561,6 +561,7 @@ const dropdownVariants = {
 
 export function Header() {
   const params = useSearchParams();
+  const pathname = usePathname();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -701,14 +702,14 @@ export function Header() {
           <div className="hidden lg:flex items-center lg:space-x-2 xl:space-x-8">
             <Link
               href="/"
-              className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
+              className={`tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300 ${pathname === "/" ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
             >
               Home
             </Link>
 
             <Link
               href="/product"
-              className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
+              className={`tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300 ${pathname.startsWith("/product") ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
             >
               Collection
             </Link>
@@ -781,7 +782,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300"
+                className={`tracking-[0.2em] text-sm text-white hover:text-[#e9c176] transition-colors duration-300 ${pathname === link.href ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
               >
                 {link.label}
               </Link>
@@ -958,7 +959,7 @@ export function Header() {
 
               <Link
                 href="/"
-                className="block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]"
+                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname === "/" ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
                 onClick={() => setMobileOpen(false)}
               >
                 Home
@@ -966,7 +967,7 @@ export function Header() {
 
               <Link
                 href="/product"
-                className="block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]"
+                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname.startsWith("/product") ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
                 onClick={() => setMobileOpen(false)}
               >
                 Collection
@@ -1000,7 +1001,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]"
+                  className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname === link.href ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
