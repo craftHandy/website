@@ -774,6 +774,68 @@ export async function getMyOrders(accessToken: string, page = 0, size = 10): Pro
   };
 }
 
+// ---- Profile ----
+
+export interface UserProfile {
+  id: number;
+  fullName: string;
+  mobileNo: string;
+  email: string;
+  address: string;
+}
+
+export type UpdateProfilePayload = Pick<UserProfile, "fullName" | "mobileNo" | "address">;
+
+function normalizeProfile(data: any): UserProfile {
+  return {
+    id: Number(data?.id ?? 0),
+    fullName: typeof data?.fullName === "string" ? data.fullName : "",
+    mobileNo: typeof data?.mobileNo === "string" ? data.mobileNo : "",
+    email: typeof data?.email === "string" ? data.email : "",
+    address: typeof data?.address === "string" ? data.address : "",
+  };
+}
+
+/** Gets the authenticated customer's profile. */
+export async function getMyProfile(accessToken: string): Promise<UserProfile> {
+  const res = await fetch(`${API_ORIGIN}/api/v1/user`, {
+    headers: { accept: "*/*", Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not load your profile."));
+  return normalizeProfile(payload?.data);
+}
+
+/** Updates the authenticated customer's profile. */
+export async function updateMyProfile(
+  accessToken: string,
+  data: UpdateProfilePayload
+): Promise<UpdateProfilePayload> {
+  const res = await fetch(`${API_ORIGIN}/api/v1/user`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "*/*",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      fullName: data.fullName.trim(),
+      mobileNo: data.mobileNo.trim(),
+      address: data.address.trim(),
+    }),
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not update your profile."));
+
+  const updated = normalizeProfile(payload?.data);
+  return {
+    fullName: updated.fullName || data.fullName.trim(),
+    mobileNo: updated.mobileNo || data.mobileNo.trim(),
+    address: updated.address || data.address.trim(),
+  };
+}
+
 // ---- Enquiries ----
 
 export interface EnquiryPayload {
