@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
+import { PasswordInput } from "@/components/ui/password-input";
 import { registerUser } from "@/lib/api";
 import { toast } from "@/store/toast";
 
@@ -25,8 +24,6 @@ const errCls = "text-red-600 text-xs mt-1 font-poppins";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -122,49 +119,31 @@ export default function RegisterPage() {
             {errors.address && <p className={errCls}>{errors.address.message}</p>}
           </div>
           <div>
-            <label className={labelCls}>Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                className={`${inputCls} pr-11`}
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: { value: 6, message: "Password must be at least 6 characters" },
-                })}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-cream-dark)] hover:text-[var(--color-foreground)] transition-colors"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+            <label className={labelCls} htmlFor="register-password">Password</label>
+            <PasswordInput
+              id="register-password"
+              inputClassName={inputCls}
+              placeholder="Enter your password"
+              autoComplete="new-password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Password must be at least 6 characters" },
+              })}
+            />
             {errors.password && <p className={errCls}>{errors.password.message}</p>}
           </div>
           <div>
-            <label className={labelCls}>Confirm Password</label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm your password"
-                className={`${inputCls} pr-11`}
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (v) => v === password || "Passwords do not match",
-                })}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword((v) => !v)}
-                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-cream-dark)] hover:text-[var(--color-foreground)] transition-colors"
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+            <label className={labelCls} htmlFor="register-confirm-password">Confirm Password</label>
+            <PasswordInput
+              id="register-confirm-password"
+              inputClassName={inputCls}
+              placeholder="Confirm your password"
+              autoComplete="new-password"
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: (v) => v === password || "Passwords do not match",
+              })}
+            />
             {errors.confirmPassword && <p className={errCls}>{errors.confirmPassword.message}</p>}
           </div>
 

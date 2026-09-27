@@ -256,52 +256,48 @@ pause-on-hover:hover {
   animation-play-state: paused;
 }
 
-.text-gold {
-  color: var(--color-gold);
-}
+/* Theme color helpers live in the components layer so Tailwind utilities
+   (including hover: variants) can override them. */
+@layer components {
+  .text-gold {
+    color: var(--color-gold);
+  }
 
-.text-gold-light {
-  color: var(--color-gold-light);
-}
+  .text-gold-light {
+    color: var(--color-gold-light);
+  }
 
-.text-gold-muted {
-  color: var(--color-gold-muted);
-}
+  .text-gold-muted {
+    color: var(--color-gold-muted);
+  }
 
-.bg-gold {
-  background-color: var(--color-gold);
-}
+  .bg-gold {
+    background-color: var(--color-gold);
+  }
 
-.bg-gold-dark {
-  background-color: var(--color-gold-dark);
-}
+  .bg-gold-dark {
+    background-color: var(--color-gold-dark);
+  }
 
-.border-gold {
-  border-color: var(--color-gold);
-}
+  .border-gold {
+    border-color: var(--color-gold);
+  }
 
-.border-gold-subtle {
-  border-color: var(--color-border-subtle);
-}
+  .border-gold-subtle {
+    border-color: var(--color-border-subtle);
+  }
 
-.bg-surface {
-  background-color: var(--color-surface);
-}
+  .bg-surface {
+    background-color: var(--color-surface);
+  }
 
-.bg-surface-elevated {
-  background-color: var(--color-surface-elevated);
-}
+  .bg-surface-elevated {
+    background-color: var(--color-surface-elevated);
+  }
 
-.bg-charcoal {
-  background-color: var(--color-charcoal);
-}
-
-.text-cream {
-  color: var(--color-cream);
-}
-
-.text-cream-dark {
-  color: var(--color-cream-dark);
+  .bg-charcoal {
+    background-color: var(--color-charcoal);
+  }
 }
 
 .line-clamp-2 {

@@ -82,7 +82,7 @@ export default function MyOrdersPage() {
                     <div key={item.id} className="flex items-center gap-3 sm:gap-4">
                       <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-[var(--color-surface)]">{item.imageUrl ? <Image src={item.imageUrl} alt={item.productName} fill sizes="64px" className="object-cover" unoptimized /> : null}</div>
                       <div className="min-w-0 flex-1 font-poppins"><Link href={`/product/${item.productId}`} className="text-sm font-medium hover:text-gold transition-colors">{item.productName}</Link><p className="text-xs text-[var(--color-cream-dark)] mt-1">Qty: {item.quantity}</p></div>
-                      <p className="text-sm font-medium whitespace-nowrap">{formatPrice(item.totalPrice)}</p>
+                      <p className="text-sm font-medium whitespace-nowrap">{item.totalPrice.toFixed(2)}</p>
                     </div>
                   ))}
                 </div>

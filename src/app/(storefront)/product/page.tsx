@@ -10,10 +10,32 @@ import {
 } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Filter,
+  SlidersHorizontal,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const PAGE_SIZE = 12;
 
@@ -30,6 +52,23 @@ function ProductListing() {
   const sort = params.get("sort") || "newest";
   const [searchValue, setSearchValue] = useState(search);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const hasActiveFilters = useMemo(
+    () =>
+      categoryId || materialId || occasionId || search || minPrice || maxPrice,
+    [categoryId, materialId, occasionId, search, minPrice, maxPrice],
+  );
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (categoryId) count++;
+    if (materialId) count++;
+    if (occasionId) count++;
+    if (search) count++;
+    if (minPrice || maxPrice) count++;
+    return count;
+  }, [categoryId, materialId, occasionId, search, minPrice, maxPrice]);
 
   const query = useQuery({
     queryKey: [
@@ -138,13 +177,6 @@ function ProductListing() {
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
-      {/* <section className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <p className="mb-3 text-xs font-semibold  tracking-[0.28em] text-[var(--color-gold)]">Handmade collection</p>
-          <h1 className="font-serif text-4xl sm:text-5xl">{activeCategory ? activeCategory.title : "All products"}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--color-cream-dark)] font-poppins">Discover thoughtful pieces made by skilled artisans, each with its own story and character.</p>
-        </div>
-      </section> */}
       <section
         className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/product-bg.jpeg')" }}
@@ -193,9 +225,16 @@ function ProductListing() {
           >
             <div className="space-y-7 border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-6 rounded-lg lg:sticky lg:top-28">
               <div>
-                <h2 className="mb-3 text-sm font-bold text-gold  tracking-[0.18em]">
-                  Category
-                </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em]">
+                    Category
+                  </h2>
+                  {categoryId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {categories.length ? (
                     categories.map((cat) => {
@@ -234,9 +273,16 @@ function ProductListing() {
               </div>
 
               <div>
-                <h2 className="mb-3 text-xs font-bold text-gold  tracking-[0.18em]">
-                  Material
-                </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em]">
+                    Material
+                  </h2>
+                  {materialId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {materials.length ? (
                     materials.map((m) => {
@@ -272,9 +318,16 @@ function ProductListing() {
               </div>
 
               <div>
-                <h2 className="mb-3 text-xs font-bold text-gold tracking-[0.18em]">
-                  Occasion
-                </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em]">
+                    Occasion
+                  </h2>
+                  {occasionId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {occasions.length ? (
                     occasions.map((o) => {
@@ -310,9 +363,16 @@ function ProductListing() {
               </div>
 
               <div>
-                <h2 className="mb-3 text-xs font-bold text-gold  tracking-[0.18em]">
-                  Price range
-                </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em]">
+                    Price range
+                  </h2>
+                  {(minPrice || maxPrice) && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 gap-2 font-poppins">
                   <input
                     aria-label="Minimum price"
@@ -369,17 +429,52 @@ function ProductListing() {
                 {result?.totalElements ?? 0}{" "}
                 {result?.totalElements === 1 ? "product" : "products"}
               </p>
-              <select
-                value={sort}
-                onChange={(event) =>
-                  router.push(hrefFor({ sort: event.target.value, page: "0" }))
-                }
-                className="h-10 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-3 text-sm font-poppins"
-              >
-                <option value="newest">Newest first</option>
-                <option value="price-asc">Price: low to high</option>
-                <option value="price-desc">Price: high to low</option>
-              </select>
+              <div className="flex items-center gap-3">
+                {/* {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push("/product")}
+                    className="gap-1.5 text-xs"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                    Clear all
+                  </Button>
+                )} */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setMobileFiltersOpen(true)}
+                  className="lg:hidden gap-1.5"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="bg-gold text-black text-[10px] font-semibold rounded-full h-5 w-5 flex items-center justify-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+                <Select
+                  value={sort}
+                  onValueChange={(value) =>
+                    router.push(hrefFor({ sort: value, page: "0" }))
+                  }
+                >
+                  <SelectTrigger className="h-10 w-full sm:w-[180px]">
+                    <SelectValue placeholder="Sort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest first</SelectItem>
+                    <SelectItem value="price-asc">
+                      Price: low to high
+                    </SelectItem>
+                    <SelectItem value="price-desc">
+                      Price: high to low
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             {query.isPending ? (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -454,6 +549,211 @@ function ProductListing() {
           </section>
         </div>
       </div>
+
+      <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+        <SheetContent side="bottom" className="max-h-[90vh]">
+          <SheetHeader className="space-y-1">
+            <SheetTitle>Filters</SheetTitle>
+            <SheetDescription>Refine your search results</SheetDescription>
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/product")}
+                className="mt-2 text-xs text-[var(--color-gold-muted)] hover:text-[var(--color-gold)] justify-start"
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Clear all
+              </Button>
+            )}
+          </SheetHeader>
+          <div className="px-6 pb-6 space-y-6 max-h-[70vh] overflow-y-auto overscroll-contain [scrollbar-width:thin]">
+            {/* Category */}
+            {categories.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em] uppercase">
+                    Category
+                  </h2>
+                  {categoryId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  {categories.map((cat) => {
+                    const checked = categoryId === cat.id;
+                    return (
+                      <label
+                        key={cat.id}
+                        className="flex items-center gap-3 cursor-pointer group p-3 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const nextCategory = checked ? undefined : cat.id;
+                            router.push(
+                              hrefFor({
+                                categoryId: nextCategory,
+                                page: "0",
+                              }),
+                            );
+                          }}
+                          className="w-5 h-5 rounded border-2 border-[var(--color-border-subtle)] text-gold accent-gold focus:ring-2 focus:ring-gold/20"
+                        />
+                        <span className="text-sm text-[var(--color-foreground)] font-poppins">
+                          {cat.title}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Material */}
+            {materials.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em] uppercase">
+                    Material
+                  </h2>
+                  {materialId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  {materials.map((m) => {
+                    const checked = materialId === m.id;
+                    return (
+                      <label
+                        key={m.id}
+                        className="flex items-center gap-3 cursor-pointer group p-3 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked ? undefined : m.id;
+                            router.push(
+                              hrefFor({ materialId: next, page: "0" }),
+                            );
+                          }}
+                          className="w-5 h-5 rounded border-2 border-[var(--color-border-subtle)] text-gold accent-gold focus:ring-2 focus:ring-gold/20"
+                        />
+                        <span className="text-sm text-[var(--color-foreground)] font-poppins">
+                          {m.name}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Occasion */}
+            {occasions.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-bold text-gold tracking-[0.18em] uppercase">
+                    Occasion
+                  </h2>
+                  {occasionId && (
+                    <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                      1
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  {occasions.map((o) => {
+                    const checked = occasionId === o.id;
+                    return (
+                      <label
+                        key={o.id}
+                        className="flex items-center gap-3 cursor-pointer group p-3 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked ? undefined : o.id;
+                            router.push(
+                              hrefFor({ occasionId: next, page: "0" }),
+                            );
+                          }}
+                          className="w-5 h-5 rounded border-2 border-[var(--color-border-subtle)] text-gold accent-gold focus:ring-2 focus:ring-gold/20"
+                        />
+                        <span className="text-sm text-[var(--color-foreground)] font-poppins">
+                          {o.name}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Price Range */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-bold text-gold tracking-[0.18em] uppercase">
+                  Price Range
+                </h2>
+                {(minPrice || maxPrice) && (
+                  <span className="bg-gold/10 text-gold text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                    1
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="relative">
+                  <label className="absolute -top-2 left-3 text-[10px] text-[var(--color-cream-dark)] font-poppins uppercase tracking-wider bg-[var(--color-surface-elevated)] px-1">
+                    Min
+                  </label>
+                  <input
+                    aria-label="Minimum price"
+                    defaultValue={minPrice}
+                    onBlur={(event) =>
+                      router.push(
+                        hrefFor({
+                          minPrice: event.target.value || undefined,
+                          page: "0",
+                        }),
+                      )
+                    }
+                    inputMode="decimal"
+                    placeholder="0"
+                    className="w-full h-12 border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 text-sm font-poppins text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none rounded-lg transition-colors"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="absolute -top-2 left-3 text-[10px] text-[var(--color-cream-dark)] font-poppins uppercase tracking-wider bg-[var(--color-surface-elevated)] px-1">
+                    Max
+                  </label>
+                  <input
+                    aria-label="Maximum price"
+                    defaultValue={maxPrice}
+                    onBlur={(event) =>
+                      router.push(
+                        hrefFor({
+                          maxPrice: event.target.value || undefined,
+                          page: "0",
+                        }),
+                      )
+                    }
+                    inputMode="decimal"
+                    className="w-full h-12 border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 text-sm font-poppins text-[var(--color-foreground)] placeholder:text-[var(--color-cream-dark)] focus:border-gold focus:ring-2 focus:ring-gold/20 focus:outline-none rounded-lg transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </main>
   );
 }

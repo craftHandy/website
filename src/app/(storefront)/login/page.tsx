@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useUserStore } from "@/store/user";
 import {
   loginUser,
@@ -91,6 +92,7 @@ function LoginFormInner() {
             <label className={labelCls}>Email</label>
             <input
               type="email"
+              placeholder="Enter you email"
               className={inputCls}
               {...register("email", {
                 required: "Email is required",
@@ -100,10 +102,11 @@ function LoginFormInner() {
             {errors.email && <p className={errCls}>{errors.email.message}</p>}
           </div>
           <div>
-            <label className={labelCls}>Password</label>
-            <input
-              type="password"
-              className={inputCls}
+            <label className={labelCls} htmlFor="login-password">Password</label>
+            <PasswordInput
+              inputClassName={inputCls}
+              placeholder="Enter your password"
+              autoComplete="current-password"
               {...register("password", { required: "Password is required" })}
             />
             {errors.password && <p className={errCls}>{errors.password.message}</p>}

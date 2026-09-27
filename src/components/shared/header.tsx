@@ -498,6 +498,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -623,8 +624,9 @@ export function Header() {
     };
   }, [clearUser]);
   useEffect(() => {
-    setSearch(params.get("search") || "");
-  }, [params.get("search")]);
+    const searchParam = params.get("search");
+    setSearch(searchParam || "");
+  }, [params]);
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -690,9 +692,11 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="group shrink min-w-0">
             <div className="flex items-center gap-4">
-              <img
+              <Image
                 src="/header.png"
                 alt="Ratna Treasure Handicraft"
+                width={176}
+                height={44}
                 className="h-auto w-44 max-w-full"
               />
             </div>
@@ -840,6 +844,14 @@ export function Header() {
                       <hr className="my-1 border-[#3a3428]" />
 
                       <Link
+                        href="/profile"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
+                      >
+                        My Profile
+                      </Link>
+
+                      <Link
                         href="/my-orders"
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-1.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176]"
@@ -959,7 +971,7 @@ export function Header() {
 
               <Link
                 href="/"
-                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname === "/" ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
+                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] `}
                 onClick={() => setMobileOpen(false)}
               >
                 Home
@@ -967,7 +979,7 @@ export function Header() {
 
               <Link
                 href="/product"
-                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname.startsWith("/product") ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
+                className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]`}
                 onClick={() => setMobileOpen(false)}
               >
                 Collection
@@ -1001,7 +1013,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176] ${pathname === link.href ? "border-b-2 border-[#e9c176] pb-1" : ""}`}
+                  className={`block text-sm tracking-[0.2em] text-white hover:text-[#e9c176]`}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 
 export function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setOpen(true);
-  }, 3500);
+// useEffect(() => {
+//   const timer = setTimeout(() => {
+//     setOpen(true);
+//   }, 3500);
 
-  return () => clearTimeout(timer);
-}, []);
+//   return () => clearTimeout(timer);
+// }, []);
   return (
     <div className="fixed bottom-5 right-5 z-[60]">
       {/* Chat bubble */}
