@@ -169,7 +169,7 @@ export default function CartPage() {
 
                 <div className="md:text-left">
                   <span className="text-sm font-semibold text-[var(--color-foreground)]">
-                    {item.price}
+                    {formatPrice(Number(item.price))}
                   </span>
                   <span className="md:hidden text-sm text-gold-muted ml-2">
                     each
@@ -272,7 +272,7 @@ export default function CartPage() {
                   <span className="text-cream-dark/70">
                     {subtotalText}
                   </span>
-                  <span className="text-[var(--color-foreground)]">{selectedSubtotal.toFixed(2)}</span>
+                  <span className="text-[var(--color-foreground)]">{formatPrice(selectedSubtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-cream-dark/70">Shipping</span>
@@ -282,7 +282,7 @@ export default function CartPage() {
                 </div>
                 {selectedItems.length > 0 && !freeShipping && (
                   <p className="text-xs text-gold-muted">
-                    Add {shippingThreshold - selectedSubtotal} more for free shipping
+                    Add {formatPrice(Math.max(shippingThreshold - selectedSubtotal, 0))} more for free shipping
                   </p>
                 )}
               </div>
@@ -291,7 +291,7 @@ export default function CartPage() {
 
               <div className="flex justify-between text-base font-semibold mb-6">
                 <span className="text-[var(--color-foreground)]">Total</span>
-                <span className="text-[var(--color-foreground)]">{total.toFixed(2)}</span>
+                <span className="text-[var(--color-foreground)]">{formatPrice(total)}</span>
               </div>
 
               <Button
