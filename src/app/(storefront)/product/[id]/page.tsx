@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -126,12 +125,12 @@ export default async function ProductDetailPage({
 
             <div className="mt-7 flex items-center gap-3">
               <span className="text-3xl font-semibold">
-                {product?.discountedPrice}
+                {formatPrice(Number(price))}
               </span>
               {discounted && (
                 <>
                   <span className="text-lg text-[var(--color-gold-muted)] line-through">
-                    {product.price}
+                    {formatPrice(Number(product.price))}
                   </span>
                   {product.discountPercentage > 0 ? (
                     <Badge variant="default">

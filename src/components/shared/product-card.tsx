@@ -176,24 +176,21 @@ export function ProductCard({ product, index = 0, section }: ProductCardProps) {
           <div className="font-poppins flex items-center justify-center gap-2 pt-0.5 text-center">
             {Number(product?.discountPercentage) > 0 ? (
               <>
-                {/* Discounted price in white */}
                 <span
                   className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}
                 >
-                  {discountedVal}
+                  {formatPrice(Number(discountedVal))}
                 </span>
 
-                {/* Original price with line-through */}
                 <span className="text-sm text-gold-muted line-through">
-                  {product.price}
+                  {formatPrice(Number(product.price))}
                 </span>
               </>
             ) : (
-              /* No discount: Regular price in white, line-through part hidden completely */
               <span
                 className={`text-base font-semibold text-[var(--color-foreground)] text-fluid-small ${isArrivalSection && "text-white"}`}
               >
-                {product.price}
+                {formatPrice(Number(product.price))}
               </span>
             )}
           </div>
