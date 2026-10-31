@@ -1091,11 +1091,11 @@
 
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { ArrowLeft } from "lucide-react";
 
 import { useCartStore } from "@/store/cart";
@@ -1105,6 +1105,7 @@ import { Button } from "@/components/ui/button";
 import { useRazorpay } from "@/hooks/use-razorpay-safe";
 import { API_BASE_URL } from "@/lib/api";
 import { toast } from "@/store/toast";
+import { isValidInternationalPhone, PhoneNumberInput } from "@/components/ui/phone-number-input";
 
 type AddressFormValues = {
   fullName: string;
@@ -1115,7 +1116,11 @@ type AddressFormValues = {
   state: string;
   country: string;
   postalCode: string;
+  countryId: string;
+  stateId: string;
 };
+
+type LocationOption = { id: number; name: string };
 
 type RazorpayPaymentResult = {
   razorpay_order_id: string;
@@ -1309,6 +1314,77 @@ function Field({
   );
 }
 
+function SearchableDropdown({
+  value,
+  options,
+  placeholder,
+  onChange,
+  message,
+  invalid,
+}: {
+  value: string;
+  options: LocationOption[];
+  placeholder: string;
+  onChange: (value: string) => void;
+  message?: string;
+  invalid?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const listboxId = useId();
+  const filtered = options.filter((option) =>
+    option.name.toLowerCase().includes(value.trim().toLowerCase()),
+  );
+
+  return (
+    <div className="relative">
+      <input
+        value={value}
+        placeholder={placeholder}
+        aria-invalid={invalid}
+        aria-expanded={isOpen ? "true" : "false"}
+        aria-controls={listboxId}
+        role="combobox"
+        aria-autocomplete="list"
+        className={invalid ? inputErrCls : inputCls}
+        onFocus={() => setIsOpen(true)}
+        onClick={() => setIsOpen(true)}
+        onChange={(event) => {
+          onChange(event.target.value);
+          setIsOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") setIsOpen(false);
+        }}
+        onBlur={() => window.setTimeout(() => setIsOpen(false), 120)}
+      />
+      {isOpen && (
+        <div id={listboxId} role="listbox" className="absolute z-30 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] py-1 shadow-xl">
+          {message ? (
+            <p className="px-3 py-2 text-sm text-[var(--color-cream-dark)]/75">{message}</p>
+          ) : filtered.length ? (
+            filtered.map((option) => (
+              <button
+                type="button"
+                key={option.id}
+                className="block w-full px-3 py-2 text-left text-sm text-[var(--color-foreground)] hover:bg-[var(--color-gold)]/15 focus:bg-[var(--color-gold)]/15 focus:outline-none"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  onChange(option.name);
+                  setIsOpen(false);
+                }}
+              >
+                {option.name}
+              </button>
+            ))
+          ) : (
+            <p className="px-3 py-2 text-sm text-[var(--color-cream-dark)]/75">No matches found</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <h2 className="mb-6 font-serif text-fluid-h3 text-[var(--color-foreground)]">
@@ -1465,10 +1541,14 @@ export default function CheckoutPage() {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<AddressFormValues>({
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       fullName: user?.name || "",
       mobileNo: "",
@@ -1476,12 +1556,73 @@ export default function CheckoutPage() {
       addressLine2: "",
       city: "",
       state: "",
-      country: "India",
+      country: "",
       postalCode: "",
+      countryId: "",
+      stateId: "",
     },
   });
 
+  const [countries, setCountries] = useState<LocationOption[]>([]);
+  const [states, setStates] = useState<LocationOption[]>([]);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(false);
+  const [isLoadingStates, setIsLoadingStates] = useState(false);
   const watchedCountry = watch("country");
+  const selectedCountryId = watch("countryId");
+  const selectedState = watch("state");
+
+  useEffect(() => {
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      setIsLoadingCountries(true);
+      try {
+        const url = new URL(`${API_BASE_URL}/api/v1/public/country`, window.location.origin);
+        url.searchParams.set("page", "0");
+        url.searchParams.set("size", "100");
+        if (watchedCountry.trim()) url.searchParams.set("search", watchedCountry.trim());
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Could not load countries");
+        const payload = await response.json();
+        const options = Array.isArray(payload?.data?.content) ? payload.data.content : [];
+        if (!active) return;
+        setCountries(options.filter((item: any) => item?.id != null && item?.name));
+      } catch (error) {
+        if (active) console.error("Country list request failed", error);
+      } finally {
+        if (active) setIsLoadingCountries(false);
+      }
+    }, 250);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [watchedCountry, setValue]);
+
+  useEffect(() => {
+    let active = true;
+    if (!selectedCountryId) {
+      setStates([]);
+      setIsLoadingStates(false);
+      return () => { active = false; };
+    }
+    const timer = window.setTimeout(async () => {
+      setIsLoadingStates(true);
+      try {
+        const url = new URL(`${API_BASE_URL}/api/v1/public/country/${encodeURIComponent(selectedCountryId)}/states`, window.location.origin);
+        url.searchParams.set("page", "0");
+        url.searchParams.set("size", "100");
+        if (selectedState.trim()) url.searchParams.set("search", selectedState.trim());
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Could not load states");
+        const payload = await response.json();
+        const options = Array.isArray(payload?.data?.content) ? payload.data.content : [];
+        if (active) setStates(options.filter((item: any) => item?.id != null && item?.name));
+      } catch (error) {
+        if (active) console.error("State list request failed", error);
+      } finally {
+        if (active) setIsLoadingStates(false);
+      }
+    }, 250);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [selectedCountryId, selectedState]);
+
   const countryEntered = (watchedCountry || "").trim().length > 0;
   const isIndia = (watchedCountry || "").trim().toLowerCase() === "india";
 
@@ -1683,6 +1824,8 @@ export default function CheckoutPage() {
                 city: data.city,
                 state: data.state,
                 country: data.country,
+                countryId: Number(data.countryId),
+                stateId: Number(data.stateId),
                 postalCode: data.postalCode,
               },
             }),
@@ -2008,11 +2151,12 @@ export default function CheckoutPage() {
               <SectionTitle>Delivery Details</SectionTitle>
 
               <div className="space-y-5">
-                <div className="grid gap-4 md:grid-cols-2">
                   <Field label="Full name" error={errors.fullName?.message}>
                     <input
                       {...register("fullName", {
                         required: "Full name is required",
+                        validate: (value) => value.trim().length >= 2 || "Enter a valid full name",
+                        maxLength: { value: 100, message: "Full name must be 100 characters or fewer" },
                       })}
                       aria-invalid={!!errors.fullName}
                       className={errors.fullName ? inputErrCls : inputCls}
@@ -2020,23 +2164,6 @@ export default function CheckoutPage() {
                     />
                   </Field>
 
-                  <Field label="Mobile Number" error={errors.mobileNo?.message}>
-                    <input
-                      {...register("mobileNo", {
-                        required: "Mobile number is required",
-                        pattern: {
-                          value: /^\d+$/,
-                          message: "Mobile number must contain only digits",
-                        },
-                      })}
-                      type="tel"
-                      inputMode="numeric"
-                      aria-invalid={!!errors.mobileNo}
-                      className={errors.mobileNo ? inputErrCls : inputCls}
-                      placeholder="9876543210"
-                    />
-                  </Field>
-                </div>
 
                 <Field
                   label="Address Line 1"
@@ -2045,6 +2172,8 @@ export default function CheckoutPage() {
                   <input
                     {...register("addressLine1", {
                       required: "Address line 1 is required",
+                      validate: (value) => value.trim().length >= 3 || "Enter a valid address",
+                      maxLength: { value: 200, message: "Address must be 200 characters or fewer" },
                     })}
                     aria-invalid={!!errors.addressLine1}
                     className={errors.addressLine1 ? inputErrCls : inputCls}
@@ -2061,34 +2190,63 @@ export default function CheckoutPage() {
                 </Field>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="City" error={errors.city?.message}>
-                    <input
-                      {...register("city", { required: "City is required" })}
-                      aria-invalid={!!errors.city}
-                      className={errors.city ? inputErrCls : inputCls}
-                      placeholder="Mumbai"
-                    />
+                  <Field label="Country" error={errors.country?.message}>
+                    <>
+                      <input type="hidden" {...register("country", {
+                        required: "Country is required",
+                        validate: (value) => countries.some((item) => item.name.toLowerCase() === value.trim().toLowerCase()) || "Select a country from the list",
+                      })} />
+                      <input type="hidden" {...register("countryId", { required: "Country is required" })} />
+                      <SearchableDropdown
+                        value={watchedCountry || ""}
+                        options={countries}
+                        placeholder={isLoadingCountries ? "Loading countries…" : "Search country"}
+                        invalid={!!errors.country}
+                        onChange={(value) => {
+                          const country = countries.find((item) => item.name.toLowerCase() === value.trim().toLowerCase());
+                          setValue("country", value, { shouldValidate: true });
+                          setValue("countryId", country ? String(country.id) : "", { shouldValidate: true });
+                          setValue("state", "", { shouldValidate: true });
+                          setValue("stateId", "", { shouldValidate: true });
+                        }}
+                      />
+                    </>
                   </Field>
 
                   <Field label="State" error={errors.state?.message}>
-                    <input
-                      {...register("state", { required: "State is required" })}
-                      aria-invalid={!!errors.state}
-                      className={errors.state ? inputErrCls : inputCls}
-                      placeholder="Maharashtra"
-                    />
+                    <>
+                      <input type="hidden" {...register("state", {
+                          required: "State is required",
+                          validate: (value) => states.some((item) => item.name.toLowerCase() === value.trim().toLowerCase()) || "Select a state from the list",
+                      })} />
+                      <input type="hidden" {...register("stateId", { required: "State is required" })} />
+                      <SearchableDropdown
+                        value={selectedState || ""}
+                        options={states}
+                        placeholder={isLoadingStates ? "Loading states…" : "Search state"}
+                        invalid={!!errors.state}
+                        message={!selectedCountryId ? "Please select a country first" : undefined}
+                        onChange={(value) => {
+                          const state = states.find((item) => item.name.toLowerCase() === value.trim().toLowerCase());
+                          setValue("state", value, { shouldValidate: true });
+                          setValue("stateId", state ? String(state.id) : "", { shouldValidate: true });
+                        }}
+                      />
+                    </>
                   </Field>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Country" error={errors.country?.message}>
+                  <Field label="City" error={errors.city?.message}>
                     <input
-                      {...register("country", {
-                        required: "Country is required",
+                      {...register("city", {
+                        required: "City is required",
+                        validate: (value) => value.trim().length >= 2 || "Enter a valid city",
+                        maxLength: { value: 100, message: "City must be 100 characters or fewer" },
                       })}
-                      aria-invalid={!!errors.country}
-                      className={errors.country ? inputErrCls : inputCls}
-                      placeholder="India"
+                      aria-invalid={!!errors.city}
+                      className={errors.city ? inputErrCls : inputCls}
+                      placeholder="Mumbai"
                     />
                   </Field>
 
@@ -2096,6 +2254,7 @@ export default function CheckoutPage() {
                     <input
                       {...register("postalCode", {
                         required: "Postal code is required",
+                        pattern: { value: /^[A-Za-z0-9 -]{3,12}$/, message: "Enter a valid postal code" },
                       })}
                       aria-invalid={!!errors.postalCode}
                       className={errors.postalCode ? inputErrCls : inputCls}
@@ -2103,6 +2262,27 @@ export default function CheckoutPage() {
                     />
                   </Field>
                 </div>
+
+                <Field label="Mobile Number" error={errors.mobileNo?.message}>
+                  <Controller
+                    name="mobileNo"
+                    control={control}
+                    rules={{
+                      required: "Mobile number is required",
+                      validate: (value) => isValidInternationalPhone(value) || "Enter a valid phone number for the selected country",
+                    }}
+                    render={({ field }) => (
+                      <PhoneNumberInput
+                        id="checkout-mobileNo"
+                        name={field.name}
+                        value={field.value || ""}
+                        onChange={(value) => field.onChange(value)}
+                        country=""
+                        invalid={!!errors.mobileNo}
+                      />
+                    )}
+                  />
+                </Field>
               </div>
             </section>
 
@@ -2237,7 +2417,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] px-4 py-6 text-center text-sm text-[var(--color-cream-dark)]/70">
-                  You'll be redirected to Razorpay Secure (UPI, Card, Int'l
+                  You&apos;ll be redirected to Razorpay Secure (UPI, Card, Int&apos;l
                   Card, Apple Pay) to complete your purchase{" "}
                 </div>
               </div>
