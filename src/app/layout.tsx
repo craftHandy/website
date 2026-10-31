@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 import "./globals.css";
+import "react-phone-input-2/lib/style.css";
 
 import { Providers } from "./providers";
 import { WhatsAppWidget } from "@/components/shared/whatsappWidget";

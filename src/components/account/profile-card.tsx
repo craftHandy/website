@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Mail, MapPin, Pencil, Phone } from "lucide-react";
 
@@ -23,6 +23,7 @@ import {
 } from "@/lib/api";
 
 import { toast } from "@/store/toast";
+import { isValidInternationalPhone, PhoneNumberInput } from "@/components/ui/phone-number-input";
 
 const inputCls =
   "w-full h-11 px-3 border border-[var(--color-border-subtle)] bg-[var(--color-surface)] text-[var(--color-foreground)] rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)] font-poppins";
@@ -174,6 +175,7 @@ function EditProfileDialog({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -277,18 +279,16 @@ function EditProfileDialog({
               Mobile Number
             </label>
 
-            <input
-              id="profile-mobileNo"
-              inputMode="tel"
-              className={inputCls}
-              placeholder="+9779800000000"
-              {...register("mobileNo", {
+            <Controller
+              name="mobileNo"
+              control={control}
+              rules={{
                 required: "Mobile number is required.",
-                maxLength: {
-                  value: 20,
-                  message: "Mobile number is too long.",
-                },
-              })}
+                validate: (value) => isValidInternationalPhone(value) || "Enter a valid international phone number.",
+              }}
+              render={({ field }) => (
+                <PhoneNumberInput id="profile-mobileNo" name={field.name} value={field.value || ""} onChange={field.onChange} country="np" invalid={!!errors.mobileNo} />
+              )}
             />
 
             {errors.mobileNo && (

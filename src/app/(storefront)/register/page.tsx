@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { PasswordInput } from "@/components/ui/password-input";
+import { isValidInternationalPhone, PhoneNumberInput } from "@/components/ui/phone-number-input";
 import { registerUser } from "@/lib/api";
 import { toast } from "@/store/toast";
 
@@ -26,6 +27,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
@@ -100,11 +102,16 @@ export default function RegisterPage() {
           </div>
           <div>
             <label className={labelCls}>Phone</label>
-            <input
-              type="tel"
-              placeholder="+9779841234669"
-              className={inputCls}
-              {...register("phone", { required: "Phone is required" })}
+            <Controller
+              name="phone"
+              control={control}
+              rules={{
+                required: "Phone is required",
+                validate: (value) => isValidInternationalPhone(value) || "Enter a valid international phone number",
+              }}
+              render={({ field }) => (
+                <PhoneNumberInput id="register-phone" name={field.name} value={field.value} onChange={field.onChange} country="in" invalid={!!errors.phone} />
+              )}
             />
             {errors.phone && <p className={errCls}>{errors.phone.message}</p>}
           </div>
