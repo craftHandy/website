@@ -70,9 +70,10 @@ export default function CartPage() {
     (count, item) => count + item.quantity,
     0,
   );
-  const freeShipping = selectedItems.length > 0 && selectedSubtotal >= shippingThreshold;
-  const shippingCost = selectedItems.length === 0 ? 0 : freeShipping ? 0 : 499;
-  const total = selectedSubtotal + shippingCost;
+  // const freeShipping = selectedItems.length > 0 && selectedSubtotal >= shippingThreshold;
+  // const shippingCost = selectedItems.length === 0 ? 0 : freeShipping ? 0 : 499;
+  // const total = selectedSubtotal + shippingCost;
+  const total = selectedSubtotal ;
 
   const subtotalText = selectedItems.length === 0 ? "Subtotal (0 items)" : `Subtotal (${selectedItemCount} ${selectedItemCount === 1 ? "item" : "items"})`;
 
@@ -274,17 +275,17 @@ export default function CartPage() {
                   </span>
                   <span className="text-[var(--color-foreground)]">{formatPrice(selectedSubtotal)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span className="text-cream-dark/70">Shipping</span>
-                  <span className={selectedItems.length === 0 ? "text-[var(--color-foreground)]" : freeShipping ? "text-emerald-400" : "text-[var(--color-foreground)]"}>
+                  <span className={selectedItems.length === 0 ? "text-[var(--color-foreground)]" :"text-[var(--color-foreground)]"}>
                     {selectedItems.length === 0 ? "₹0" : freeShipping ? "Free" : formatPrice(shippingCost)}
                   </span>
-                </div>
-                {selectedItems.length > 0 && !freeShipping && (
+                </div> */}
+                {/* {selectedItems.length > 0 && !freeShipping && (
                   <p className="text-xs text-gold-muted">
                     Add {formatPrice(Math.max(shippingThreshold - selectedSubtotal, 0))} more for free shipping
                   </p>
-                )}
+                )} */}
               </div>
 
               <div className="border-t border-[rgba(201,168,76,0.1)] my-6" />

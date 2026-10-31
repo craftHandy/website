@@ -2,7 +2,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Shipping & Returns",
-  description: "Learn about Ratnagiri's shipping policies and hassle-free returns.",
+  description:
+    "Learn about Ratnagiri's shipping policies and hassle-free returns.",
 };
 
 export default function ShippingPage() {
@@ -18,48 +19,74 @@ export default function ShippingPage() {
 
         <div className="prose prose-neutral max-w-none text-[var(--color-cream-dark)]/70 space-y-8">
           <section>
-            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">Shipping</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">
+              Shipping
+            </h2>
             <div className="space-y-3 text-sm leading-relaxed">
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Standard Delivery</span>
-                <span className="text-gold-muted font-poppins">5–7 business days</span>
+                <span className="text-gold-muted font-poppins">
+                  5–7 business days
+                </span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Express Delivery</span>
-                <span className="text-gold-muted font-poppins">2–3 business days</span>
+                <span className="text-gold-muted font-poppins">
+                  2–3 business days
+                </span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
                 <span>Free Shipping</span>
-                <span className="text-gold-muted font-poppins">On orders above ₹25,000</span>
+                <span className="text-gold-muted font-poppins">
+                  Free Shipping Pan India
+                </span>
               </div>
               <div className="flex justify-between py-3 border-b border-[rgba(201,168,76,0.1)]">
-                <span>Standard Shipping Fee</span>
-                <span className="text-gold-muted font-poppins">₹499</span>
+                <span> Shipping Fee outside India </span>
+                <span className="text-gold-muted font-poppins">₹10,000</span>
               </div>
             </div>
             <p className="mt-4 text-sm text-gold-muted font-poppins">
-              All jewelry is carefully packaged in our signature Ratnagiri box with full insurance coverage during transit.
+              All items are carefully packaged in our signature Ratnagiri box
+              with full insurance coverage during transit.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">Returns & Exchanges</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">
+              Returns & Exchanges
+            </h2>
             <div className="space-y-3 text-sm leading-relaxed">
-              <p>We want you to love every piece you receive. If for any reason you&apos;re not completely satisfied:</p>
+              <p>
+                We want you to love every piece you receive. If for any reason
+                you&apos;re not completely satisfied:
+              </p>
               <ul className="list-disc pl-5 space-y-2 font-poppins">
                 <li>Returns are accepted within 15 days of delivery</li>
-                <li>Jewelry must be unworn, in its original condition and packaging</li>
+                <li>
+                  Jewelry must be unworn, in its original condition and
+                  packaging
+                </li>
                 <li>Custom or personalized orders cannot be returned</li>
-                <li>Refunds are processed within 7–10 business days after we receive the return</li>
-                <li>Exchange requests are processed within 3–5 business days</li>
+                <li>
+                  Refunds are processed within 7–10 business days after we
+                  receive the return
+                </li>
+                <li>
+                  Exchange requests are processed within 3–5 business days
+                </li>
               </ul>
             </div>
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">International Shipping</h2>
+            <h2 className="text-xl font-serif text-[var(--color-foreground)] mb-3">
+              International Shipping
+            </h2>
             <p className="text-sm leading-relaxed font-poppins">
-              We ship worldwide. International delivery typically takes 7–14 business days depending on your location. Customs duties and taxes may apply and are the responsibility of the recipient.
+              We ship worldwide. International delivery typically takes 7–14
+              business days depending on your location. Customs duties and taxes
+              may apply and are the responsibility of the recipient.
             </p>
           </section>
         </div>
