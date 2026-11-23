@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useUserStore } from "@/store/user";
 import {
+  API_BASE_URL,
   loginUser,
   getAccessTokenFromLoginResponse,
   decodeJwtPayload,
@@ -128,7 +129,7 @@ function LoginFormInner() {
         </div>
 
         <a
-          href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/google}`}
+          href={`${API_BASE_URL}/oauth2/authorization/google`}
           className="w-full h-11 flex items-center justify-center gap-2.5 border border-[var(--color-border-subtle)] rounded-sm text-sm font-medium font-poppins text-[var(--color-foreground)] hover:bg-[var(--color-surface-elevated)] transition-colors"
         >
           <svg width="18" height="18" viewBox="0 0 48 48">
