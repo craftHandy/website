@@ -62,9 +62,15 @@ export default function LoginSuccessPage() {
     localStorage.setItem("access_token", token);
     setUser(user);
 
+    const requestedRedirect = localStorage.getItem("post-auth-redirect");
+    localStorage.removeItem("post-auth-redirect");
+    const redirectTo = requestedRedirect?.startsWith("/") && !requestedRedirect.startsWith("//")
+      ? requestedRedirect
+      : "/";
+
     const timer = window.setTimeout(() => {
       setIsProcessing(false);
-      router.push("/");
+      router.push(redirectTo);
     }, 1200);
 
     return () => window.clearTimeout(timer);

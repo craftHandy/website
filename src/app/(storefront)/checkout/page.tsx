@@ -1482,7 +1482,7 @@ function PaymentMethodsPopup({
       aria-label="Accepted payment methods"
       className="absolute bottom-full right-0 z-50 mb-2 w-[min(280px,calc(100vw-2rem))]"
     >
-      <div className="rounded-xl bg-neutral-900 p-3 shadow-2xl ring-1 ring-white/10">
+      <div className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-3 text-[var(--color-foreground)] shadow-2xl">
         <div className="grid grid-cols-4 gap-2">
           {POPUP_PAYMENT_METHODS.map((method) => (
             <PopupMethodTile
@@ -1496,7 +1496,7 @@ function PaymentMethodsPopup({
 
       {/* arrow pointing down toward the +18 button */}
       <div
-        className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 bg-neutral-900"
+        className="absolute -bottom-1.5 right-6 h-3 w-3 rotate-45 border-b border-r border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)]"
         aria-hidden
       />
     </div>
@@ -1506,7 +1506,7 @@ function PaymentMethodsPopup({
 export default function CheckoutPage() {
   const router = useRouter();
 
-  const items = useCartStore((state) => state.items);
+  const cartItems = useCartStore((state) => state.items);
 
   const removeSelectedItems = useCartStore(
     (state) => state.removeSelectedItems,
@@ -1515,6 +1515,7 @@ export default function CheckoutPage() {
   const user = useUserStore((state) => state.user);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCartItemIds, setSelectedCartItemIds] = useState<string[] | null>(null);
   const [razorpayKeyId, setRazorpayKeyId] = useState<string | null>(null);
   const [isKeyLoading, setIsKeyLoading] = useState(true);
   const [keyError, setKeyError] = useState<string | null>(null);
@@ -1539,6 +1540,19 @@ export default function CheckoutPage() {
   const paymentCheckoutRef = useRef<RazorpayCheckoutInstance | null>(null);
   const methodsTriggerRef = useRef<HTMLButtonElement>(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("items");
+    if (params.has("items")) {
+      const ids = (selected ?? "").split(",").filter(Boolean);
+      setSelectedCartItemIds(ids);
+    }
+  }, []);
+
+  const items = selectedCartItemIds
+    ? cartItems.filter((item) => selectedCartItemIds.includes(item.id))
+    : cartItems;
+
   const {
     register,
     control,
@@ -1562,6 +1576,11 @@ export default function CheckoutPage() {
       stateId: "",
     },
   });
+
+  // If a customer signs in while checkout is open, keep their name in sync.
+  useEffect(() => {
+    if (user?.name) setValue("fullName", user.name, { shouldValidate: true });
+  }, [user?.name, setValue]);
 
   const [countries, setCountries] = useState<LocationOption[]>([]);
   const [states, setStates] = useState<LocationOption[]>([]);
@@ -2068,6 +2087,13 @@ export default function CheckoutPage() {
     }
   }
 
+  async function handleCheckoutSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    // Guest checkout is supported. If a token exists it is attached to the
+    // request below so signed-in customers still get account-linked orders.
+    await handleSubmit(onSubmit)(event);
+  }
+
   /**
    * Empty cart state.
    */
@@ -2142,7 +2168,7 @@ export default function CheckoutPage() {
         <div className="grid gap-10 lg:grid-cols-3">
           {/* ===================== Left column: single form ===================== */}
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleCheckoutSubmit}
             noValidate
             className="space-y-6 font-poppins lg:col-span-2"
           >
@@ -2277,7 +2303,6 @@ export default function CheckoutPage() {
                         name={field.name}
                         value={field.value || ""}
                         onChange={(value) => field.onChange(value)}
-                        country=""
                         invalid={!!errors.mobileNo}
                       />
                     )}
@@ -2552,6 +2577,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
     </main>
   );
 }

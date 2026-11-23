@@ -4,6 +4,50 @@
 
 @import "tailwindcss";
 
+/* Keep the country selector readable and clickable with either storefront theme. */
+.checkout-phone-input {
+  position: relative !important;
+  z-index: 20;
+}
+
+.checkout-phone-input:focus-within {
+  z-index: 1000;
+}
+
+.checkout-phone-input .checkout-phone-button {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border-subtle) !important;
+}
+
+.checkout-phone-input .checkout-phone-dropdown {
+  z-index: 1000 !important;
+  max-height: 15rem !important;
+  overflow-y: auto !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  background-color: var(--color-surface-elevated) !important;
+  color: var(--color-foreground) !important;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 22%);
+}
+
+.checkout-phone-input .checkout-phone-dropdown .country {
+  color: var(--color-foreground) !important;
+}
+
+.checkout-phone-input .checkout-phone-dropdown .country:hover,
+.checkout-phone-input .checkout-phone-dropdown .country.highlight {
+  background-color: var(--color-surface-strong) !important;
+}
+
+.checkout-phone-input .checkout-phone-dropdown .search {
+  background-color: var(--color-surface-elevated) !important;
+}
+
+.checkout-phone-input .checkout-phone-dropdown .search-box {
+  border: 1px solid var(--color-border-subtle) !important;
+  background-color: var(--color-surface) !important;
+  color: var(--color-foreground) !important;
+}
+
 @theme inline {
   --color-background: #fcf9f8;
   --color-on-secondary-fixed-variant: #5c403a;
