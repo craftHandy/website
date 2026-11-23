@@ -10,10 +10,13 @@ import {
   type PageContent,
 } from "./fallback-data";
 
-export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
-const API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
+export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(
+  /\/$/,
+  "",
+);
+const API_ORIGIN = API_BASE_URL;
 const HERO_SLIDES_ENDPOINT = `${API_BASE_URL}/api/v1/public/hero-slide`;
-const CATEGORY_API_ORIGIN = API_BASE_URL || "https://backend-4gle.onrender.com";
+const CATEGORY_API_ORIGIN = API_BASE_URL;
 const CATEGORIES_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/category/all`;
 const FEATURED_PRODUCTS_ENDPOINT = `${CATEGORY_API_ORIGIN}/api/v1/public/product`;
 // Updated public products endpoint per backend API
@@ -122,7 +125,10 @@ export async function getCategories(): Promise<Category[]> {
       .map((category: any) => ({
         id: String(category.id),
         title: String(category.categoryName),
-        slug: toCategorySlug(String(category.categoryCode || category.categoryName), `category-${category.id}`),
+        slug: toCategorySlug(
+          String(category.categoryCode || category.categoryName),
+          `category-${category.id}`,
+        ),
         description: category.description || undefined,
         image: category.file?.key || undefined,
       }));
@@ -136,17 +142,26 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getMaterials(): Promise<{ id: string; name: string }[]> {
   try {
-    const response = await fetch(MATERIALS_ENDPOINT, { next: { revalidate: 60 } });
+    const response = await fetch(MATERIALS_ENDPOINT, {
+      next: { revalidate: 60 },
+    });
     if (!response.ok) {
       console.warn(`Materials request failed with status ${response.status}`);
       return [];
     }
 
     const payload = await response.json().catch(() => null);
-    const raw = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+    const raw = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+        ? payload
+        : [];
     return raw
       .filter((m: any) => m?.id != null && (m?.name || m?.materialName))
-      .map((m: any) => ({ id: String(m.id), name: String(m.name ?? m.materialName) }));
+      .map((m: any) => ({
+        id: String(m.id),
+        name: String(m.name ?? m.materialName),
+      }));
   } catch (error) {
     console.warn("Materials request failed.", error);
     return [];
@@ -155,17 +170,26 @@ export async function getMaterials(): Promise<{ id: string; name: string }[]> {
 
 export async function getOccasions(): Promise<{ id: string; name: string }[]> {
   try {
-    const response = await fetch(OCCASIONS_ENDPOINT, { next: { revalidate: 60 } });
+    const response = await fetch(OCCASIONS_ENDPOINT, {
+      next: { revalidate: 60 },
+    });
     if (!response.ok) {
       console.warn(`Occasions request failed with status ${response.status}`);
       return [];
     }
 
     const payload = await response.json().catch(() => null);
-    const raw = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+    const raw = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+        ? payload
+        : [];
     return raw
       .filter((o: any) => o?.id != null && (o?.name || o?.occasionName))
-      .map((o: any) => ({ id: String(o.id), name: String(o.name ?? o.occasionName) }));
+      .map((o: any) => ({
+        id: String(o.id),
+        name: String(o.name ?? o.occasionName),
+      }));
   } catch (error) {
     console.warn("Occasions request failed.", error);
     return [];
@@ -194,12 +218,17 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       .filter((slide: any) => slide?.active !== false)
       .map((slide: any, index: number) => ({
         id: slide?.id?.toString() ?? `hero-${index + 1}`,
-        eyebrow: slide?.eyebrow || slide?.overline || slide?.kicker || undefined,
+        eyebrow:
+          slide?.eyebrow || slide?.overline || slide?.kicker || undefined,
         title: slide?.title || "Featured Collection",
         subtitle: slide?.subtitle || slide?.description || undefined,
         ctaText: slide?.ctaText || slide?.buttonText || undefined,
         ctaLink: slide?.ctaLink || slide?.buttonLink || "/product",
-        image: slide?.backgroundImageUrl || slide?.image || slide?.backgroundImage || undefined,
+        image:
+          slide?.backgroundImageUrl ||
+          slide?.image ||
+          slide?.backgroundImage ||
+          undefined,
         order: typeof slide?.order === "number" ? slide.order : index + 1,
         active: slide?.active !== false,
       }));
@@ -214,7 +243,10 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   return [];
 }
 
-export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult> {
+export async function getBlogPosts(
+  page = 1,
+  size = 10,
+): Promise<BlogPostsResult> {
   const apiPage = Math.max(0, page - 1);
   const response = await fetch(buildBlogListUrl(apiPage, size), {
     next: { revalidate: 60 },
@@ -233,7 +265,9 @@ export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult
   }
 
   const payload = await response.json();
-  const rawPosts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
+  const rawPosts = Array.isArray(payload?.data?.content)
+    ? payload.data.content
+    : [];
   const mappedPosts = rawPosts
     .filter((post: any) => post?.deleted !== true && post?.status !== "DRAFT")
     .map((post: any, index: number) => {
@@ -247,7 +281,8 @@ export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult
         content: normalizedContent || undefined,
         coverImage: post?.coverImage || undefined,
         author: post?.author || undefined,
-        publishedAt: post?.createdDate || post?.modifiedDate || new Date().toISOString(),
+        publishedAt:
+          post?.createdDate || post?.modifiedDate || new Date().toISOString(),
         tags: Array.isArray(post?.tags)
           ? post.tags
               .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
@@ -258,12 +293,23 @@ export async function getBlogPosts(page = 1, size = 10): Promise<BlogPostsResult
 
   return {
     posts: mappedPosts.sort(
-      (a: BlogPost, b: BlogPost) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      (a: BlogPost, b: BlogPost) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     ),
-    currentPage: typeof payload?.data?.page === "number" ? payload.data.page + 1 : page,
-    pageSize: typeof payload?.data?.size === "number" ? payload.data.size : size,
-    totalElements: typeof payload?.data?.totalElements === "number" ? payload.data.totalElements : mappedPosts.length,
-    totalPages: typeof payload?.data?.totalPages === "number" ? payload.data.totalPages : mappedPosts.length > 0 ? 1 : 0,
+    currentPage:
+      typeof payload?.data?.page === "number" ? payload.data.page + 1 : page,
+    pageSize:
+      typeof payload?.data?.size === "number" ? payload.data.size : size,
+    totalElements:
+      typeof payload?.data?.totalElements === "number"
+        ? payload.data.totalElements
+        : mappedPosts.length,
+    totalPages:
+      typeof payload?.data?.totalPages === "number"
+        ? payload.data.totalPages
+        : mappedPosts.length > 0
+          ? 1
+          : 0,
     last: typeof payload?.data?.last === "boolean" ? payload.data.last : true,
   };
 }
@@ -316,7 +362,12 @@ export function getProducts(query: ProductQuery = {}): {
   // Avoid returning static fallback products. This synchronous helper
   // intentionally returns an empty result so the UI doesn't render stale
   // static data when the API is expected to be the source of truth.
-  return { products: [], total: 0, page: query.page ?? 1, pageSize: query.pageSize ?? 0 };
+  return {
+    products: [],
+    total: 0,
+    page: query.page ?? 1,
+    pageSize: query.pageSize ?? 0,
+  };
 }
 
 function mapApiProducts(rawProducts: any[]): Product[] {
@@ -331,31 +382,59 @@ function mapApiProducts(rawProducts: any[]): Product[] {
         title: String(product.title),
         slug: product.slug || `product-${product.id}`,
         price,
-        discountedPrice: product.discountedPrice? product.discountedPrice: undefined,
+        discountedPrice: product.discountedPrice
+          ? product.discountedPrice
+          : undefined,
         discountPercentage,
         materials: Array.isArray(product.materials)
-          ? product.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
+          ? product.materials
+              .map((material: any) =>
+                typeof material === "string" ? material : material?.name,
+              )
+              .filter(Boolean)
           : [],
         occasion: Array.isArray(product.occasions)
-          ? product.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+          ? product.occasions
+              .map((occasion: any) =>
+                typeof occasion === "string" ? occasion : occasion?.name,
+              )
+              .filter(Boolean)
           : [],
         occasions: Array.isArray(product.occasions)
-          ? product.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+          ? product.occasions
+              .map((occasion: any) =>
+                typeof occasion === "string" ? occasion : occasion?.name,
+              )
+              .filter(Boolean)
           : [],
-        images: product.imageUrl ? [{ url: product.imageUrl, alt: product.title }] : [],
+        images: product.imageUrl
+          ? [{ url: product.imageUrl, alt: product.title }]
+          : [],
         stockStatus: product.stockStatus || "IN_STOCK",
-        stockQuantity: product.stockQuantity != null ? Number(product.stockQuantity) : undefined,
+        stockQuantity:
+          product.stockQuantity != null
+            ? Number(product.stockQuantity)
+            : undefined,
         featured: product.featured === true,
         height: product.height != null ? product.height : undefined,
         width: product.width != null ? product.width : undefined,
         weight: product.weight != null ? product.weight : undefined,
-        categoryId: product.categoryId != null ? String(product.categoryId) : null,
-        categoryName: product.categoryName ? String(product.categoryName) : null,
+        categoryId:
+          product.categoryId != null ? String(product.categoryId) : null,
+        categoryName: product.categoryName
+          ? String(product.categoryName)
+          : null,
         category: product.categoryName
           ? {
-              id: product.categoryId != null ? String(product.categoryId) : `category-${index}`,
+              id:
+                product.categoryId != null
+                  ? String(product.categoryId)
+                  : `category-${index}`,
               title: String(product.categoryName),
-              slug: toCategorySlug(String(product.categoryName), `category-${index}`),
+              slug: toCategorySlug(
+                String(product.categoryName),
+                `category-${index}`,
+              ),
             }
           : null,
         createdAt: product.createdAt || "1970-01-01T00:00:00.000Z",
@@ -368,7 +447,9 @@ function mapApiProduct(product: any): Product | null {
 }
 
 /** Fetches the paginated product catalogue from the storefront API. */
-export async function getProductList(query: ProductListQuery = {}): Promise<ProductListResult> {
+export async function getProductList(
+  query: ProductListQuery = {},
+): Promise<ProductListResult> {
   const params = new URLSearchParams({
     page: String(Math.max(0, query.page ?? 0)),
     size: String(Math.max(1, query.size ?? 12)),
@@ -385,10 +466,21 @@ export async function getProductList(query: ProductListQuery = {}): Promise<Prod
   if (query.maxPrice != null) params.set("maxPrice", String(query.maxPrice));
 
   try {
-    const response = await fetch(`${PRODUCTS_ENDPOINT}?${params}`, { next: { revalidate: 30 } });
+    const response = await fetch(`${PRODUCTS_ENDPOINT}?${params}`, {
+      next: { revalidate: 30 },
+    });
     if (!response.ok) {
-      console.warn(`Product list request failed with status ${response.status}`);
-      return { products: [], page: query.page ?? 0, size: query.size ?? 12, totalElements: 0, totalPages: 0, last: true };
+      console.warn(
+        `Product list request failed with status ${response.status}`,
+      );
+      return {
+        products: [],
+        page: query.page ?? 0,
+        size: query.size ?? 12,
+        totalElements: 0,
+        totalPages: 0,
+        last: true,
+      };
     }
 
     const payload = await response.json().catch(() => null);
@@ -396,19 +488,36 @@ export async function getProductList(query: ProductListQuery = {}): Promise<Prod
     const rawItems = Array.isArray(payload?.data?.content)
       ? payload.data.content
       : Array.isArray(payload?.data)
-      ? payload.data
-      : Array.isArray(payload)
-      ? payload
-      : [];
+        ? payload.data
+        : Array.isArray(payload)
+          ? payload
+          : [];
 
     const products = mapApiProducts(rawItems);
     const data = payload?.data ?? {};
 
-    const pageVal = typeof data.page === "number" ? data.page : typeof payload?.page === "number" ? payload.page : query.page ?? 0;
-    const sizeVal = typeof data.size === "number" ? data.size : query.size ?? 12;
-    const totalElements = typeof data.totalElements === "number" ? data.totalElements : products.length;
-    const totalPages = typeof data.totalPages === "number" ? data.totalPages : totalElements > 0 ? Math.ceil(totalElements / sizeVal) : 0;
-    const last = typeof data.last === "boolean" ? data.last : pageVal >= Math.max(0, totalPages - 1);
+    const pageVal =
+      typeof data.page === "number"
+        ? data.page
+        : typeof payload?.page === "number"
+          ? payload.page
+          : (query.page ?? 0);
+    const sizeVal =
+      typeof data.size === "number" ? data.size : (query.size ?? 12);
+    const totalElements =
+      typeof data.totalElements === "number"
+        ? data.totalElements
+        : products.length;
+    const totalPages =
+      typeof data.totalPages === "number"
+        ? data.totalPages
+        : totalElements > 0
+          ? Math.ceil(totalElements / sizeVal)
+          : 0;
+    const last =
+      typeof data.last === "boolean"
+        ? data.last
+        : pageVal >= Math.max(0, totalPages - 1);
 
     return {
       products,
@@ -420,16 +529,28 @@ export async function getProductList(query: ProductListQuery = {}): Promise<Prod
     };
   } catch (error) {
     console.warn("Product list request failed.", error);
-    return { products: [], page: query.page ?? 0, size: query.size ?? 12, totalElements: 0, totalPages: 0, last: true };
+    return {
+      products: [],
+      page: query.page ?? 0,
+      size: query.size ?? 12,
+      totalElements: 0,
+      totalPages: 0,
+      last: true,
+    };
   }
 }
 
 /** Fetches a single product by its API id. */
 export async function getProductById(id: string): Promise<Product | null> {
   try {
-    const response = await fetch(`${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`, { next: { revalidate: 30 } });
+    const response = await fetch(
+      `${PRODUCTS_ENDPOINT}/${encodeURIComponent(id)}`,
+      { next: { revalidate: 30 } },
+    );
     if (!response.ok) {
-      console.warn(`Product detail request failed with status ${response.status}`);
+      console.warn(
+        `Product detail request failed with status ${response.status}`,
+      );
       return null;
     }
 
@@ -439,13 +560,25 @@ export async function getProductById(id: string): Promise<Product | null> {
     if (!product) return null;
 
     const occasions = Array.isArray(raw?.occasions)
-      ? raw.occasions.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+      ? raw.occasions
+          .map((occasion: any) =>
+            typeof occasion === "string" ? occasion : occasion?.name,
+          )
+          .filter(Boolean)
       : Array.isArray(raw.occasion)
-        ? raw.occasion.map((occasion: any) => typeof occasion === "string" ? occasion : occasion?.name).filter(Boolean)
+        ? raw.occasion
+            .map((occasion: any) =>
+              typeof occasion === "string" ? occasion : occasion?.name,
+            )
+            .filter(Boolean)
         : [];
 
     const materials = Array.isArray(raw?.materials)
-      ? raw.materials.map((material: any) => typeof material === "string" ? material : material?.name).filter(Boolean)
+      ? raw.materials
+          .map((material: any) =>
+            typeof material === "string" ? material : material?.name,
+          )
+          .filter(Boolean)
       : [];
 
     return {
@@ -453,8 +586,12 @@ export async function getProductById(id: string): Promise<Product | null> {
       title: raw.title || product.title,
       slug: raw.slug || product.slug,
       price: Number(raw.price) || product.price,
-      discountPercentage: Number(raw.discountPercentage) || product.discountPercentage || 0,
-      discountedPrice: raw.discountPercentage ? (Number(raw.price) || product.price) * (1 - Number(raw.discountPercentage) / 100) : product.discountedPrice,
+      discountPercentage:
+        Number(raw.discountPercentage) || product.discountPercentage || 0,
+      discountedPrice: raw.discountPercentage
+        ? (Number(raw.price) || product.price) *
+          (1 - Number(raw.discountPercentage) / 100)
+        : product.discountedPrice,
       description: raw.description || product.description || undefined,
       materials,
       occasion: occasions,
@@ -462,22 +599,43 @@ export async function getProductById(id: string): Promise<Product | null> {
       craftType: raw.craftType || product.craftType || undefined,
       origin: raw.origin || product.origin || undefined,
       stockStatus: raw.stockStatus || product.stockStatus || "IN_STOCK",
-      stockQuantity: raw.stockQuantity != null ? Number(raw.stockQuantity) : product.stockQuantity,
+      stockQuantity:
+        raw.stockQuantity != null
+          ? Number(raw.stockQuantity)
+          : product.stockQuantity,
       featured: raw.featured === true || product.featured,
       height: raw.height != null ? raw.height : product.height,
       width: raw.width != null ? raw.width : product.width,
       weight: raw.weight != null ? raw.weight : product.weight,
-      categoryId: raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? null,
-      categoryName: raw.categoryName ? String(raw.categoryName) : product.categoryName ?? null,
+      categoryId:
+        raw.categoryId != null
+          ? String(raw.categoryId)
+          : (product.categoryId ?? null),
+      categoryName: raw.categoryName
+        ? String(raw.categoryName)
+        : (product.categoryName ?? null),
       category: raw.categoryName
         ? {
-            id: raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? "category-unknown",
+            id:
+              raw.categoryId != null
+                ? String(raw.categoryId)
+                : (product.categoryId ?? "category-unknown"),
             title: String(raw.categoryName),
-            slug: toCategorySlug(String(raw.categoryName), raw.categoryId != null ? String(raw.categoryId) : product.categoryId ?? "category-unknown"),
+            slug: toCategorySlug(
+              String(raw.categoryName),
+              raw.categoryId != null
+                ? String(raw.categoryId)
+                : (product.categoryId ?? "category-unknown"),
+            ),
           }
-        : product.category ?? null,
+        : (product.category ?? null),
       images: Array.isArray(raw.images)
-        ? raw.images.map((image: any) => ({ url: image?.url || image?.imageUrl || image?.file, alt: image?.alt || raw.title || product.title })).filter((image: any) => image.url)
+        ? raw.images
+            .map((image: any) => ({
+              url: image?.url || image?.imageUrl || image?.file,
+              alt: image?.alt || raw.title || product.title,
+            }))
+            .filter((image: any) => image.url)
         : product.images,
     };
   } catch (error) {
@@ -490,15 +648,19 @@ export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
   try {
     const response = await fetch(
       `${FEATURED_PRODUCTS_ENDPOINT}?page=0&size=${limit}&featured=true`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!response.ok) {
-        console.warn(`Featured products request failed with status ${response.status}`);
-        return [];
-    } 
+      console.warn(
+        `Featured products request failed with status ${response.status}`,
+      );
+      return [];
+    }
 
     const payload = await response.json();
-    const rawProducts = Array.isArray(payload?.data?.content) ? payload.data.content : [];
+    const rawProducts = Array.isArray(payload?.data?.content)
+      ? payload.data.content
+      : [];
     const products = mapApiProducts(rawProducts);
     return products.length > 0 ? products : [];
   } catch (error) {
@@ -522,10 +684,10 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
     const rawItems = Array.isArray(payload?.data?.content)
       ? payload.data.content
       : Array.isArray(payload?.data)
-      ? payload.data
-      : Array.isArray(payload)
-      ? payload
-      : [];
+        ? payload.data
+        : Array.isArray(payload)
+          ? payload
+          : [];
 
     const products = mapApiProducts(rawItems);
     return products.length > 0 ? products.slice(0, limit) : [];
@@ -542,7 +704,7 @@ export function getProductBySlug(slug: string): Product | null {
 export function getRelatedProducts(product: Product, limit = 4): Product[] {
   if (!product.categoryId) return [];
   return FALLBACK_PRODUCTS.filter(
-    (p) => p.categoryId === product.categoryId && p.id !== product.id
+    (p) => p.categoryId === product.categoryId && p.id !== product.id,
   ).slice(0, limit);
 }
 
@@ -550,13 +712,15 @@ export function getCollectionBySlug(slug: string): Collection | null {
   const collection = FALLBACK_COLLECTIONS.find((c) => c.slug === slug) ?? null;
   if (collection) {
     collection.products = FALLBACK_PRODUCTS.filter(
-      (p) => p.collectionId === collection.id
+      (p) => p.collectionId === collection.id,
     );
   }
   return collection;
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+export async function getBlogPostBySlug(
+  slug: string,
+): Promise<BlogPost | null> {
   const detailUrl = buildBlogDetailUrl(slug);
   const response = await fetch(detailUrl, {
     next: { revalidate: 60 },
@@ -590,7 +754,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       content: normalizeBlogContent(fallbackPost?.content) || undefined,
       coverImage: fallbackPost?.coverImage || undefined,
       author: fallbackPost?.author || undefined,
-      publishedAt: fallbackPost?.createdDate || fallbackPost?.modifiedDate || new Date().toISOString(),
+      publishedAt:
+        fallbackPost?.createdDate ||
+        fallbackPost?.modifiedDate ||
+        new Date().toISOString(),
       tags: Array.isArray(fallbackPost?.tags)
         ? fallbackPost.tags
             .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
@@ -614,7 +781,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     content: normalizeBlogContent(post?.content) || undefined,
     coverImage: post?.coverImage || undefined,
     author: post?.author || undefined,
-    publishedAt: post?.createdDate || post?.modifiedDate || new Date().toISOString(),
+    publishedAt:
+      post?.createdDate || post?.modifiedDate || new Date().toISOString(),
     tags: Array.isArray(post?.tags)
       ? post.tags
           .map((tag: any) => (typeof tag === "string" ? tag : tag?.name))
@@ -670,7 +838,10 @@ export async function registerUser(data: RegisterPayload) {
     body: JSON.stringify(data),
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Registration failed. Please try again."));
+  if (!res.ok)
+    throw new Error(
+      extractErrorMessage(payload, "Registration failed. Please try again."),
+    );
   return payload;
 }
 
@@ -681,7 +852,8 @@ export async function loginUser(data: LoginPayload) {
     body: JSON.stringify(data),
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Invalid email or password."));
+  if (!res.ok)
+    throw new Error(extractErrorMessage(payload, "Invalid email or password."));
   return payload;
 }
 
@@ -690,8 +862,10 @@ export function getAccessTokenFromLoginResponse(payload: any): string | null {
   if (typeof payload.accessToken === "string") return payload.accessToken;
   if (typeof payload.access_token === "string") return payload.access_token;
   if (typeof payload.token === "string") return payload.token;
-  if (typeof payload?.data?.accessToken === "string") return payload.data.accessToken;
-  if (typeof payload?.data?.access_token === "string") return payload.data.access_token;
+  if (typeof payload?.data?.accessToken === "string")
+    return payload.data.accessToken;
+  if (typeof payload?.data?.access_token === "string")
+    return payload.data.access_token;
   if (typeof payload?.data?.token === "string") return payload.data.token;
   return null;
 }
@@ -701,8 +875,14 @@ export function decodeJwtPayload(token: string): Record<string, any> | null {
     const part = token.split(".")[1];
     if (!part) return null;
     const normalized = part.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
-    const json = typeof window !== "undefined" ? window.atob(padded) : Buffer.from(padded, "base64").toString("binary");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "=",
+    );
+    const json =
+      typeof window !== "undefined"
+        ? window.atob(padded)
+        : Buffer.from(padded, "base64").toString("binary");
     return JSON.parse(json);
   } catch {
     return null;
@@ -738,7 +918,7 @@ export interface CustomerOrder {
   currency: string;
   createdDate: string;
   items: OrderItem[];
-  trackingNumber?:string
+  trackingNumber?: string;
 }
 
 export interface OrdersResult {
@@ -751,7 +931,11 @@ export interface OrdersResult {
 }
 
 /** Gets the authenticated customer's orders. */
-export async function getMyOrders(accessToken: string, page = 0, size = 10): Promise<OrdersResult> {
+export async function getMyOrders(
+  accessToken: string,
+  page = 0,
+  size = 10,
+): Promise<OrdersResult> {
   const url = new URL(`${API_ORIGIN}/api/v1/orders`);
   url.searchParams.set("page", String(page));
   url.searchParams.set("size", String(size));
@@ -761,14 +945,18 @@ export async function getMyOrders(accessToken: string, page = 0, size = 10): Pro
     cache: "no-store",
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not load your orders."));
+  if (!res.ok)
+    throw new Error(
+      extractErrorMessage(payload, "Could not load your orders."),
+    );
 
   const data = payload?.data ?? {};
   return {
     content: Array.isArray(data.content) ? data.content : [],
     page: typeof data.page === "number" ? data.page : page,
     size: typeof data.size === "number" ? data.size : size,
-    totalElements: typeof data.totalElements === "number" ? data.totalElements : 0,
+    totalElements:
+      typeof data.totalElements === "number" ? data.totalElements : 0,
     totalPages: typeof data.totalPages === "number" ? data.totalPages : 0,
     last: typeof data.last === "boolean" ? data.last : true,
   };
@@ -784,7 +972,10 @@ export interface UserProfile {
   address: string;
 }
 
-export type UpdateProfilePayload = Pick<UserProfile, "fullName" | "mobileNo" | "address">;
+export type UpdateProfilePayload = Pick<
+  UserProfile,
+  "fullName" | "mobileNo" | "address"
+>;
 
 function normalizeProfile(data: any): UserProfile {
   return {
@@ -803,14 +994,17 @@ export async function getMyProfile(accessToken: string): Promise<UserProfile> {
     cache: "no-store",
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not load your profile."));
+  if (!res.ok)
+    throw new Error(
+      extractErrorMessage(payload, "Could not load your profile."),
+    );
   return normalizeProfile(payload?.data);
 }
 
 /** Updates the authenticated customer's profile. */
 export async function updateMyProfile(
   accessToken: string,
-  data: UpdateProfilePayload
+  data: UpdateProfilePayload,
 ): Promise<UpdateProfilePayload> {
   const res = await fetch(`${API_ORIGIN}/api/v1/user`, {
     method: "PUT",
@@ -826,7 +1020,10 @@ export async function updateMyProfile(
     }),
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Could not update your profile."));
+  if (!res.ok)
+    throw new Error(
+      extractErrorMessage(payload, "Could not update your profile."),
+    );
 
   const updated = normalizeProfile(payload?.data);
   return {
@@ -851,6 +1048,12 @@ export async function sendEnquiry(data: EnquiryPayload) {
     body: JSON.stringify(data),
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(extractErrorMessage(payload, "Failed to send your message. Please try again."));
+  if (!res.ok)
+    throw new Error(
+      extractErrorMessage(
+        payload,
+        "Failed to send your message. Please try again.",
+      ),
+    );
   return payload;
 }

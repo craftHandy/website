@@ -1122,6 +1122,27 @@ type AddressFormValues = {
 
 type LocationOption = { id: number; name: string };
 
+function getLocationOptions(payload: unknown): LocationOption[] {
+  if (!payload || typeof payload !== "object") return [];
+  const data = (payload as { data?: unknown }).data;
+  const options = Array.isArray(data)
+    ? data
+    : data && typeof data === "object" && Array.isArray((data as { content?: unknown }).content)
+      ? (data as { content: unknown[] }).content
+      : [];
+
+  return options.filter(
+    (item): item is LocationOption =>
+      !!item &&
+      typeof item === "object" &&
+      (typeof (item as LocationOption).id === "number" || typeof (item as LocationOption).id === "string") &&
+      !!(item as LocationOption).name,
+  ).map((item) => ({
+    id: Number(item.id),
+    name: String(item.name),
+  })).filter((item) => Number.isFinite(item.id));
+}
+
 type RazorpayPaymentResult = {
   razorpay_order_id: string;
   razorpay_payment_id: string;
@@ -1602,9 +1623,8 @@ export default function CheckoutPage() {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Could not load countries");
         const payload = await response.json();
-        const options = Array.isArray(payload?.data?.content) ? payload.data.content : [];
         if (!active) return;
-        setCountries(options.filter((item: any) => item?.id != null && item?.name));
+        setCountries(getLocationOptions(payload));
       } catch (error) {
         if (active) console.error("Country list request failed", error);
       } finally {
@@ -1631,8 +1651,7 @@ export default function CheckoutPage() {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Could not load states");
         const payload = await response.json();
-        const options = Array.isArray(payload?.data?.content) ? payload.data.content : [];
-        if (active) setStates(options.filter((item: any) => item?.id != null && item?.name));
+        if (active) setStates(getLocationOptions(payload));
       } catch (error) {
         if (active) console.error("State list request failed", error);
       } finally {

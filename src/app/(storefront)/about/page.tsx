@@ -79,7 +79,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       {/* ── Hero Section ──helllo */}
-      <section className="relative bg-surface-elevated overflow-hidden">
+      {/* <section className="relative bg-surface-elevated overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[var(--color-background)]" />
         <motion.div
           className="absolute inset-0 opacity-10"
@@ -109,7 +109,70 @@ export default function AboutPage() {
             </p>
           </FadeIn>
         </div>
-      </section>
+      </section> */}
+      <section className="relative isolate overflow-hidden">
+  {/* Background atmosphere */}
+  <div className="absolute inset-0 -z-10">
+    <div className="absolute inset-0 bg-gradient-to-b from-[#171512]/70 via-[#171512]/80 to-[#171512]" />
+
+    <div
+      className="absolute inset-0 opacity-30"
+      style={{
+        backgroundImage: `
+          radial-gradient(ellipse at 20% 30%, rgba(201,168,76,0.14), transparent 45%),
+          radial-gradient(ellipse at 80% 70%, rgba(201,168,76,0.10), transparent 40%)
+        `,
+      }}
+    />
+
+    <div className="absolute inset-0 opacity-[0.04] bg-[url('/textures/noise.png')] bg-repeat" />
+  </div>
+
+  {/* Decorative lines */}
+  <div className="absolute left-6 md:left-16 top-12 bottom-12 w-px bg-gradient-to-b from-transparent via-[#C9A84C]/30 to-transparent" />
+  <div className="absolute right-6 md:right-16 top-12 bottom-12 w-px bg-gradient-to-b from-transparent via-[#C9A84C]/30 to-transparent" />
+
+  <div className="relative max-w-7xl mx-auto px-6 md:px-16 py-24 md:py-32 lg:py-36">
+    <div className="max-w-3xl mx-auto text-center">
+
+      <FadeIn delay={0.1}>
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <span className="h-px w-10 bg-[#C9A84C]/60" />
+
+          <p className="text-[#C9A84C] uppercase tracking-[0.3em] text-xs font-medium">
+            Since 1987
+          </p>
+
+          <span className="h-px w-10 bg-[#C9A84C]/60" />
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={0.2}>
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#F5F0E8] leading-tight mb-8">
+          Our Story
+        </h1>
+      </FadeIn>
+
+      <FadeIn delay={0.3}>
+        <p className="text-[#D6CCBA] text-base md:text-lg leading-8 max-w-2xl mx-auto font-poppins">
+          For over three generations, Ratnagiri has been synonymous
+          with the finest Indian jewelry — a legacy of artistry,
+          tradition, and an unwavering commitment to beauty that
+          flows from the heart of Jaipur to the world.
+        </p>
+      </FadeIn>
+
+      <FadeIn delay={0.4}>
+        <div className="mt-12 flex flex-col items-center">
+        
+
+          <div className="mt-5 h-12 w-px bg-gradient-to-b from-[#C9A84C]/70 to-transparent" />
+        </div>
+      </FadeIn>
+
+    </div>
+  </div>
+</section>
 
       {/* ── Heritage & Craftsmanship ── */}
       <section className="bg-[var(--color-background)] py-20 md:py-28">
