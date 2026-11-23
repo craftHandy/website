@@ -6,7 +6,7 @@ const FOOTER_LINKS = {
   about: [
     { label: "About Us", href: "/about" },
     { label: "Our Blog", href: "/stories" },
-    { label: "Collections", href: "/collections" },
+    { label: "Collections", href: "/product" },
     { label: "Contact Us", href: "/contact" },
   ],
   support: [

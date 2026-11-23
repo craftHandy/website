@@ -29,12 +29,12 @@ import { useUserStore } from "@/store/user";
 import { decodeJwtPayload, getCategories, isAccessTokenExpired } from "@/lib/api";
 import { useTheme } from "@/app/providers";
 import type { Category } from "@/types";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 const TOP_LINKS = [
   // { href: "/collections", label: "Collections" },
   { href: "/about", label: "About Us" },
-  { href: "/stories", label: "Stories" },
+  { href: "/stories", label: "Blogs" },
   { href: "/contact", label: "Contact Us" },
 ];
 
@@ -66,6 +66,7 @@ const dropdownVariants = {
 export function Header() {
   const params = useSearchParams();
   const pathname = usePathname();
+  const router = useRouter();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,6 +78,7 @@ export function Header() {
   const [tokenEmail, setTokenEmail] = useState("");
   const [search, setSearch] = useState(params.get("search") || "");
   const catRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const user = useUserStore((s) => s.user);
   const clearUser = useUserStore((s) => s.clearUser);
   const itemCount = useCartStore((s) =>
@@ -141,6 +143,9 @@ export function Header() {
       if (catRef.current && !catRef.current.contains(e.target as Node)) {
         setCatOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -152,10 +157,12 @@ export function Header() {
   }
 
   function handleConfirmLogout() {
+    window.localStorage.removeItem("access_token");
     clearUser();
     setHasAccessToken(false);
     setTokenEmail("");
     setLogoutConfirmOpen(false);
+    router.push("/");
   }
 
   const isLoggedIn = Boolean(user || hasAccessToken);
@@ -267,9 +274,9 @@ export function Header() {
                               onClick={() => setCatOpen(false)}
                               className="flex items-center gap-3 px-4 py-2.5 text-sm text-white hover:bg-[rgba(201,168,76,0.08)] hover:text-[#e9c176] transition-colors duration-150"
                             >
-                              <span className="w-5 h-5 rounded-full bg-[rgba(201,168,76,0.12)] flex items-center justify-center text-xs text-[#e9c176]">
+                              {/* <span className="w-5 h-5 rounded-full bg-[rgba(201,168,76,0.12)] flex items-center justify-center text-xs text-[#e9c176]">
                                 ✦
-                              </span>
+                              </span> */}
 
                               <span className="tracking-wide">{cat.title}</span>
                             </Link>
@@ -327,7 +334,7 @@ export function Header() {
             </button>
 
             {/* User */}
-            <div className="relative">
+            <div ref={userMenuRef} className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="p-2 text-white hover:text-[#e9c176] transition-colors cursor-pointer"
@@ -421,11 +428,11 @@ export function Header() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <form action="/product" method="GET" className="py-4 flex gap-2">
+              <form action="/product" method="GET" className="py-4 flex justify-center gap-2">
                 <Input
                   name="search"
                   placeholder="Search products..."
-                  className="flex-1 bg-[#1e1e1e] border-[#3a3428] text-white placeholder:text-[#9a7b2c] focus:border-[#e9c176] focus:ring-[#e9c176]"
+                  className="w-full max-w-screen-sm bg-[#1e1e1e] border-[#3a3428] text-white placeholder:text-[#9a7b2c] focus:border-[#3a3428] focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   autoFocus
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
