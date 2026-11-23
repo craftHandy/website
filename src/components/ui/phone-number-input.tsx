@@ -26,7 +26,7 @@ export function PhoneNumberInput({
 }: PhoneNumberInputProps) {
   return (
     <PhoneInput
-      country={country}
+      country={country || "in"}
       value={value}
       onChange={(digits, countryData) => {
         const country = "dialCode" in countryData ? countryData as CountryData : undefined;
@@ -40,6 +40,9 @@ export function PhoneNumberInput({
       countryCodeEditable={false}
       inputProps={{ id, name, autoComplete: "tel", required: true }}
       containerStyle={{ width: "100%" }}
+      containerClass="checkout-phone-input"
+      buttonClass="checkout-phone-button"
+      dropdownClass="checkout-phone-dropdown"
       inputStyle={{
         width: "100%",
         height: "44px",
@@ -55,7 +58,7 @@ export function PhoneNumberInput({
         borderColor: invalid ? "#f87171" : "var(--color-border-subtle)",
         borderRadius: "4px 0 0 4px",
       }}
-      dropdownStyle={{ zIndex: 60 }}
+      dropdownStyle={{ zIndex: 1000 }}
     />
   );
 }

@@ -303,7 +303,7 @@ export default function CartPage() {
                 disabled={selectedItems.length === 0}
               >
                 <Link
-                  href={selectedItems.length === 0 ? "#" : "/checkout"}
+                  href={selectedItems.length === 0 ? "#" : `/checkout?items=${encodeURIComponent(selectedItems.map((item) => item.id).join(","))}`}
                   onClick={(e) => {
                     if (selectedItems.length === 0) {
                       e.preventDefault();
